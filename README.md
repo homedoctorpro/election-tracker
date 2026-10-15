@@ -15,6 +15,21 @@ Two runners:
 | House race ratings (10 outlets) | UF Election Lab `house_tossup_races.csv` | Cook, Inside Elections, Sabato, Economist, Split Ticket, DDHQ, 50+1, Fox, Silver, RCP |
 | Senate, Governor, House, generic-ballot polls | [VoteHub API](https://votehub.com/polls/api/) | Free API. It returns the full poll history on every call. |
 
+## 2022 / 2024 comparisons
+
+The "vs 2022 / 2024" tab and `data/latest/compare_states.csv` compare each state's 2026 early vote with earlier cycles:
+
+- **Every state, against the final early vote:** this uses the [EAC Election Administration and Voting Survey](https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys) for 2022 and 2024, where pre-Election-Day votes are mail plus early in-person. Early in the window this mostly shows how soon a state mails ballots, so the dashboard also shows each state's pace against the median state.
+- **Exact same-days-out comparison:** North Carolina's voter files give the date every ballot came back in 2022, 2024 and 2026, broken down by party, race, age and voting method (`data/latest/nc_same_day.csv`). Only aggregate counts are kept; names and addresses are never stored.
+- **Party mix:** each state's 2026 mail-ballot D−R margin is compared with its final 2024 mail-ballot margin from UF Election Lab. This is not a same-day comparison. Archived 2024 UF snapshots also exist at 2, 1 and 0 days out, so a same-day column fills in for those days.
+
+Georgia also publishes voter-level absentee files with dates, but its download portal blocks automated requests, so Georgia isn't included yet.
+
+The reference data in `data/reference/` is built once and committed. To rebuild it (this downloads about 400 MB):
+```bash
+python -m tracker.reference --build all
+```
+
 ## Outputs
 
 - `data/election.db`: SQLite. It keeps one early-vote snapshot per day, so the time series builds up over time.

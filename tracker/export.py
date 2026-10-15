@@ -1,7 +1,8 @@
 """Write the latest data to CSVs in data/latest/ for Excel / quick viewing."""
 import csv
 
-from .common import LATEST
+from . import compare
+from .common import LATEST, today_et
 
 
 def _write(con, name, sql, params=()):
@@ -41,6 +42,16 @@ LEFT JOIN poll_matchup m USING (poll_id)
 WHERE p.poll_type = ?
 ORDER BY p.end_date DESC, p.race
 """
+
+
+def _write_dicts(name, rows):
+    cols = list(dict.fromkeys(k for r in rows for k in r))
+    LATEST.mkdir(parents=True, exist_ok=True)
+    with open(LATEST / name, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=cols)
+        w.writeheader()
+        w.writerows(rows)
+    return len(rows)
 
 
 def tag_matchups(con, window_days=45):
@@ -124,6 +135,11 @@ def export_all(con) -> dict:
                     ("us-representative", "polls_house.csv"), ("generic-ballot", "polls_generic_ballot.csv")]:
         out[name] = _write(con, name, POLLS_SQL, (t,))
     out["race_summary.csv"] = race_summary(con)
+    out["compare_states.csv"] = _write_dicts("compare_states.csv", compare.state_comparison(con, today_et())["states"])
+    nc = compare.nc_pace(con)
+    if nc:
+        rows = [{"year": y, **v} for y, v in nc["same_day"].items()] +                [{"year": f"{y} final", **v} for y, v in nc["final"].items()]
+        out["nc_same_day.csv"] = _write_dicts("nc_same_day.csv", rows)
     out["house_ratings.csv"] = _write(con, "house_ratings.csv", """
         SELECT race, state, district, outlet, rating FROM race_ratings
         WHERE snapshot_date=(SELECT MAX(snapshot_date) FROM race_ratings) ORDER BY race, outlet""")

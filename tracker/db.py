@@ -76,6 +76,34 @@ CREATE TABLE IF NOT EXISTS race_ratings (
     PRIMARY KEY (snapshot_date, race, outlet)
 );
 
+-- Ballots accepted per day before Election Day, from voter-level files (NC).
+CREATE TABLE IF NOT EXISTS pace (
+    state     TEXT NOT NULL,
+    year      INTEGER NOT NULL,
+    days_out  INTEGER NOT NULL,
+    method    TEXT NOT NULL,     -- mail | in_person | other
+    party     TEXT NOT NULL,     -- dem | rep | una | other
+    race      TEXT NOT NULL,     -- white | black | hispanic | other
+    age_group TEXT NOT NULL,
+    n         INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_pace ON pace (state, year, days_out);
+
+-- Final pre-Election-Day votes from the EAC's Election Administration and Voting Survey.
+CREATE TABLE IF NOT EXISTS ref_eavs (
+    state TEXT NOT NULL, year INTEGER NOT NULL,
+    total_voters INTEGER, mail INTEGER, early_in_person INTEGER, all_mail_jurisdictions INTEGER,
+    PRIMARY KEY (state, year)
+);
+
+-- UF Election Lab 2024 national file: the final version plus archived mid-race snapshots.
+CREATE TABLE IF NOT EXISTS ref_uf2024 (
+    snapshot_date TEXT NOT NULL, days_out INTEGER NOT NULL, state TEXT NOT NULL,
+    voted_all REAL, voted_dem REAL, voted_rep REAL, voted_none REAL, accept_all REAL, inperson_all REAL,
+    accept_dem REAL, accept_rep REAL, accept_none REAL,
+    PRIMARY KEY (snapshot_date, state)
+);
+
 CREATE INDEX IF NOT EXISTS ix_ev_metric ON ev_values (metric, level, state);
 CREATE INDEX IF NOT EXISTS ix_polls_race ON polls (poll_type, state, end_date);
 

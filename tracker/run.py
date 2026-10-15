@@ -11,11 +11,13 @@ from . import db
 from .common import now_et, today_et
 from .export import export_all
 from . import site
-from .sources import uf_early_vote, votehub_polls
+from . import reference
+from .sources import nc_voter_file, uf_early_vote, votehub_polls
 
 SOURCES = {
     "early_vote": uf_early_vote.collect,
     "polls": votehub_polls.collect,
+    "nc_pace": nc_voter_file.collect,
 }
 
 
@@ -27,6 +29,7 @@ def main(argv=None) -> int:
 
     day = today_et()
     con = db.connect()
+    reference.load(con)
     failures = 0
     print(f"[{now_et()}] refresh for {day}")
     for name, collect in SOURCES.items():

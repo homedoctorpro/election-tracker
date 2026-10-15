@@ -8,7 +8,8 @@ import json
 import shutil
 from pathlib import Path
 
-from .common import ROOT, now_et
+from . import compare
+from .common import ROOT, now_et, today_et
 
 HISTORY = ROOT / "data" / "history" / "ev_states"
 SITE = ROOT / "site"
@@ -71,6 +72,8 @@ def build(con):
         "race_summary": summary,
         "polls": recent_polls,
         "ratings": ratings,
+        "compare": compare.state_comparison(con, today_et()),
+        "nc_pace": compare.nc_pace(con),
     }
     SITE.mkdir(exist_ok=True)
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
