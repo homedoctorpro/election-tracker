@@ -122,13 +122,27 @@ def _result_2022(res, st):
     return (_margin(*h), "House vote") if h else (None, None)
 
 
-def _pace_margin(con, st, year, dout):
-    """Mail-ballot D-R margin from a state's voter file, cumulative through `dout` days out."""
-    rows = con.execute("SELECT party, SUM(n) FROM pace WHERE state=? AND year=? AND method='mail' "
-                       "AND days_out >= ? GROUP BY party", (st, year, dout)).fetchall()
-    p = dict(rows)
-    n = sum(p.values())
-    return (_margin(p.get("dem"), p.get("rep"), n - p.get("dem", 0) - p.get("rep", 0)), n) if n else (None, 0)
+def _pace_counts(con, st, year, dout):
+    """Mail ballots by party (dem, rep, other) from a state's voter file, through `dout` days out."""
+    p = dict(con.execute("SELECT party, SUM(n) FROM pace WHERE state=? AND year=? AND method='mail' "
+                         "AND days_out >= ? GROUP BY party", (st, year, dout)).fetchall())
+    d, r = p.get("dem", 0), p.get("rep", 0)
+    return d, r, sum(p.values()) - d - r
+
+
+def _reg_shares(con, st, year):
+    row = con.execute("SELECT as_of, dem, rep, other FROM registration WHERE state=? AND year=?", (st, year)).fetchone()
+    if not row or not sum(row[1:]):
+        return None, None
+    t = sum(row[1:])
+    return row[0], (row[1] / t, row[2] / t, row[3] / t)
+
+
+def _reweighted_margin(counts, reg_now, reg_base):
+    """Mail D-R margin if each party's ballots were scaled to the baseline year's registration
+    shares: holds each party's propensity to vote by mail fixed and removes registration drift."""
+    w = [c * b / n for c, n, b in zip(counts, reg_now, reg_base)]
+    return _margin(*w)
 
 
 def party_projection(con, day: str):
@@ -159,10 +173,17 @@ def party_projection(con, day: str):
             base = None
             if st in voter_file:
                 last = con.execute("SELECT MIN(days_out) FROM pace WHERE state=? AND year=2026", (st,)).fetchone()[0]
-                m26, n26 = _pace_margin(con, st, 2026, last)
-                mb, nb = _pace_margin(con, st, year, last)
+                c26, cb = _pace_counts(con, st, 2026, last), _pace_counts(con, st, year, last)
+                m26, mb = _margin(*c26), _margin(*cb)
                 if mb is not None and m26 is not None:
-                    base = {"mail_2026": m26, "mail_base": mb, "basis": "same day", "days_out": last, "n_2026": n26}
+                    base = {"mail_2026": m26, "mail_base": mb, "basis": "same day", "days_out": last, "n_2026": sum(c26)}
+                    as_now, reg_now = _reg_shares(con, st, 2026)
+                    as_base, reg_base = _reg_shares(con, st, year)
+                    if reg_now and reg_base:
+                        adj = _reweighted_margin(c26, reg_now, reg_base)
+                        base.update(mail_2026_reg_adj=adj, reg_as_of=as_now, reg_base_as_of=as_base,
+                                    reg_dr_2026=round(100 * (reg_now[0] - reg_now[1]), 1),
+                                    reg_dr_base=round(100 * (reg_base[0] - reg_base[1]), 1))
                     # how far off a comparison against the final 2024 mix would have been
                     if year == 2024 and r.get("mail_dr_margin_2024_final") is not None:
                         base["shift_vs_final"] = round(r["mail_dr_margin_2026"] - r["mail_dr_margin_2024_final"], 1)
@@ -171,8 +192,13 @@ def party_projection(con, day: str):
                         "basis": "final", "n_2026": r.get("mail_party_ballots_2026")}
             y = {"result": result, "race": race}
             if base:
-                shift = round(base["mail_2026"] - base["mail_base"], 1)
-                y.update(base, shift=shift, projected=None if result is None else round(result + shift, 1))
+                raw = round(base["mail_2026"] - base["mail_base"], 1)
+                # where registration data exists, the projection uses the registration-adjusted shift
+                adj = base.get("mail_2026_reg_adj")
+                shift = round(adj - base["mail_base"], 1) if adj is not None else raw
+                y.update(base, shift=shift, shift_raw=raw, reg_adjusted=adj is not None,
+                         projected=None if result is None else round(result + shift, 1),
+                         projected_raw=None if result is None else round(result + raw, 1))
             row[str(year)] = y
         out.append(row)
     return out

@@ -6,8 +6,9 @@ data/archive/<cycle>/<YYYY-MM-DD>/
     house_tossup_races.csv.gz  UF race-ratings file
     uf_geo.tar.gz              every UF county and congressional-district file
     votehub_polls.json.gz      full VoteHub poll history as of that morning
-    nc_pace.csv.gz             NC accepted ballots by return day, method, party, race, age
-                               (aggregate counts only; the voter-level file is never stored)
+    registration.csv.gz        NC and PA registered voters by party, latest snapshot
+    pace.csv.gz                NC and PA accepted ballots by return day, method, party (and race,
+                               age for NC); aggregate counts only, voter-level files are never stored
     manifest.json              what was saved and when
 
 Re-running on the same day replaces that day's folder.
@@ -68,8 +69,16 @@ def archive_day(con, day: str) -> dict:
         w = csv.writer(buf)
         w.writerow(["state", "year", "days_out", "method", "party", "race", "age_group", "n"])
         w.writerows(rows)
-        _gzip_bytes(buf.getvalue().encode("utf-8"), out / "nc_pace.csv.gz")
-        saved.append("nc_pace.csv.gz")
+        _gzip_bytes(buf.getvalue().encode("utf-8"), out / "pace.csv.gz")
+        saved.append("pace.csv.gz")
+
+    reg = con.execute("SELECT state, year, as_of, dem, rep, other FROM registration WHERE year = ?",
+                      (int(CYCLE),)).fetchall()
+    if reg:
+        buf = io.StringIO()
+        csv.writer(buf).writerows([("state", "year", "as_of", "dem", "rep", "other"), *reg])
+        _gzip_bytes(buf.getvalue().encode("utf-8"), out / "registration.csv.gz")
+        saved.append("registration.csv.gz")
 
     (out / "manifest.json").write_text(json.dumps(
         {"day": day, "archived_at": now_et(), "files": saved}, indent=1), encoding="utf-8")

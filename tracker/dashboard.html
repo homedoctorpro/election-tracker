@@ -127,7 +127,7 @@ svg.spark{vertical-align:middle}
   </div>
   <div class="panel" style="padding:14px 16px;margin-bottom:14px">
     <h2 style="font-size:17px;margin:0 0 4px">If the mail-ballot shift carried over to the whole vote</h2>
-    <div class="small muted">States that register voters by party. The hollow dot is the state's actual result in the baseline year. The solid dot adds the change in the mail-ballot party mix since then (2026 mail D&minus;R minus baseline mail D&minus;R). This is arithmetic, not a forecast: party registration isn't vote choice, and mail voters aren't the whole electorate.</div>
+    <div class="small muted">States that register voters by party. The hollow dot is the state's actual result in the baseline year. The solid dot adds the change in the mail-ballot party mix since then (2026 mail D&minus;R minus baseline mail D&minus;R). In North Carolina and Pennsylvania that change is also adjusted for shifts in party registration. This is arithmetic, not a forecast: party registration isn't vote choice, and mail voters aren't the whole electorate.</div>
     <div class="pm-tools">
       <span class="small muted">Compare with:</span>
       <button class="seg" data-py="2022" aria-pressed="true">2022 midterm</button>
@@ -332,7 +332,7 @@ function partyMix(){
     const by={shift:(a,b)=>(b.y.shift??-1e9)-(a.y.shift??-1e9),proj:(a,b)=>(b.y.projected??b.y.result??0)-(a.y.projected??a.y.result??0),
       name:(a,b)=>a.state_name.localeCompare(b.state_name)}[sort];
     const row=r=>{const y=r.y,a=y.result!=null?pos(y.result):null,b=y.projected!=null?pos(y.projected):null;
-      const chip=!r.has?'':y.basis==='same day'?`<span class="chip" title="Both years counted through ${y.days_out} days before Election Day, from the state's voter file">same day</span>`
+      const chip=!r.has?'':y.basis==='same day'?`<span class="chip" title="Both years counted through ${y.days_out} days before Election Day, from the state's voter file">same day</span>${y.reg_adjusted?` <span class="chip" title="Adjusted for the change in party registration since ${year}">reg-adj</span>`:''}`
         :`<span class="chip" title="Compared with the final ${year} mail mix, not the same day, so this likely overstates any move toward D">vs final</span>`;
       const line=a!=null&&b!=null?`<div class="seg-line" style="left:${Math.min(a,b)}%;width:${Math.abs(b-a)}%;background:${col(y.shift)}"></div>`:'';
       return `<div class="pm-row${r.smallN&&r.has?' small-n':''}">
@@ -340,7 +340,7 @@ function partyMix(){
         <div class="track"><div class="bg"></div><div class="mid"></div>${line}
           ${a!=null?`<div class="dot d24" style="left:${a}%" title="Actual ${year} result: ${mg(y.result)}"></div>`:''}
           ${b!=null?`<div class="dot" style="left:${b}%;background:${col(y.projected)}" title="If the mail shift held: ${mg(y.projected)}"></div>`:''}</div>
-        <div class="n csh">${r.has?`<span style="color:${col(y.shift)}" title="2026 mail ${mg(y.mail_2026)} vs ${year} mail ${mg(y.mail_base)}">${y.shift>=0?'D':'R'} +${Math.abs(y.shift).toFixed(1)}</span>`:'<span class="muted small">no data</span>'}</div>
+        <div class="n csh">${r.has?`<span style="color:${col(y.shift)}" title="${y.reg_adjusted?`Registration-adjusted. Raw: 2026 mail ${mg(y.mail_2026)} vs ${year} mail ${mg(y.mail_base)} = ${mg(y.shift_raw)}`:`2026 mail ${mg(y.mail_2026)} vs ${year} mail ${mg(y.mail_base)}`}">${y.shift>=0?'D':'R'} +${Math.abs(y.shift).toFixed(1)}</span>${y.reg_adjusted?`<div class="muted" style="font-size:11px">raw ${mg(y.shift_raw)}</div>`:''}`:'<span class="muted small">no data</span>'}</div>
         <div class="n muted">${mg(y.result)}</div>
         <div class="n">${y.projected!=null?`<b style="color:${col(y.projected)}">${mg(y.projected)}</b>`:'–'}</div></div>`};
     const tick=v=>v===0?'0':(v<0?'R+':'D+')+Math.abs(v);
@@ -362,7 +362,10 @@ function partyMix(){
     } else {
       notes.push('2024 result: the presidential race.');
     }
-    if(year==='2024')cal.forEach(r=>notes.push(`<b>Read "vs final" rows with caution.</b> In ${r.state_name}, a comparison with the final 2024 mail mix shows ${mg(r['2024'].shift_vs_final)}, while the same-day comparison shows ${mg(r['2024'].shift)}, so the "vs final" method overstates the move toward D by ${Math.abs(r['2024'].shift_vs_final-r['2024'].shift).toFixed(1)} points there.`));
+    if(year==='2024')cal.forEach(r=>notes.push(`<b>Read "vs final" rows with caution.</b> In ${r.state_name}, a comparison with the final 2024 mail mix shows ${mg(r['2024'].shift_vs_final)}, while the same-day comparison shows ${mg(r['2024'].shift_raw)}, so the "vs final" method overstates the move toward D by ${Math.abs(r['2024'].shift_vs_final-r['2024'].shift_raw).toFixed(1)} points there.`));
+    // registration adjustment explainer, per state
+    P.filter(r=>r[year]&&r[year].reg_adjusted).forEach(r=>{const y=r[year];
+      notes.push(`<b>${r.state_name} is adjusted for registration.</b> Registered Democrats minus Republicans went from ${mg(y.reg_dr_base)} (${y.reg_base_as_of}) to ${mg(y.reg_dr_2026)} (${y.reg_as_of}). Reweighting this year's mail ballots to ${year}'s registration turns a raw shift of ${mg(y.shift_raw)} into ${mg(y.shift)}, which is the part that reflects who is voting rather than who is registered.`)});
     $('#pm-note').innerHTML=notes.map(n=>`<p style="margin:4px 0">${n}</p>`).join('');
   };
   document.querySelectorAll('[data-pm]').forEach(b=>b.onclick=()=>{sort=b.dataset.pm;document.querySelectorAll('[data-pm]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});

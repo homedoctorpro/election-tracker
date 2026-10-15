@@ -13,13 +13,14 @@ from .common import now_et, today_et
 from .export import export_all
 from . import site
 from . import archive, reference
-from .sources import nc_voter_file, pa_mail_file, uf_early_vote, votehub_polls
+from .sources import nc_voter_file, pa_mail_file, registration, uf_early_vote, votehub_polls
 
 SOURCES = {
     "early_vote": uf_early_vote.collect,
     "polls": votehub_polls.collect,
     "nc_pace": nc_voter_file.collect,
     "pa_pace": pa_mail_file.collect,
+    "registration": registration.collect,
 }
 
 

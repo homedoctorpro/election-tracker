@@ -21,7 +21,7 @@ import zipfile
 from datetime import date, datetime
 
 from .common import ELECTION_DAYS, ROOT, STATES, fetch
-from .sources import nc_voter_file, pa_mail_file
+from .sources import nc_voter_file, pa_mail_file, registration
 
 REF = ROOT / "data" / "reference"
 EAVS = {
@@ -151,6 +151,30 @@ def build_results():
     _write("results_state.csv", ["state", "year", "race", "dem", "rep", "other"], rows)
 
 
+PA_REG_PDFS = {
+    2022: "voter-registration-statistics/2022%20Election%20VR%20Statistics.pdf",
+    2024: "voter-registration-statistics/2024%20Election%20Nov..pdf",
+}
+PA_STATS = ("https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/"
+            "voting-and-election-statistics/")
+
+
+def build_registration():
+    """Registration by party at each past general election: NC voter_stats, PA certified PDFs."""
+    from pypdf import PdfReader  # only needed for this one-time build
+    rows = []
+    for year, folder in ((2022, "2022_11_08"), (2024, "2024_11_05")):
+        d = folder.replace("_", "")
+        rows.append(("NC", year, *registration.nc_snapshot(f"ENRS/{folder}/voter_stats_{d}.zip")))
+    for year, path in PA_REG_PDFS.items():
+        text = "".join(p.extract_text() for p in PdfReader(io.BytesIO(fetch(PA_STATS + path))).pages)
+        # statewide row: "Total <Dem> <Rep> ... <All Parties>"
+        nums = [int(x.replace(",", "")) for x in re.search(r"\nTotal ([\d, ]+)", text).group(1).split()]
+        dem, rep, total = nums[0], nums[1], nums[-1]
+        rows.append(("PA", year, f"{year}-11-0{8 if year == 2022 else 5}", dem, rep, total - dem - rep))
+    _write("registration.csv", ["state", "year", "as_of", "dem", "rep", "other"], rows)
+
+
 def build_pa():
     rows = []
     for year in (2022, 2024):
@@ -185,6 +209,8 @@ def load(con):
     con.execute("DELETE FROM pace WHERE year < 2026")
     for p in sorted(REF.glob("*_pace.csv")):  # nc_pace.csv, pa_pace.csv, ...
         con.executemany("INSERT INTO pace VALUES (?,?,?,?,?,?,?,?)", rows(p.name))
+    con.execute("DELETE FROM registration WHERE year < 2026")
+    con.executemany("INSERT INTO registration VALUES (?,?,?,?,?,?)", rows("registration.csv"))
     con.execute("DELETE FROM ref_results")
     con.executemany("INSERT INTO ref_results VALUES (?,?,?,?,?,?)", rows("results_state.csv"))
     con.commit()
@@ -192,7 +218,7 @@ def load(con):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "results"])
+    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "results", "registration"])
     ap.add_argument("--from-archive", type=int, metavar="CYCLE",
                     help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
@@ -206,5 +232,7 @@ if __name__ == "__main__":
         build_nc()
     if a.build in ("all", "pa"):
         build_pa()
+    if a.build in ("all", "registration"):
+        build_registration()
     if a.build in ("all", "results"):
         build_results()

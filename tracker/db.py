@@ -89,6 +89,14 @@ CREATE TABLE IF NOT EXISTS pace (
 );
 CREATE INDEX IF NOT EXISTS ix_pace ON pace (state, year, days_out);
 
+-- Registered voters by party (NC, PA). Past cycles from data/reference/registration.csv,
+-- 2026 refreshed daily. as_of = date of the snapshot.
+CREATE TABLE IF NOT EXISTS registration (
+    state TEXT NOT NULL, year INTEGER NOT NULL, as_of TEXT,
+    dem INTEGER, rep INTEGER, other INTEGER,
+    PRIMARY KEY (state, year)
+);
+
 -- Certified results by state from the FEC (2022 House + Senate, 2024 President).
 CREATE TABLE IF NOT EXISTS ref_results (
     state TEXT NOT NULL, year INTEGER NOT NULL, race TEXT NOT NULL,
