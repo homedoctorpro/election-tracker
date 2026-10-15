@@ -104,7 +104,7 @@ svg.spark{vertical-align:middle}
   <div class="panel scroll"><table id="ct"></table></div>
   <p class="small muted" style="margin-top:10px">
     <b>% of final</b>: 2026 early votes so far as a share of the state's entire pre-Election-Day vote (mail plus early in-person) in that year, from the EAC's official Election Administration and Voting Survey. Early in the window this mostly tracks how soon a state mails ballots, so <b>pace vs median</b> compares each state with the median state (100 = median, 150 = half again as far along).
-    <b>Mail D&minus;R</b>: Democrats minus Republicans as a share of party-coded mail ballots, in states with party registration. The 2024 figure is the <i>final</i> mail-ballot mix, not the mix at this point in the race. Early returns often lean more Democratic than the final count, so treat the shift with care.
+    <b>Mail D&minus;R</b>: Democrats minus Republicans as a share of party-coded mail ballots, in states with party registration. The 2024 figure is the <i>final</i> mail-ballot mix, not the mix at this point in the race. Early returns often lean more Democratic than the final count, so treat the shift with care. Shifts marked * come from states where less than 2% of the 2022 early vote is in yet.
   </p>
 </section>
 
@@ -295,7 +295,7 @@ function cmp(){
     ${hasSame?`<td>${pct(r.pct_of_same_day_2024)}</td>`:''}
     <td class="hide-sm muted">${pct(r.early_share_2022,0)} / ${pct(r.early_share_2024,0)}</td>
     <td>${mg(r.mail_dr_margin_2026)}</td><td class="muted">${mg(r.mail_dr_margin_2024_final)}</td>
-    <td>${r.shift==null?'–':`<b>${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}</b>`}</td></tr>`);
+    <td>${r.shift==null?'–':(r.pct_of_final_2022??0)<2?`<span class="muted" title="Under 2% of the 2022 early vote is in, so this is mostly noise">${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}*</span>`:`<b>${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}</b>`}</td></tr>`);
   $('#cq').oninput=draw;
   if(D.nc_pace){ncChart(D.nc_pace);ncTable(D.nc_pace)}
 }
