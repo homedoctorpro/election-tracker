@@ -60,6 +60,31 @@ tr.click{cursor:pointer}
 .ncgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;margin-top:10px;align-items:start}
 @media (max-width:820px){.ncgrid{grid-template-columns:1fr}}
 .lg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-bottom:4px}.lg i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px}
+.pm-tools{display:flex;gap:6px;align-items:center;margin:10px 0 6px;flex-wrap:wrap}
+.seg{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:4px 10px;border-radius:999px;font:inherit;font-size:13px;cursor:pointer}
+.seg[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pm-head,.pm-row{display:grid;grid-template-columns:120px minmax(0,1fr) 64px 64px 64px;gap:10px;align-items:center}
+.pm-head{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:4px 0;border-bottom:1px solid var(--line)}
+.pm-head span,.pm-row .n{text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+.pm-row{padding:5px 0;border-bottom:1px solid var(--line)}
+.pm-row.small-n{opacity:.45}
+.pm-name{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pm-name small{color:var(--muted);font-size:11px;display:block}
+.pm-name .ab{display:none}
+.track{position:relative;height:22px}
+.track .bg{position:absolute;inset:9px 0;background:linear-gradient(90deg,color-mix(in srgb,var(--rep) 14%,transparent),transparent 50%,color-mix(in srgb,var(--dem) 14%,transparent));border-radius:3px}
+.track .mid{position:absolute;left:50%;top:2px;bottom:2px;width:1px;background:var(--muted)}
+.track .seg-line{position:absolute;top:10px;height:2px}
+.track .dot{position:absolute;top:5px;width:12px;height:12px;margin-left:-6px;border-radius:50%}
+.track .d24{border:2px solid var(--muted);background:var(--panel)}
+.pm-axis{display:grid;grid-template-columns:120px minmax(0,1fr) 64px 64px 64px;gap:10px;font-size:11px;color:var(--muted)}
+.pm-axis div{display:flex;justify-content:space-between}
+@media (max-width:640px){
+  .pm-head,.pm-row,.pm-axis{grid-template-columns:64px minmax(0,1fr) 52px 56px}
+  .pm-head .c24,.pm-row .c24,.pm-axis .c24{display:none}
+  .pm-name small{display:none}
+  .pm-name .full{display:none}.pm-name .ab{display:inline}
+}
 .up{color:#15803d;font-weight:600}.down{color:#b91c1c;font-weight:600}
 footer{margin-top:28px;color:var(--muted);font-size:12.5px}
 footer a{color:var(--accent)}
@@ -99,12 +124,23 @@ svg.spark{vertical-align:middle}
       <div class="scroll"><table id="nc-t"></table></div>
     </div>
   </div>
+  <div class="panel" style="padding:14px 16px;margin-bottom:14px">
+    <h2 style="font-size:17px;margin:0 0 4px">Party mix of mail ballots: 2026 so far vs. 2024 final</h2>
+    <div class="small muted">States that register voters by party. Each row runs from the 2024 final mail-ballot margin (hollow dot) to the 2026 margin so far (solid dot). Early mail tends to lean more Democratic than the final count, so some movement toward D is expected at this stage.</div>
+    <div class="pm-tools">
+      <span class="small muted">Sort:</span>
+      <button class="seg" data-pm="shift" aria-pressed="true">Biggest shift</button>
+      <button class="seg" data-pm="m26" aria-pressed="false">2026 margin</button>
+      <button class="seg" data-pm="name" aria-pressed="false">State</button>
+    </div>
+    <div id="pm"></div>
+  </div>
   <div class="tools"><input id="cq" placeholder="Filter states" aria-label="Filter states">
     <span class="note" id="cmp-note"></span></div>
   <div class="panel scroll"><table id="ct"></table></div>
   <p class="small muted" style="margin-top:10px">
     <b>% of final</b>: 2026 early votes so far as a share of the state's entire pre-Election-Day vote (mail plus early in-person) in that year, from the EAC's official Election Administration and Voting Survey. Early in the window this mostly tracks how soon a state mails ballots, so <b>pace vs median</b> compares each state with the median state (100 = median, 150 = half again as far along).
-    <b>Mail D&minus;R</b>: Democrats minus Republicans as a share of party-coded mail ballots, in states with party registration. The 2024 figure is the <i>final</i> mail-ballot mix, not the mix at this point in the race. Early returns often lean more Democratic than the final count, so treat the shift with care. Shifts marked * come from states where less than 2% of the 2022 early vote is in yet.
+    <b>Mail D&minus;R</b>: Democrats minus Republicans as a share of party-coded mail ballots, in states with party registration. The 2024 figure is the <i>final</i> mail-ballot mix, not the mix at this point in the race. Early returns often lean more Democratic than the final count, so treat the shift with care. Shifts marked * are too early to read: fewer than 5,000 mail ballots, or less than 2% of the 2022 early vote, are in.
   </p>
 </section>
 
@@ -274,6 +310,36 @@ function ncTable(nc){
   $('#nc-note').textContent=`Accepted ballots from the NC State Board of Elections voter files, counted through ${nc.as_of_date} (${nc.as_of_days_out} days before Election Day), compared with the same number of days before Election Day in 2022 and 2024.`;
 }
 
+function partyMix(C){
+  const rows=C.filter(r=>r.mail_dr_margin_2026!=null&&r.mail_dr_margin_2024_final!=null);
+  // symmetric axis wide enough for every value, in steps of 20 points
+  const lim=Math.max(20,Math.ceil(Math.max(...rows.flatMap(r=>[Math.abs(r.mail_dr_margin_2026),Math.abs(r.mail_dr_margin_2024_final)]))/20)*20);
+  const pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
+  const col=v=>v>=0?'var(--dem)':'var(--rep)';
+  let sort='shift';
+  const draw=()=>{
+    const big=rows.filter(r=>!r.smallN),small=rows.filter(r=>r.smallN);
+    const by={shift:(a,b)=>b.shift-a.shift,m26:(a,b)=>b.mail_dr_margin_2026-a.mail_dr_margin_2026,name:(a,b)=>a.state_name.localeCompare(b.state_name)}[sort];
+    const row=r=>{const a=pos(r.mail_dr_margin_2024_final),b=pos(r.mail_dr_margin_2026),lo=Math.min(a,b),w=Math.abs(b-a);
+      return `<div class="pm-row${r.smallN?' small-n':''}" title="${r.smallN?'Too few mail ballots so far to read much into this':''}">
+        <div class="pm-name"><span class="full">${esc(r.state_name)}</span><span class="ab">${esc(r.state)}</span><small>${fmt(r.mail_party_ballots_2026)} mail ballots</small></div>
+        <div class="track"><div class="bg"></div><div class="mid"></div>
+          <div class="seg-line" style="left:${lo}%;width:${w}%;background:${col(r.shift)}"></div>
+          <div class="dot d24" style="left:${a}%" title="2024 final: ${mg(r.mail_dr_margin_2024_final)}"></div>
+          <div class="dot" style="left:${b}%;background:${col(r.mail_dr_margin_2026)}" title="2026 so far: ${mg(r.mail_dr_margin_2026)}"></div></div>
+        <div class="n" style="color:${col(r.mail_dr_margin_2026)}"><b>${mg(r.mail_dr_margin_2026)}</b></div>
+        <div class="n muted c24">${mg(r.mail_dr_margin_2024_final)}</div>
+        <div class="n"><b style="color:${col(r.shift)}">${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}</b></div></div>`};
+    const tick=v=>v===0?'0':(v<0?'R+':'D+')+Math.abs(v);
+    $('#pm').innerHTML=`<div class="pm-head"><span style="text-align:left">State</span><span style="text-align:center">R ← margin → D</span><span>2026</span><span class="c24">2024 final</span><span>Shift</span></div>`
+      +big.sort(by).map(row).join('')
+      +(small.length?`<div class="small muted" style="padding:8px 0 2px">Too early to read (under 5,000 mail ballots, or under 2% of the 2022 early vote):</div>`+small.sort(by).map(row).join(''):'')
+      +`<div class="pm-axis"><span></span><div>${[-lim,-lim/2,0,lim/2,lim].map(v=>`<span>${tick(v)}</span>`).join('')}</div><span></span><span class="c24"></span><span></span></div>`;
+  };
+  document.querySelectorAll('[data-pm]').forEach(b=>b.onclick=()=>{sort=b.dataset.pm;document.querySelectorAll('[data-pm]').forEach(x=>x.setAttribute('aria-pressed',x===b));draw()});
+  draw();
+}
+
 function cmp(){
   const C=D.compare.states.filter(r=>r.ev_2026);
   const med=a=>{a=a.filter(v=>v!=null).sort((x,y)=>x-y);return a.length?a[Math.floor(a.length/2)]:null};
@@ -281,7 +347,9 @@ function cmp(){
   C.forEach(r=>{
     r.idx22=r.pct_of_final_2022!=null&&m22?Math.round(100*r.pct_of_final_2022/m22):null;
     r.idx24=r.pct_of_final_2024!=null&&m24?Math.round(100*r.pct_of_final_2024/m24):null;
-    r.shift=r.mail_dr_margin_2026!=null&&r.mail_dr_margin_2024_final!=null?r.mail_dr_margin_2026-r.mail_dr_margin_2024_final:null});
+    r.shift=r.mail_dr_margin_2026!=null&&r.mail_dr_margin_2024_final!=null?r.mail_dr_margin_2026-r.mail_dr_margin_2024_final:null;
+    // too early to read: under 5,000 party-coded mail ballots, or under 2% of the 2022 early vote
+    r.smallN=(r.mail_party_ballots_2026??0)<5000||(r.pct_of_final_2022??0)<2});
   const hasSame=C.some(r=>r.pct_of_same_day_2024!=null);
   $('#cmp-note').textContent=`The median state is at ${pct(m22)} of its final 2022 early vote and ${pct(m24)} of its 2024 early vote.`+(hasSame?'':' A same-day 2024 column appears on days when an archived 2024 snapshot exists.');
   const cols=[{h:'State',k:'state_name',cls:'l'},{h:'Days out',k:'days_out',cls:'hide-sm'},{h:'2026 so far',k:'ev_2026'},
@@ -295,8 +363,9 @@ function cmp(){
     ${hasSame?`<td>${pct(r.pct_of_same_day_2024)}</td>`:''}
     <td class="hide-sm muted">${pct(r.early_share_2022,0)} / ${pct(r.early_share_2024,0)}</td>
     <td>${mg(r.mail_dr_margin_2026)}</td><td class="muted">${mg(r.mail_dr_margin_2024_final)}</td>
-    <td>${r.shift==null?'–':(r.pct_of_final_2022??0)<2?`<span class="muted" title="Under 2% of the 2022 early vote is in, so this is mostly noise">${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}*</span>`:`<b>${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}</b>`}</td></tr>`);
+    <td>${r.shift==null?'–':r.smallN?`<span class="muted" title="Too few mail ballots so far to read much into this">${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}*</span>`:`<b>${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}</b>`}</td></tr>`);
   $('#cq').oninput=draw;
+  partyMix(C);
   if(D.nc_pace){ncChart(D.nc_pace);ncTable(D.nc_pace)}
 }
 

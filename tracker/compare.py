@@ -57,6 +57,7 @@ def state_comparison(con, day: str):
         final = snaps.get(-1)
         m26 = mail26.get(st, {})
         row["mail_dr_margin_2026"] = _margin(m26.get("accept_dem"), m26.get("accept_rep"), m26.get("accept_none"))
+        row["mail_party_ballots_2026"] = sum(m26.get(k) or 0 for k in ("accept_dem", "accept_rep", "accept_none")) or None
         row["mail_dr_margin_2024_final"] = final and _margin(*final[5:8])
         row["dr_margin_2024_final"] = final and _margin(*final[1:4])
         # exact same-days-out 2024 snapshot, if the archive has one within a day
