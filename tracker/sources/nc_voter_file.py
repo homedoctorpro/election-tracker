@@ -12,13 +12,10 @@ import zipfile
 from collections import Counter
 from datetime import date, datetime, timedelta
 
-from ..common import fetch
+from ..common import ELECTION_DAYS, fetch
 
-ELECTIONS = {
-    2022: ("2022_11_08", date(2022, 11, 8)),
-    2024: ("2024_11_05", date(2024, 11, 5)),
-    2026: ("2026_11_03", date(2026, 11, 3)),
-}
+# NCSBE folder per election, e.g. 2026_11_03
+ELECTIONS = {y: (f"{d:%Y_%m_%d}", d) for y, d in ELECTION_DAYS.items()}
 
 
 def url(year):

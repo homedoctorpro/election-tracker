@@ -96,12 +96,15 @@ CREATE TABLE IF NOT EXISTS ref_eavs (
     PRIMARY KEY (state, year)
 );
 
--- UF Election Lab 2024 national file: the final version plus archived mid-race snapshots.
-CREATE TABLE IF NOT EXISTS ref_uf2024 (
+-- UF Election Lab national-file snapshots from past cycles (data/reference/uf<year>_snapshots.csv).
+-- days_out = days before that cycle's Election Day; -1 = the final post-election file.
+DROP TABLE IF EXISTS ref_uf2024;
+CREATE TABLE IF NOT EXISTS ref_uf_snapshots (
+    year INTEGER NOT NULL,
     snapshot_date TEXT NOT NULL, days_out INTEGER NOT NULL, state TEXT NOT NULL,
     voted_all REAL, voted_dem REAL, voted_rep REAL, voted_none REAL, accept_all REAL, inperson_all REAL,
     accept_dem REAL, accept_rep REAL, accept_none REAL,
-    PRIMARY KEY (snapshot_date, state)
+    PRIMARY KEY (year, snapshot_date, state)
 );
 
 CREATE INDEX IF NOT EXISTS ix_ev_metric ON ev_values (metric, level, state);

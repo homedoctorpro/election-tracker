@@ -30,6 +30,19 @@ The reference data in `data/reference/` is built once and committed. To rebuild 
 python -m tracker.reference --build all
 ```
 
+## Daily archive (for future cycles)
+
+Every morning the cloud job saves that day's full snapshot to `data/archive/2026/YYYY-MM-DD/` and commits it to GitHub. That's about 0.5 MB a day:
+- the UF national, county, district and race-rating files, exactly as downloaded
+- the full VoteHub poll history
+- NC accepted ballots by return date, party, race, age and method (counts only)
+
+The archive is what lets a future cycle compare against 2026 at the exact same number of days before Election Day, for every state. After Nov 3, 2026, turn it into a baseline file:
+```bash
+python -m tracker.reference --from-archive 2026
+```
+That writes `data/reference/uf2026_snapshots.csv` in the same format as the 2024 baseline. It uses each state's own last-update date, so a state whose figures lag a day is matched on the date its data actually covers. For a new cycle, add its Election Day to `ELECTION_DAYS` in `tracker/common.py`. NC's 2026 pace can also be rebuilt from the state's final 2026 voter file, the same way 2022 and 2024 were.
+
 ## Outputs
 
 - `data/election.db`: SQLite. It keeps one early-vote snapshot per day, so the time series builds up over time.
@@ -51,7 +64,7 @@ python -m tracker.reference --build all
 
 ```bash
 python -m tracker.run                 # full refresh
-python -m tracker.run --site          # also build site/ (what CI runs)
+python -m tracker.run --site --archive   # also build site/ and archive the day (what CI runs)
 python -m tracker.run --only polls    # or --only early_vote
 ```
 

@@ -11,7 +11,7 @@ Days-out is measured from the date each source's data runs through, not from tod
 """
 from datetime import date, timedelta
 
-EDAY = {2022: date(2022, 11, 8), 2024: date(2024, 11, 5), 2026: date(2026, 11, 3)}
+from .common import ELECTION_DAYS as EDAY
 
 
 def days_out(d: str) -> int:
@@ -29,7 +29,8 @@ def state_comparison(con, day: str):
             for s, y, t, m, e, a in con.execute("SELECT * FROM ref_eavs")}
     uf24 = {}
     for r in con.execute("""SELECT days_out, state, voted_all, voted_dem, voted_rep, voted_none,
-                                   accept_all, accept_dem, accept_rep, accept_none FROM ref_uf2024"""):
+                                   accept_all, accept_dem, accept_rep, accept_none FROM ref_uf_snapshots
+                            WHERE year = 2024"""):
         uf24.setdefault(r[1], {})[r[0]] = r[2:]
     mail26 = {}
     for st, m, v in con.execute("""SELECT state, metric, value FROM ev_values

@@ -14,12 +14,13 @@ Sources
 """
 import argparse
 import csv
+import gzip
 import io
 import re
 import zipfile
 from datetime import date, datetime
 
-from .common import ROOT, STATES, fetch
+from .common import ELECTION_DAYS, ROOT, STATES, fetch
 from .sources import nc_voter_file
 
 REF = ROOT / "data" / "reference"
@@ -28,7 +29,7 @@ EAVS = {
     2024: "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
 }
 UF2024 = "https://election.lab.ufl.edu/data-downloads/earlyvote/2024/US.csv"
-EDAY_2024 = date(2024, 11, 5)
+EDAY_2024 = ELECTION_DAYS[2024]
 UF_COLS = ["voted_all", "voted_dem", "voted_rep", "voted_none", "accept_all", "inperson_all",
            "accept_dem", "accept_rep", "accept_none"]
 
@@ -92,6 +93,31 @@ def build_uf2024():
     _write("uf2024_snapshots.csv", ["snapshot_date", "days_out", "state"] + UF_COLS, rows)
 
 
+def build_from_archive(cycle: int):
+    """Turn this tracker's own daily archive (data/archive/<cycle>/) into a baseline file,
+    uf<cycle>_snapshots.csv, in the same format as the 2024 one. Run it after a cycle ends;
+    the next cycle's comparisons can then match every state at the exact same days-out.
+
+    days_out is measured from each state's own last_update date, so a state whose figures
+    lagged a day is matched on the date its data actually ran through."""
+    eday = ELECTION_DAYS[cycle]
+    rows = []
+    for folder in sorted((ROOT / "data" / "archive" / str(cycle)).iterdir()):
+        f = folder / "US.csv.gz"
+        if not f.exists():
+            continue
+        with gzip.open(f, "rt", encoding="utf-8-sig") as g:
+            for r in csv.DictReader(g):
+                try:
+                    upd = datetime.strptime(r["last_update"].strip(), "%m/%d/%Y").date()
+                except ValueError:
+                    upd = date.fromisoformat(folder.name)
+                days_out = (eday - upd).days
+                rows.append([folder.name, days_out if days_out >= 0 else -1, r["state_abbv"].strip()]
+                            + [_n(r.get(c)) for c in UF_COLS])
+    _write(f"uf{cycle}_snapshots.csv", ["snapshot_date", "days_out", "state"] + UF_COLS, rows)
+
+
 def build_nc():
     rows = []
     for year in (2022, 2024):
@@ -111,8 +137,11 @@ def load(con):
 
     con.execute("DELETE FROM ref_eavs")
     con.executemany("INSERT INTO ref_eavs VALUES (?,?,?,?,?,?)", rows("eavs_state.csv"))
-    con.execute("DELETE FROM ref_uf2024")
-    con.executemany("INSERT INTO ref_uf2024 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", rows("uf2024_snapshots.csv"))
+    con.execute("DELETE FROM ref_uf_snapshots")
+    for p in sorted(REF.glob("uf*_snapshots.csv")):
+        year = int(p.name[2:6])
+        con.executemany("INSERT OR REPLACE INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        [[year, *r] for r in rows(p.name)])
     con.execute("DELETE FROM pace WHERE year < 2026")
     con.executemany("INSERT INTO pace VALUES (?,?,?,?,?,?,?,?)", rows("nc_pace.csv"))
     con.commit()
@@ -120,8 +149,12 @@ def load(con):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc"], default="all")
+    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc"])
+    ap.add_argument("--from-archive", type=int, metavar="CYCLE",
+                    help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
+    if a.from_archive:
+        build_from_archive(a.from_archive)
     if a.build in ("all", "eavs"):
         build_eavs()
     if a.build in ("all", "uf2024"):

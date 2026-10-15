@@ -3,7 +3,7 @@ import json
 import time
 import urllib.error
 import urllib.request
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -13,6 +13,13 @@ RAW = DATA / "raw"
 LATEST = DATA / "latest"
 DB_PATH = DATA / "election.db"
 ET = ZoneInfo("America/New_York")
+
+# Federal general elections. Add the next cycle's date here when it starts.
+ELECTION_DAYS = {
+    2022: date(2022, 11, 8),
+    2024: date(2024, 11, 5),
+    2026: date(2026, 11, 3),
+}
 
 UA = "ElectionTracker/1.0 (personal research; daily refresh)"
 

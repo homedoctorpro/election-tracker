@@ -2,6 +2,7 @@
 
     python -m tracker.run            # all sources
     python -m tracker.run --only polls
+    python -m tracker.run --site --archive   # what CI runs
 """
 import argparse
 import sys
@@ -11,7 +12,7 @@ from . import db
 from .common import now_et, today_et
 from .export import export_all
 from . import site
-from . import reference
+from . import archive, reference
 from .sources import nc_voter_file, uf_early_vote, votehub_polls
 
 SOURCES = {
@@ -25,6 +26,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=SOURCES)
     ap.add_argument("--site", action="store_true", help="also build site/ and append data/history (CI)")
+    ap.add_argument("--archive", action="store_true", help="save today's snapshot to data/archive (CI)")
     args = ap.parse_args(argv)
 
     day = today_et()
@@ -49,6 +51,11 @@ def main(argv=None) -> int:
         print(f"  wrote data/latest/{fname} ({n} rows)")
     if args.site:
         print(f"  site: {site.build(con)}")
+    if args.archive:
+        if args.only:
+            print("  archive: skipped (only a full refresh is archived)")
+        else:
+            print(f"  archive: {archive.archive_day(con, day)}")
     con.close()
     return 1 if failures else 0
 
