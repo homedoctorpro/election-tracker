@@ -1,0 +1,7 @@
+data/election.db
+data/raw/
+data/latest/
+logs/
+site/
+__pycache__/
+.claude/
