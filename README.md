@@ -67,8 +67,8 @@ That writes `data/reference/uf2026_snapshots.csv` in the same format as the 2024
 
 ## Caveats
 
-- VoteHub doesn't separate primary polls from general-election polls. `matchup` is inferred from the two candidates polled most often in each race over the last 45 days. Races with no recent polling show `unknown`.
-- `race_summary.csv` is a plain average of the last 5 current-matchup polls. Nothing is weighted or adjusted for pollster quality, and in three-way races only the top two candidates are compared.
+- VoteHub doesn't separate primary polls from general-election polls. `matchup` is inferred from the two candidates polled most often in each race over the last 60 days. Races with no recent polling show `unknown`.
+- `race_summary.csv` is a plain average of up to 5 current-matchup polls that ended in the last 60 days. Older polls are never averaged, so one stale poll can't flip a thinly polled race. Races with nothing in that window get `status` = `no recent polling` and their last poll date. Nothing is weighted or adjusted for pollster quality, and in three-way races only the top two candidates are compared.
 - Polls with impossible dates in the source data get a `quality_flag` and are left out of the averages.
 - The CA and ID district totals run below their state totals, because UF builds those files from a different feed. ID's district files leave out in-person votes.
 

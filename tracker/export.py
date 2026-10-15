@@ -1,5 +1,6 @@
 """Write the latest data to CSVs in data/latest/ for Excel / quick viewing."""
 import csv
+from datetime import date, timedelta
 
 from . import compare
 from .common import LATEST, today_et
@@ -56,20 +57,24 @@ def _write_dicts(name, rows):
     return len(rows)
 
 
-def tag_matchups(con, window_days=45):
+AVG_WINDOW_DAYS = 60  # only polls that ended this recently are averaged
+
+
+def tag_matchups(con, window_days=AVG_WINDOW_DAYS):
     """VoteHub mixes primary and hypothetical-matchup polls in with general-election polls.
     Infer each race's current matchup as the two choices that appear most often in its
     polls from the last `window_days`, then flag every poll that includes both of them.
     Heuristic: races with no recent polling stay 'unknown'."""
     con.execute("CREATE TABLE IF NOT EXISTS poll_matchup (poll_id TEXT PRIMARY KEY, matchup TEXT)")
     con.execute("DELETE FROM poll_matchup")
+    today = today_et()
     races = con.execute("""SELECT DISTINCT race FROM polls
                            WHERE poll_type IN ('us-senator','governor','us-representative')""").fetchall()
     for (race,) in races:
         recent = con.execute(f"""
             SELECT a.choice, COUNT(*) n FROM polls p JOIN poll_answers a USING (poll_id)
-            WHERE p.race=? AND p.end_date >= DATE('now', '-{window_days} days') AND p.end_date <= DATE('now')
-            GROUP BY a.choice ORDER BY n DESC, SUM(a.pct) DESC LIMIT 2""", (race,)).fetchall()
+            WHERE p.race=? AND p.end_date >= DATE(?, '-{window_days} days') AND p.end_date <= ?
+            GROUP BY a.choice ORDER BY n DESC, SUM(a.pct) DESC LIMIT 2""", (race, today, today)).fetchall()
         pair = {r[0] for r in recent}
         for (pid,) in con.execute("SELECT poll_id FROM polls WHERE race=?", (race,)).fetchall():
             choices = {r[0] for r in con.execute("SELECT choice FROM poll_answers WHERE poll_id=?", (pid,))}
@@ -78,18 +83,30 @@ def tag_matchups(con, window_days=45):
     con.commit()
 
 
-def race_summary(con, last_n=5) -> int:
-    """One row per race: the inferred matchup and a plain average of its last N polls.
+def race_summary(con, last_n=5, window_days=AVG_WINDOW_DAYS) -> int:
+    """One row per 2026 race: the inferred matchup and a plain average of up to N polls that
+    ended in the last `window_days`. Older polls are never averaged, so a stale poll can't flip
+    a thinly polled race; races with nothing recent get status 'no recent polling'.
     Margin is signed: candidate_a minus candidate_b (a = whoever leads the average)."""
     rows = []
+    today = date.fromisoformat(today_et())
+    cutoff = (today - timedelta(days=window_days)).isoformat()
     party = {(t, st, d, ch): pty for t, st, d, ch, pty, _ in con.execute("SELECT * FROM candidate_party")}
-    races = con.execute("""SELECT DISTINCT p.poll_type, p.race, p.state, p.district FROM polls p
-                           JOIN poll_matchup m USING (poll_id) WHERE m.matchup='current'""").fetchall()
+    races = con.execute("""SELECT DISTINCT poll_type, race, state, district FROM polls
+                           WHERE poll_type IN ('us-senator','governor','us-representative')
+                             AND subject LIKE '2026%'""").fetchall()
     for ptype, race, st, dist in races:
         polls = con.execute("""SELECT p.poll_id, p.end_date FROM polls p JOIN poll_matchup m USING (poll_id)
                                WHERE p.race=? AND m.matchup='current' AND p.quality_flag IS NULL
+                                 AND p.end_date >= ? AND p.end_date <= ?
                                ORDER BY p.end_date DESC""",
-                            (race,)).fetchall()
+                            (race, cutoff, today.isoformat())).fetchall()
+        if not polls:
+            last = con.execute("""SELECT MAX(end_date), COUNT(*) FROM polls WHERE race=? AND subject LIKE '2026%'
+                                  AND quality_flag IS NULL AND end_date <= ?""", (race, today.isoformat())).fetchone()
+            rows.append((TYPE_LABEL[ptype], race, st, dist, "no recent polling", 0, last[0], 0,
+                         "", "", "", "", "", "", "", "", ""))
+            continue
         recent = [pid for pid, _ in polls[:last_n]]
         pcts = {}
         for pid in recent:
@@ -104,13 +121,19 @@ def race_summary(con, last_n=5) -> int:
         margin = round(a_avg - b_avg, 1)
         # signed D-minus-R margin when it's a D vs R race (positive = D ahead)
         dr = margin if (pa, pb) == ("D", "R") else -margin if (pa, pb) == ("R", "D") else ""
-        rows.append((TYPE_LABEL[ptype], race, st, dist, len(polls), polls[0][1], len(recent),
+        rows.append((TYPE_LABEL[ptype], race, st, dist, "ok", len(polls), polls[0][1], len(recent),
                      a, pa, round(a_avg, 1), b, pb, round(b_avg, 1), margin, pa, dr))
-    rows.sort(key=lambda r: (r[0], abs(r[13])))
+    # races with recent polling first (closest first), then the rest by most recent poll
+    def order(r):
+        if r[4] == "ok":
+            return (r[0], 0, abs(r[14]))
+        last = date.fromisoformat(r[6]).toordinal() if r[6] else 0
+        return (r[0], 1, -last)  # most recently polled first
+    rows.sort(key=order)
     LATEST.mkdir(parents=True, exist_ok=True)
     with open(LATEST / "race_summary.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["office", "race", "state", "district", "matchup_polls", "latest_poll_end",
+        w.writerow(["office", "race", "state", "district", "status", "matchup_polls_in_window", "latest_poll_end",
                     "polls_averaged", "candidate_a", "party_a", "a_avg", "candidate_b", "party_b", "b_avg",
                     "margin_a_minus_b", "leader_party", "margin_d_minus_r"])
         w.writerows(rows)

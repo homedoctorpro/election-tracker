@@ -150,9 +150,9 @@ svg.spark{vertical-align:middle}
   </p>
 </section>
 
-<section id="s-Senate"><div class="tools"><span class="note">Average of the last 5 polls of each race's current matchup. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Senate"></table></div></section>
-<section id="s-Governor"><div class="tools"><span class="note">Average of the last 5 polls of each race's current matchup. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Governor"></table></div></section>
-<section id="s-House"><div class="tools"><span class="note">Average of the last 5 polls of each race's current matchup. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-House"></table></div></section>
+<section id="s-Senate"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Senate"></table></div></section>
+<section id="s-Governor"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Governor"></table></div></section>
+<section id="s-House"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-House"></table></div></section>
 <section id="s-latest">
   <div class="tools">
     <select id="lt" aria-label="Office"><option value="">All offices</option><option value="us-senator">Senate</option><option value="governor">Governor</option><option value="us-representative">House</option><option value="generic-ballot">Generic ballot</option></select>
@@ -168,7 +168,7 @@ svg.spark{vertical-align:middle}
 
 <footer>
   Early-vote statistics: <a href="https://election.lab.ufl.edu/early-vote/2026-early-voting/">UF Election Lab</a> (Michael McDonald), compiled from official state reports, used under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>. Race ratings compiled by the UF Election Lab.
-  Polls: <a href="https://votehub.com/polls/">VoteHub</a>. Poll averages here are simple, unweighted means of the last 5 polls; "current matchup" is inferred from which two candidates were polled most in the last 45 days.
+  Polls: <a href="https://votehub.com/polls/">VoteHub</a>. Poll averages here are simple, unweighted means of up to 5 polls from the last 60 days; "current matchup" is inferred from which two candidates were polled most in that window.
   Non-commercial, personal tracker.
 </footer>
 </div>
@@ -257,19 +257,23 @@ function pollRows(list){
 }
 
 function races(office){
-  const all=D.race_summary.filter(r=>r.office===office);
+  const rowsAll=D.race_summary.filter(r=>r.office===office);
+  const all=rowsAll.filter(r=>r.status==='ok'),stale=rowsAll.filter(r=>r.status!=='ok');
+  // races with no poll in the averaging window: listed under the table with their last poll date
+  const staleBox=document.getElementById('stale-'+office)||(()=>{const d=document.createElement('div');d.id='stale-'+office;d.className='small muted';d.style.margin='10px 2px';$('#t-'+office).closest('.panel').after(d);return d})();
+  staleBox.innerHTML=stale.length?`<b>No polls in the last 60 days</b> (not averaged): `+stale.map(r=>`${esc(r.race)} <span class="chip">${r.latest_poll_end?'last poll '+esc(r.latest_poll_end):'no polls'}</span>`).join(' · '):'';
   // sm: signed margin, positive = D (or non-Republican) ahead, negative = R ahead
   all.forEach(r=>{r.m=+r.margin_a_minus_b;r.a=+r.a_avg;r.sm=r.margin_d_minus_r!==''&&r.margin_d_minus_r!=null?+r.margin_d_minus_r:(r.leader_party==='R'?-r.m:r.m)});
-  const cols=[{h:'Race',k:'race',cls:'l'},{h:'Leader',k:'candidate_a',cls:'l'},{h:'Avg',k:'a'},{h:'Trailing',k:'candidate_b',cls:'l'},{h:'Avg',k:'b_avg'},{h:'Margin (R ← → D)',k:'sm'},{h:'Polls',k:'matchup_polls',cls:'hide-sm'},{h:'Latest',k:'latest_poll_end',cls:'hide-sm'}];
+  const cols=[{h:'Race',k:'race',cls:'l'},{h:'Leader',k:'candidate_a',cls:'l'},{h:'Avg',k:'a'},{h:'Trailing',k:'candidate_b',cls:'l'},{h:'Avg',k:'b_avg'},{h:'Margin (R ← → D)',k:'sm'},{h:'Polls (60d)',k:'matchup_polls_in_window',cls:'hide-sm'},{h:'Latest',k:'latest_poll_end',cls:'hide-sm'}];
   const table=$('#t-'+office);let open=null;
   const render=r=>{const w=Math.min(r.m,20)/20*50,left=r.sm<0;
     let h=`<tr class="click" data-race="${esc(r.race)}"><td><b>${esc(r.race)}</b></td><td class="l">${cand(r.candidate_a,r.party_a)}</td><td>${r.a_avg}</td><td class="l">${cand(r.candidate_b,r.party_b)}</td><td>${r.b_avg}</td>
-      <td><div class="margin"><span style="color:${pcol(r.leader_party)};font-weight:600">${r.leader_party||'?'} +${r.m.toFixed(1)}</span><div class="mbar hide-sm"><b></b><i style="${left?`right:50%`:`left:50%`};width:${w}%;background:${pcol(r.leader_party)}"></i></div></div></td><td class="hide-sm">${r.matchup_polls}</td><td class="hide-sm small muted">${esc(r.latest_poll_end)}</td></tr>`;
+      <td><div class="margin"><span style="color:${pcol(r.leader_party)};font-weight:600">${r.leader_party||'?'} +${r.m.toFixed(1)}</span><div class="mbar hide-sm"><b></b><i style="${left?`right:50%`:`left:50%`};width:${w}%;background:${pcol(r.leader_party)}"></i></div></div></td><td class="hide-sm">${r.matchup_polls_in_window}</td><td class="hide-sm small muted">${esc(r.latest_poll_end)}</td></tr>`;
     if(open===r.race){const ps=D.polls.filter(p=>p.race===r.race);h+=`<tr class="detail"><td colspan="8">${ps.length?pollRows(ps):'<span class="muted">No polls in the last 120 days.</span>'}</td></tr>`}
     return h};
   const draw=sortable(table,()=>all,cols,render);
   table.addEventListener('click',e=>{const tr=e.target.closest('tr.click');if(!tr||e.target.closest('a'))return;open=open===tr.dataset.race?null:tr.dataset.race;draw()});
-  if(!all.length)table.innerHTML='<tbody><tr><td class="muted">No races with enough recent polling.</td></tr></tbody>';
+  if(!all.length)table.innerHTML='<tbody><tr><td class="muted">No races with polls in the last 60 days.</td></tr></tbody>';
 }
 
 function latest(){
