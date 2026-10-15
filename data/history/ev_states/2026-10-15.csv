@@ -1,7 +1,7 @@
 snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,total_voted,voted_dem,voted_rep,voted_other,turn_2022,pct_of_2022_turnout,data_source
 2026-10-15,AK,Alaska,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,267047,0.0,https://www.elections.alaska.gov/research/statistics/#aeqstats
 2026-10-15,AR,Arkansas,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,914227,0.0,Arkansas Secretary of State
-2026-10-15,AZ,Arizona,2026-10-14,3242089.0,52704.0,0.0,52704.0,23167.0,17841.0,11696.0,2592313,2.03,https://www.stealth-analytics.com/early-ballots
+2026-10-15,AZ,Arizona,2026-10-15,3244731.0,147320.0,0.0,147320.0,61359.0,53304.0,32657.0,2592313,5.68,https://www.stealth-analytics.com/early-ballots
 2026-10-15,CA,California,2026-10-14,23370046.0,633759.0,0.0,633759.0,288838.0,177394.0,127775.0,11146610,5.69,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-15,CO,Colorado,2026-10-14,4028462.0,253588.0,0.0,253588.0,85834.0,60496.0,107258.0,2540666,9.98,Colorado Secretary of State
 2026-10-15,CT,Connecticut,2026-10-15,43979.0,14762.0,0.0,14762.0,7713.0,2773.0,4276.0,1297811,1.14,Connecticut Secretary of the State
