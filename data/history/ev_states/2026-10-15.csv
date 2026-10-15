@@ -29,7 +29,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-15,ND,North Dakota,2026-10-14,48757.0,17680.0,0.0,17680.0,0.0,0.0,0.0,242566,7.29,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-15,NE,Nebraska,2026-10-15,217321.0,61648.0,8003.0,69651.0,31636.0,26158.0,11857.0,682716,10.2,Data file provided by Nebraska Secretary of State
 2026-10-15,NJ,New Jersey,2026-10-15,907689.0,332777.0,0.0,332777.0,221415.0,63287.0,48075.0,2645539,12.58,New Jersey Secretary of State
-2026-10-15,NM,New Mexico,2026-10-14,83155.0,8157.0,34435.0,42592.0,25114.0,11304.0,6174.0,714754,5.96,New Mexico Secretary of State
+2026-10-15,NM,New Mexico,2026-10-15,84166.0,12795.0,40193.0,52988.0,31182.0,14038.0,7768.0,714754,7.41,New Mexico Secretary of State
 2026-10-15,NV,Nevada,2026-10-15,2070890.0,14538.0,51.0,14589.0,5815.0,4644.0,4130.0,1023617,1.43,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-15,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
 2026-10-15,OH,Ohio,2026-10-14,667474.0,73197.0,236163.0,309360.0,0.0,0.0,0.0,4201368,7.36,https://data.ohiosos.gov/portal/election-dashboards
