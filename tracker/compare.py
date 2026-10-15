@@ -109,3 +109,70 @@ def nc_pace(con):
         "final": {y: s[-1] for y, s in years.items() if y != 2026},
         "chart": {y: [[s["days_out"], s["total"]] for s in ser if s["days_out"] <= 50] for y, ser in years.items()},
     }
+
+
+def _result_2022(res, st):
+    """2022 statewide margin: the Senate race if both parties ran, otherwise the summed House vote
+    (some House totals are skewed by uncontested seats, so the Senate race is preferred)."""
+    s = res.get((st, 2022, "senate"))
+    tot = s and sum(s)
+    if s and s[0] > 0.1 * tot and s[1] > 0.1 * tot:
+        return _margin(*s), "Senate"
+    h = res.get((st, 2022, "house"))
+    return (_margin(*h), "House vote") if h else (None, None)
+
+
+def _pace_margin(con, st, year, dout):
+    """Mail-ballot D-R margin from a state's voter file, cumulative through `dout` days out."""
+    rows = con.execute("SELECT party, SUM(n) FROM pace WHERE state=? AND year=? AND method='mail' "
+                       "AND days_out >= ? GROUP BY party", (st, year, dout)).fetchall()
+    p = dict(rows)
+    n = sum(p.values())
+    return (_margin(p.get("dem"), p.get("rep"), n - p.get("dem", 0) - p.get("rep", 0)), n) if n else (None, 0)
+
+
+def party_projection(con, day: str):
+    """For each party-registration state and baseline year (2022, 2024): the actual statewide
+    result that year, the change in mail-ballot party mix since then, and the result you'd get
+    if that change carried over to the whole electorate.
+
+    Shift = 2026 mail D-R margin minus the baseline year's mail D-R margin, both in party
+    registration terms. Where a state publishes voter-level files (NC, PA) both sides are taken
+    at the same number of days before Election Day; elsewhere the baseline is the final 2024
+    mail mix. This is arithmetic, not a forecast: registration isn't vote choice, and mail
+    voters aren't the whole electorate."""
+    res = {(s, y, r): (d, rp, o) for s, y, r, d, rp, o in con.execute("SELECT * FROM ref_results")}
+    cmp = {r["state"]: r for r in state_comparison(con, day)["states"]}
+    voter_file = {s for (s,) in con.execute("SELECT DISTINCT state FROM pace WHERE year=2026")}
+    out = []
+    for st, r in sorted(cmp.items()):
+        if r.get("mail_dr_margin_2026") is None:
+            continue
+        row = {"state": st, "state_name": r["state_name"], "mail_ballots_2026": r.get("mail_party_ballots_2026"),
+               "pct_of_final_2022": r.get("pct_of_final_2022")}
+        for year in (2022, 2024):
+            if year == 2022:
+                result, race = _result_2022(res, st)
+            else:
+                p = res.get((st, 2024, "president"))
+                result, race = (_margin(*p), "President") if p else (None, None)
+            base = None
+            if st in voter_file:
+                last = con.execute("SELECT MIN(days_out) FROM pace WHERE state=? AND year=2026", (st,)).fetchone()[0]
+                m26, n26 = _pace_margin(con, st, 2026, last)
+                mb, nb = _pace_margin(con, st, year, last)
+                if mb is not None and m26 is not None:
+                    base = {"mail_2026": m26, "mail_base": mb, "basis": "same day", "days_out": last, "n_2026": n26}
+                    # how far off a comparison against the final 2024 mix would have been
+                    if year == 2024 and r.get("mail_dr_margin_2024_final") is not None:
+                        base["shift_vs_final"] = round(r["mail_dr_margin_2026"] - r["mail_dr_margin_2024_final"], 1)
+            elif year == 2024 and r.get("mail_dr_margin_2024_final") is not None:
+                base = {"mail_2026": r["mail_dr_margin_2026"], "mail_base": r["mail_dr_margin_2024_final"],
+                        "basis": "final", "n_2026": r.get("mail_party_ballots_2026")}
+            y = {"result": result, "race": race}
+            if base:
+                shift = round(base["mail_2026"] - base["mail_base"], 1)
+                y.update(base, shift=shift, projected=None if result is None else round(result + shift, 1))
+            row[str(year)] = y
+        out.append(row)
+    return out

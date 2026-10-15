@@ -136,6 +136,11 @@ def export_all(con) -> dict:
         out[name] = _write(con, name, POLLS_SQL, (t,))
     out["race_summary.csv"] = race_summary(con)
     out["compare_states.csv"] = _write_dicts("compare_states.csv", compare.state_comparison(con, today_et())["states"])
+    proj = []
+    for r in compare.party_projection(con, today_et()):
+        for y in ("2022", "2024"):
+            proj.append({"state": r["state"], "baseline_year": y, "mail_ballots_2026": r["mail_ballots_2026"], **r[y]})
+    out["party_projection.csv"] = _write_dicts("party_projection.csv", proj)
     nc = compare.nc_pace(con)
     if nc:
         rows = [{"year": y, **v} for y, v in nc["same_day"].items()] +                [{"year": f"{y} final", **v} for y, v in nc["final"].items()]

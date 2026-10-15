@@ -74,6 +74,7 @@ def build(con):
         "ratings": ratings,
         "compare": compare.state_comparison(con, today_et()),
         "nc_pace": compare.nc_pace(con),
+        "projection": compare.party_projection(con, today_et()),
     }
     SITE.mkdir(exist_ok=True)
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")

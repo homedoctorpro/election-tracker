@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS race_ratings (
     PRIMARY KEY (snapshot_date, race, outlet)
 );
 
--- Ballots accepted per day before Election Day, from voter-level files (NC).
+-- Ballots accepted per day before Election Day, from voter-level files (NC, PA).
 CREATE TABLE IF NOT EXISTS pace (
     state     TEXT NOT NULL,
     year      INTEGER NOT NULL,
@@ -88,6 +88,13 @@ CREATE TABLE IF NOT EXISTS pace (
     n         INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_pace ON pace (state, year, days_out);
+
+-- Certified results by state from the FEC (2022 House + Senate, 2024 President).
+CREATE TABLE IF NOT EXISTS ref_results (
+    state TEXT NOT NULL, year INTEGER NOT NULL, race TEXT NOT NULL,
+    dem INTEGER, rep INTEGER, other INTEGER,
+    PRIMARY KEY (state, year, race)
+);
 
 -- Final pre-Election-Day votes from the EAC's Election Administration and Voting Survey.
 CREATE TABLE IF NOT EXISTS ref_eavs (

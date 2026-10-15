@@ -21,7 +21,7 @@ import zipfile
 from datetime import date, datetime
 
 from .common import ELECTION_DAYS, ROOT, STATES, fetch
-from .sources import nc_voter_file
+from .sources import nc_voter_file, pa_mail_file
 
 REF = ROOT / "data" / "reference"
 EAVS = {
@@ -118,6 +118,46 @@ def build_from_archive(cycle: int):
     _write(f"uf{cycle}_snapshots.csv", ["snapshot_date", "days_out", "state"] + UF_COLS, rows)
 
 
+FEC_2022 = "https://www.fec.gov/documents/5676/federalelections2022.xlsx"
+FEC_2024_PRES = "https://www.fec.gov/documents/5645/2024presgeresults.xlsx"
+
+
+def build_results():
+    """Official certified results by state from the FEC.
+    2022: U.S. House vote summed statewide (every state has House races) and U.S. Senate where
+    there was a race. 2024: President. Margin = (D - R) / all votes, in points."""
+    import openpyxl  # only needed for this one-time build
+
+    def sheet(url, name=None):
+        wb = openpyxl.load_workbook(io.BytesIO(fetch(url, timeout=300)), read_only=True, data_only=True)
+        return list((wb[name] if name else wb.worksheets[0]).iter_rows(values_only=True))
+
+    rows = []
+    for race, tab in (("house", "6. Table 5 House by Party"), ("senate", "5. Table 4 Senate by Party")):
+        for r in sheet(FEC_2022, tab):
+            st = (r[0] or "").strip() if isinstance(r[0], str) else ""
+            if st not in STATES:
+                continue
+            d, rep, o = (r[4] or 0), (r[5] or 0), (r[6] or 0)  # general-election columns
+            if d + rep + o:
+                rows.append((st, 2022, race, d, rep, o))
+    pres = sheet(FEC_2024_PRES)
+    h = pres[0]
+    i_d, i_r, i_t = h.index("HARRIS"), h.index("TRUMP"), h.index("TOTAL VOTES")
+    for r in pres[1:]:
+        if r[0] in STATES and r[i_t]:
+            d, rep = r[i_d] or 0, r[i_r] or 0
+            rows.append((r[0], 2024, "president", d, rep, r[i_t] - d - rep))
+    _write("results_state.csv", ["state", "year", "race", "dem", "rep", "other"], rows)
+
+
+def build_pa():
+    rows = []
+    for year in (2022, 2024):
+        rows += pa_mail_file.aggregate(year)
+    _write("pa_pace.csv", ["state", "year", "days_out", "method", "party", "race", "age_group", "n"], rows)
+
+
 def build_nc():
     rows = []
     for year in (2022, 2024):
@@ -143,13 +183,16 @@ def load(con):
         con.executemany("INSERT OR REPLACE INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         [[year, *r] for r in rows(p.name)])
     con.execute("DELETE FROM pace WHERE year < 2026")
-    con.executemany("INSERT INTO pace VALUES (?,?,?,?,?,?,?,?)", rows("nc_pace.csv"))
+    for p in sorted(REF.glob("*_pace.csv")):  # nc_pace.csv, pa_pace.csv, ...
+        con.executemany("INSERT INTO pace VALUES (?,?,?,?,?,?,?,?)", rows(p.name))
+    con.execute("DELETE FROM ref_results")
+    con.executemany("INSERT INTO ref_results VALUES (?,?,?,?,?,?)", rows("results_state.csv"))
     con.commit()
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc"])
+    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "results"])
     ap.add_argument("--from-archive", type=int, metavar="CYCLE",
                     help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
@@ -161,3 +204,7 @@ if __name__ == "__main__":
         build_uf2024()
     if a.build in ("all", "nc"):
         build_nc()
+    if a.build in ("all", "pa"):
+        build_pa()
+    if a.build in ("all", "results"):
+        build_results()

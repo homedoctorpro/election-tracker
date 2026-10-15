@@ -23,6 +23,8 @@ The "vs 2022 / 2024" tab and `data/latest/compare_states.csv` compare each state
 - **Exact same-days-out comparison:** North Carolina's voter files give the date every ballot came back in 2022, 2024 and 2026, broken down by party, race, age and voting method (`data/latest/nc_same_day.csv`). Only aggregate counts are kept; names and addresses are never stored.
 - **Party mix:** each state's 2026 mail-ballot D−R margin is compared with its final 2024 mail-ballot margin from UF Election Lab. This is not a same-day comparison. Archived 2024 UF snapshots also exist at 2, 1 and 0 days out, so a same-day column fills in for those days.
 
+- **"If the mail shift held":** the comparison tab adds each state's mail-ballot shift to its actual result, with a 2022/2024 toggle that defaults to 2022. Results come from the FEC's certified totals: for 2022, the Senate race where both parties ran, otherwise the statewide U.S. House vote; for 2024, the presidential race. Pennsylvania's mail-ballot files on data.pa.gov give an exact same-days-out comparison for 2022, 2024 and 2026, like North Carolina's. Those two are the only states with 2022 party data. For the other states the 2024 baseline is the final mail mix, which overstates any move toward Democrats; the page shows by how much, using PA and NC. This is arithmetic, not a forecast.
+
 Georgia also publishes voter-level absentee files with dates, but its download portal blocks automated requests, so Georgia isn't included yet.
 
 The reference data in `data/reference/` is built once and committed. To rebuild it (this downloads about 400 MB):
