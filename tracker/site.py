@@ -49,8 +49,15 @@ def build(con):
         SELECT p.poll_type, p.race, p.state, p.district, p.pollster, p.sponsors, p.start_date, p.end_date,
                p.sample_size, p.population, p.internal, p.partisan, p.url, p.quality_flag,
                COALESCE(m.matchup, 'n/a') matchup,
-               (SELECT json_group_array(json_array(choice, pct)) FROM
-                  (SELECT choice, pct FROM poll_answers a WHERE a.poll_id = p.poll_id ORDER BY pct DESC)) answers
+               (SELECT json_group_array(json_array(choice, pct, party)) FROM
+                  (SELECT a.choice, a.pct,
+                          CASE WHEN p.poll_type = 'generic-ballot'
+                               THEN CASE a.choice WHEN 'Dem' THEN 'D' WHEN 'Rep' THEN 'R' END
+                               ELSE cp.party END AS party
+                   FROM poll_answers a
+                   LEFT JOIN candidate_party cp ON cp.poll_type = p.poll_type AND cp.state = p.state
+                        AND cp.district = COALESCE(p.district, '') AND cp.choice = a.choice
+                   WHERE a.poll_id = p.poll_id ORDER BY a.pct DESC)) answers
         FROM polls p LEFT JOIN poll_matchup m USING (poll_id)
         WHERE p.end_date >= DATE('now', '-120 days')
         ORDER BY p.end_date DESC""")

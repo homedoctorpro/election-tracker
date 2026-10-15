@@ -89,6 +89,14 @@ CREATE TABLE IF NOT EXISTS pace (
 );
 CREATE INDEX IF NOT EXISTS ix_pace ON pace (state, year, days_out);
 
+-- Party of each candidate named in a poll (see tracker/sources/parties.py).
+CREATE TABLE IF NOT EXISTS candidate_party (
+    poll_type TEXT NOT NULL, state TEXT NOT NULL, district TEXT NOT NULL, choice TEXT NOT NULL,
+    party TEXT NOT NULL,      -- D | R | I | L | G | O
+    source TEXT,              -- override | fec | wikipedia
+    PRIMARY KEY (poll_type, state, district, choice)
+);
+
 -- Registered voters by party (NC, PA). Past cycles from data/reference/registration.csv,
 -- 2026 refreshed daily. as_of = date of the snapshot.
 CREATE TABLE IF NOT EXISTS registration (

@@ -19,9 +19,11 @@ def _write(con, name, sql, params=()):
 
 POLLS_SQL = """
 WITH ranked AS (
-  SELECT poll_id, choice, pct,
-         ROW_NUMBER() OVER (PARTITION BY poll_id ORDER BY pct DESC) rn
-  FROM poll_answers
+  SELECT a.poll_id, a.choice || COALESCE(' (' || cp.party || ')', '') AS choice, a.pct,
+         ROW_NUMBER() OVER (PARTITION BY a.poll_id ORDER BY a.pct DESC) rn
+  FROM poll_answers a JOIN polls pp USING (poll_id)
+  LEFT JOIN candidate_party cp ON cp.poll_type = pp.poll_type AND cp.state = pp.state
+       AND cp.district = COALESCE(pp.district, '') AND cp.choice = a.choice
 ),
 summary AS (
   SELECT poll_id,
@@ -80,6 +82,7 @@ def race_summary(con, last_n=5) -> int:
     """One row per race: the inferred matchup and a plain average of its last N polls.
     Margin is signed: candidate_a minus candidate_b (a = whoever leads the average)."""
     rows = []
+    party = {(t, st, d, ch): pty for t, st, d, ch, pty, _ in con.execute("SELECT * FROM candidate_party")}
     races = con.execute("""SELECT DISTINCT p.poll_type, p.race, p.state, p.district FROM polls p
                            JOIN poll_matchup m USING (poll_id) WHERE m.matchup='current'""").fetchall()
     for ptype, race, st, dist in races:
@@ -97,14 +100,19 @@ def race_summary(con, last_n=5) -> int:
         if len(both) < 2:
             continue
         (a_avg, a), (b_avg, b) = both
+        pa, pb = party.get((ptype, st, dist or "", a), ""), party.get((ptype, st, dist or "", b), "")
+        margin = round(a_avg - b_avg, 1)
+        # signed D-minus-R margin when it's a D vs R race (positive = D ahead)
+        dr = margin if (pa, pb) == ("D", "R") else -margin if (pa, pb) == ("R", "D") else ""
         rows.append((TYPE_LABEL[ptype], race, st, dist, len(polls), polls[0][1], len(recent),
-                     a, round(a_avg, 1), b, round(b_avg, 1), round(a_avg - b_avg, 1)))
-    rows.sort(key=lambda r: (r[0], abs(r[11])))
+                     a, pa, round(a_avg, 1), b, pb, round(b_avg, 1), margin, pa, dr))
+    rows.sort(key=lambda r: (r[0], abs(r[13])))
     LATEST.mkdir(parents=True, exist_ok=True)
     with open(LATEST / "race_summary.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["office", "race", "state", "district", "matchup_polls", "latest_poll_end",
-                    f"polls_averaged", "candidate_a", "a_avg", "candidate_b", "b_avg", "margin_a_minus_b"])
+                    "polls_averaged", "candidate_a", "party_a", "a_avg", "candidate_b", "party_b", "b_avg",
+                    "margin_a_minus_b", "leader_party", "margin_d_minus_r"])
         w.writerows(rows)
     return len(rows)
 

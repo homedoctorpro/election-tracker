@@ -15,6 +15,15 @@ Two runners:
 | House race ratings (10 outlets) | UF Election Lab `house_tossup_races.csv` | Cook, Inside Elections, Sabato, Economist, Split Ticket, DDHQ, 50+1, Fox, Silver, RCP |
 | Senate, Governor, House, generic-ballot polls | [VoteHub API](https://votehub.com/polls/api/) | Free API. It returns the full poll history on every call. |
 
+## Candidate parties
+
+VoteHub only gives candidate names, so `tracker/sources/parties.py` adds a party to each one every morning:
+1. `data/reference/party_overrides.csv` for manual fixes (columns: poll_type, state, choice, party)
+2. the FEC's 2026 candidate file for Senate and House, matched on state, district and last name
+3. the Wikipedia article on each race, used for governors and as a fallback; it reads the infobox and the party sections that list candidates
+
+Names that can't be matched unambiguously get no party, so the page never guesses. One-letter typos in poll data (e.g. "Maura Healy") are matched within the same race. Every poll view shows party tags and margins as D/R/I +n; `race_summary.csv` adds `party_a`, `party_b` and a signed `margin_d_minus_r`.
+
 ## 2022 / 2024 comparisons
 
 The "vs 2022 / 2024" tab and `data/latest/compare_states.csv` compare each state's 2026 early vote with earlier cycles:
