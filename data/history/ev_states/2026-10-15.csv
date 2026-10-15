@@ -14,7 +14,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-15,ID,Idaho,2026-10-15,141208.0,45971.0,2229.0,48200.0,10415.0,26641.0,8915.0,595350,8.1,Idaho Secretary of State
 2026-10-15,IL,Illinois,2026-10-14,1084445.0,226315.0,76082.0,302397.0,0.0,0.0,0.0,4144125,7.3,https://www.elections.il.gov/VotingAndRegistrationSystems/PreElectionCounts.aspx
 2026-10-15,IN,Indiana,2026-10-15,179409.0,122594.0,0.0,122594.0,0.0,0.0,0.0,1880755,6.52,Indiana Secretary of State
-2026-10-15,KS,Kansas,2026-10-14,82543.0,492.0,0.0,492.0,305.0,80.0,107.0,1008998,0.05,Kansas Secretary of State
+2026-10-15,KS,Kansas,2026-10-15,87662.0,866.0,2741.0,3607.0,1881.0,1163.0,563.0,1008998,0.36,Kansas Secretary of State
 2026-10-15,KY,Kentucky,2026-10-15,55706.0,14098.0,0.0,14098.0,8102.0,4802.0,1194.0,1502550,0.94,https://elect.ky.gov/Pages/default.aspx
 2026-10-15,LA,Louisiana,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1410466,0.0,https://www.sos.la.gov/ElectionsAndVoting/Pages/EarlyVotingStatisticsStatewide.aspx
 2026-10-15,MA,Massachusetts,2026-10-14,992408.0,134078.0,0.0,134078.0,0.0,0.0,0.0,2511461,5.34,Massachusetts Secretary of the Commonwealth
