@@ -12,7 +12,7 @@ Days-out is measured from the date each source's data runs through, not from tod
 """
 from datetime import date, timedelta
 
-from .common import ELECTION_DAYS as EDAY
+from .common import ELECTION_DAYS as EDAY, GOVERNOR_2026, SENATE_2026
 
 
 def days_out(d: str) -> int:
@@ -144,12 +144,15 @@ def county_same_day(con, st, base_year=2024):
 
 
 def _result_2022(res, st):
-    """2022 statewide margin: the Senate race if both parties ran, otherwise the summed House vote
-    (some House totals are skewed by uncontested seats, so the Senate race is preferred)."""
-    s = res.get((st, 2022, "senate"))
+    """2022 statewide margin for the same office as the state's top 2026 race: Senate if there's
+    a 2026 Senate race, otherwise Governor. Falls back to the summed House vote when that office
+    wasn't on the 2022 ballot or one party didn't run (some House totals are skewed by
+    uncontested seats, so a statewide race is preferred)."""
+    race = "senate" if st in SENATE_2026 else "governor" if st in GOVERNOR_2026 else None
+    s = race and res.get((st, 2022, race))
     tot = s and sum(s)
     if s and s[0] > 0.1 * tot and s[1] > 0.1 * tot:
-        return _margin(*s), "Senate"
+        return _margin(*s), race.title()
     h = res.get((st, 2022, "house"))
     return (_margin(*h), "House vote") if h else (None, None)
 

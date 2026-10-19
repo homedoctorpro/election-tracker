@@ -77,3 +77,12 @@ STATES = {
     "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming",
 }
 NAME_TO_ABBR = {v.lower(): k for k, v in STATES.items()}
+
+# Statewide races on the 2026 ballot, used to pick each state's 2022 baseline result.
+# Senate includes the FL and OH specials.
+SENATE_2026 = {"AL", "AK", "AR", "CO", "DE", "FL", "GA", "ID", "IL", "IA", "KS", "KY", "LA", "ME",
+               "MA", "MI", "MN", "MS", "MT", "NE", "NH", "NJ", "NM", "NC", "OH", "OK", "OR", "RI",
+               "SC", "SD", "TN", "TX", "VA", "WV", "WY"}
+GOVERNOR_2026 = {"AL", "AK", "AZ", "AR", "CA", "CO", "CT", "FL", "GA", "HI", "ID", "IL", "IA", "KS",
+                 "ME", "MD", "MA", "MI", "MN", "NE", "NV", "NH", "NM", "NY", "OH", "OK", "OR", "PA",
+                 "RI", "SC", "SD", "TN", "TX", "VT", "WI", "WY"}

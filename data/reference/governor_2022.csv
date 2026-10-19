@@ -1,0 +1,7 @@
+state,year,race,dem,rep,other,dem_candidate,rep_candidate,source
+AZ,2022,governor,1287891,1270774,737,Katie Hobbs,Kari Lake,"Arizona SOS results site after the Dec 5 2022 statewide canvass, https://results.arizona.vote/#/state/33/0 (write-ins not itemized there; other = total implied by Hobbs's 50.32%, minus D and R)"
+CA,2022,governor,6470104,4462914,0,Gavin Newsom,Brian Dahle,"California SOS Statement of Vote summary pages, https://elections.cdn.sos.ca.gov/sov/2022-general/sov/06-summary.pdf (top-two contest; write-ins not listed)"
+CT,2022,governor,710186,546209,12498,Ned Lamont,Bob Stefanowski,"Connecticut SOTS Statement of Vote 2022, https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/sov_2022.pdf (Lamont = Democratic 691146 + Working Families 16175 + Griebel Frank for CT 2865)"
+MD,2022,governor,1293944,644000,67279,Wes Moore,Dan Cox,"Maryland State Board of Elections official results, https://elections.maryland.gov/elections/archive/2022/general_results/gen_detail_results_2022_1_1.html"
+NV,2022,governor,481991,497377,39703,Steve Sisolak,Joe Lombardo,"Nevada SOS official results, https://www.nvsos.gov/silverstate2022gen/NVOther/ (other includes 14866 None of These Candidates)"
+PA,2022,governor,3031137,2238477,96565,Josh Shapiro,Doug Mastriano,"Pennsylvania DOS official returns, https://www.electionreturns.pa.gov/General/SummaryResults?ElectionID=94&ElectionType=G&IsActive=0"

@@ -399,7 +399,7 @@ function partyMix(){
     const notes=[];
     if(year==='2022'){
       notes.push(`Only ${rows.filter(r=>r.has).map(r=>r.state_name).join(' and ')||'a few states'} publish 2022 mail ballots by party with return dates, so they are the only states with a 2022 shift. The rest show their actual 2022 result. Switch to 2024 to see shifts for all ${P.length} states.`);
-      notes.push('2022 result: the U.S. Senate race where both parties ran a candidate, otherwise the statewide total U.S. House vote.');
+      notes.push('2022 result: the same office as the state's top 2026 race (Senate, or Governor where there's no 2026 Senate race), if both parties ran in 2022; otherwise the statewide total U.S. House vote.');
     } else {
       notes.push('2024 result: the presidential race.');
     }

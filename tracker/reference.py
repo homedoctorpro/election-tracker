@@ -225,6 +225,9 @@ def load(con):
     con.executemany("INSERT INTO registration VALUES (?,?,?,?,?,?)", rows("registration.csv"))
     con.execute("DELETE FROM ref_results")
     con.executemany("INSERT INTO ref_results VALUES (?,?,?,?,?,?)", rows("results_state.csv"))
+    # hand-entered from each state's certified canvass (the FEC doesn't cover governors)
+    con.executemany("INSERT INTO ref_results VALUES (?,?,?,?,?,?)",
+                    [r[:6] for r in rows("governor_2022.csv")])
     con.commit()
 
 
