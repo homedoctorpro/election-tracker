@@ -14,6 +14,7 @@ Two runners:
 | Early vote: all states, counties, congressional districts | [UF Election Lab](https://election.lab.ufl.edu/early-vote/2026-early-voting/) | Compiled from each state's official reports. CC BY-NC-ND 4.0, so attribute it and don't use it commercially. AL and NH aren't in their file. |
 | House race ratings (10 outlets) | UF Election Lab `house_tossup_races.csv` | Cook, Inside Elections, Sabato, Economist, Split Ticket, DDHQ, 50+1, Fox, Silver, RCP |
 | Senate, Governor, House, generic-ballot polls | [VoteHub API](https://votehub.com/polls/api/) | Free API. It returns the full poll history on every call. |
+| Ohio early vote by party, age, county and day | [Ohio SOS Absentee and Early Voting Dashboard](https://data.ohiosos.gov/portal/election-dashboards) | Queried through the dashboard's public Power BI endpoint, which returns aggregate counts. See "Ohio" below. |
 
 ## Candidate parties
 
@@ -35,6 +36,15 @@ The "vs 2022 / 2024" tab and `data/latest/compare_states.csv` compare each state
 - **"If the mail shift held":** the comparison tab adds each state's mail-ballot shift to its actual result, with a 2022/2024 toggle that defaults to 2022. Results come from the FEC's certified totals: for 2022, the Senate race where both parties ran, otherwise the statewide U.S. House vote; for 2024, the presidential race. Pennsylvania's mail-ballot files on data.pa.gov give an exact same-days-out comparison for 2022, 2024 and 2026, like North Carolina's. Those two are the only states with 2022 party data. For the other states the 2024 baseline is the final mail mix, which overstates any move toward Democrats; the page shows by how much, using PA and NC. This is arithmetic, not a forecast.
 - **Registration adjustment (NC, PA):** a party can make up a smaller share of mail ballots just because fewer voters are registered with it. NC Democrats, for example, fell from 33.7% of registered voters in Nov 2022 to 30.0% in March 2026, with unaffiliated rising. So for NC and PA, the 2026 mail ballots are reweighted to the baseline year's party registration before computing the shift, and the projection uses that adjusted shift; the raw shift is shown alongside. Registration sources: NCSBE `voter_stats` snapshots (the latest posted, currently the March 2026 primary) and PA Department of State statistics (certified Nov 2022 and Nov 2024 PDFs plus the weekly `currentvotestats.xlsx`).
 
+### Ohio
+
+Ohio doesn't register voters by party. Its "party" is the party ballot a voter took in a recent primary; anyone who hasn't voted in one counts as unaffiliated. The Secretary of State's dashboard has ballots received per day by county, ballot type, age group and that party for every general election since Nov 2024, and nothing with party before that. So Ohio gets an exact same-days-out comparison with 2024 only: statewide (`data/latest/oh_same_day.csv`) and for all 88 counties (`oh_county_same_day.csv`). Mail, drop-box and hand-delivered absentee ballots are counted as mail.
+
+- Counties report to the state a day late, so the newest one or two days in the dashboard are only partly in. The tracker drops trailing days that hold less than a quarter of a normal day's ballots.
+- ohiosos.gov, including the dashboard's raw voter-level download, is behind a Cloudflare bot check, so scripts can't reach it. The dashboard's Power BI data endpoint isn't, and that's what `tracker/sources/oh_sos.py` queries. If the state republishes the report with a new key, update `KEY`, `MODEL` and `DATASET` there. They're in the dashboard iframe's `?r=` parameter, which is base64 JSON.
+- Ohio isn't in the "if the mail shift held" chart. UF has no Ohio party data, and Ohio's primary-ballot party isn't comparable to registration.
+- Not used: Franklin County's nightly voter-level absentee lists (the statewide county data already covers Franklin, and those files contain names and addresses), and Cuyahoga's vote-by-mail export, which is behind reCAPTCHA.
+
 Georgia also publishes voter-level absentee files with dates, but its download portal blocks automated requests, so Georgia isn't included yet.
 
 The reference data in `data/reference/` is built once and committed. To rebuild it (this downloads about 400 MB):
@@ -48,6 +58,7 @@ Every morning the cloud job saves that day's full snapshot to `data/archive/2026
 - the UF national, county, district and race-rating files, exactly as downloaded
 - the full VoteHub poll history
 - NC accepted ballots by return date, party, race, age and method (counts only)
+- Ohio ballots by return date, party, age and method, statewide and by county (counts only)
 
 The archive is what lets a future cycle compare against 2026 at the exact same number of days before Election Day, for every state. After Nov 3, 2026, turn it into a baseline file:
 ```bash
@@ -60,6 +71,7 @@ That writes `data/reference/uf2026_snapshots.csv` in the same format as the 2024
 - `data/election.db`: SQLite. It keeps one early-vote snapshot per day, so the time series builds up over time.
   - `v_ev_state_latest` gives the headline numbers per state. `v_ev_state_daily` gives day-over-day change.
   - `ev_values` holds every metric (party, age, race, gender) at the state, county, cd and cd_county level.
+  - `pace` holds NC, PA and OH ballots by days before Election Day, method, party, race and age, for every cycle. `pace_county` has the same for Ohio by county.
   - `polls` and `poll_answers` hold the polls. `poll_matchup` tags each poll as current matchup, primary/hypothetical, or unknown.
 - `data/latest/*.csv`: the latest export, ready for Excel.
 - `data/raw/YYYY-MM-DD/`: every file exactly as downloaded, so any day can be re-parsed.

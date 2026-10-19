@@ -81,6 +81,8 @@ def build(con):
         "ratings": ratings,
         "compare": compare.state_comparison(con, today_et()),
         "nc_pace": compare.nc_pace(con),
+        "oh_pace": compare.state_pace(con, "OH"),
+        "oh_counties": compare.county_same_day(con, "OH"),
         "projection": compare.party_projection(con, today_et()),
     }
     SITE.mkdir(exist_ok=True)

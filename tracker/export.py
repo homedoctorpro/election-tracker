@@ -176,6 +176,13 @@ def export_all(con) -> dict:
     if nc:
         rows = [{"year": y, **v} for y, v in nc["same_day"].items()] +                [{"year": f"{y} final", **v} for y, v in nc["final"].items()]
         out["nc_same_day.csv"] = _write_dicts("nc_same_day.csv", rows)
+    oh = compare.state_pace(con, "OH")
+    if oh:
+        rows = [{"year": y, **v} for y, v in oh["same_day"].items()] +                [{"year": f"{y} final", **v} for y, v in oh["final"].items()]
+        out["oh_same_day.csv"] = _write_dicts("oh_same_day.csv", rows)
+    ohc = compare.county_same_day(con, "OH")
+    if ohc:
+        out["oh_county_same_day.csv"] = _write_dicts("oh_county_same_day.csv", ohc["counties"])
     out["house_ratings.csv"] = _write(con, "house_ratings.csv", """
         SELECT race, state, district, outlet, rating FROM race_ratings
         WHERE snapshot_date=(SELECT MAX(snapshot_date) FROM race_ratings) ORDER BY race, outlet""")

@@ -4,8 +4,9 @@ Two kinds of comparison, kept apart because they answer different questions:
 - vs FINAL pre-Election-Day vote (every state, EAVS): how far along 2026 is relative to the
   whole early vote last time. Early in the window this mostly reflects how fast a state mails
   ballots, so read it against the median state rather than on its own.
-- SAME number of days before Election Day (exact): NC from voter files for all three cycles,
-  and any state where an archived 2024 UF snapshot exists within a day of the state's days-out.
+- SAME number of days before Election Day (exact): NC and PA from voter files for all three
+  cycles, OH from the Secretary of State's daily county reports for 2024 and 2026, and any
+  state where an archived 2024 UF snapshot exists within a day of the state's days-out.
 
 Days-out is measured from the date each source's data runs through, not from today.
 """
@@ -72,11 +73,16 @@ def state_comparison(con, day: str):
 
 
 def nc_pace(con):
-    """Cumulative NC early vote by days-out for 2022/2024/2026, with party/method/race/age mixes."""
+    return state_pace(con, "NC")
+
+
+def state_pace(con, st):
+    """Cumulative early vote by days-out for each cycle a state has (NC: 2022/2024/2026, OH:
+    2024/2026), with party/method/race/age mixes."""
     years = {}
     for year in (2022, 2024, 2026):
         rows = con.execute("SELECT days_out, method, party, race, age_group, n FROM pace "
-                           "WHERE state='NC' AND year=? ORDER BY days_out DESC", (year,)).fetchall()
+                           "WHERE state=? AND year=? ORDER BY days_out DESC", (st, year)).fetchall()
         if not rows:
             continue
         by_day = {}
@@ -109,6 +115,32 @@ def nc_pace(con):
         "final": {y: s[-1] for y, s in years.items() if y != 2026},
         "chart": {y: [[s["days_out"], s["total"]] for s in ser if s["days_out"] <= 50] for y, ser in years.items()},
     }
+
+
+def county_same_day(con, st, base_year=2024):
+    """Each county's 2026 early vote and party mix against the same days-out in `base_year`."""
+    last = con.execute("SELECT MIN(days_out) FROM pace_county WHERE state=? AND year=2026", (st,)).fetchone()[0]
+    if last is None:
+        return None
+    by = {}
+    for year in (base_year, 2026):
+        for cty, p, n in con.execute("SELECT county, party, SUM(n) FROM pace_county WHERE state=? AND year=? "
+                                     "AND days_out >= ? GROUP BY county, party", (st, year, last)):
+            by.setdefault(cty, {}).setdefault(year, {})[p] = n
+    out = []
+    for cty, ys in sorted(by.items()):
+        row = {"county": cty}
+        for year in (base_year, 2026):
+            v = ys.get(year, {})
+            row[f"ballots_{year}"] = sum(v.values())
+            row[f"dr_margin_{year}"] = _margin(v.get("dem"), v.get("rep"), sum(v.values()) - v.get("dem", 0) - v.get("rep", 0))
+        b = row[f"ballots_{base_year}"]
+        row["pct_of_same_day"] = round(100 * row["ballots_2026"] / b, 1) if b else None
+        m0, m1 = row[f"dr_margin_{base_year}"], row["dr_margin_2026"]
+        row["shift"] = round(m1 - m0, 1) if m0 is not None and m1 is not None else None
+        out.append(row)
+    return {"as_of_days_out": last, "as_of_date": (EDAY[2026] - timedelta(days=last)).isoformat(),
+            "base_year": base_year, "counties": out}
 
 
 def _result_2022(res, st):

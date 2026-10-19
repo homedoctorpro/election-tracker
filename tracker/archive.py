@@ -7,8 +7,9 @@ data/archive/<cycle>/<YYYY-MM-DD>/
     uf_geo.tar.gz              every UF county and congressional-district file
     votehub_polls.json.gz      full VoteHub poll history as of that morning
     registration.csv.gz        NC and PA registered voters by party, latest snapshot
-    pace.csv.gz                NC and PA accepted ballots by return day, method, party (and race,
-                               age for NC); aggregate counts only, voter-level files are never stored
+    pace.csv.gz                NC, PA and OH accepted ballots by return day, method, party (and race,
+                               age for NC; age for OH); aggregate counts only, voter-level files are never stored
+    pace_county.csv.gz         OH ballots by county, return day, method and party
     manifest.json              what was saved and when
 
 Re-running on the same day replaces that day's folder.
@@ -71,6 +72,14 @@ def archive_day(con, day: str) -> dict:
         w.writerows(rows)
         _gzip_bytes(buf.getvalue().encode("utf-8"), out / "pace.csv.gz")
         saved.append("pace.csv.gz")
+
+    rows = con.execute("SELECT state, year, county, days_out, method, party, n FROM pace_county "
+                       "WHERE year = ? ORDER BY 1,2,3,4,5,6", (int(CYCLE),)).fetchall()
+    if rows:
+        buf = io.StringIO()
+        csv.writer(buf).writerows([("state", "year", "county", "days_out", "method", "party", "n"), *rows])
+        _gzip_bytes(buf.getvalue().encode("utf-8"), out / "pace_county.csv.gz")
+        saved.append("pace_county.csv.gz")
 
     reg = con.execute("SELECT state, year, as_of, dem, rep, other FROM registration WHERE year = ?",
                       (int(CYCLE),)).fetchall()

@@ -89,6 +89,18 @@ CREATE TABLE IF NOT EXISTS pace (
 );
 CREATE INDEX IF NOT EXISTS ix_pace ON pace (state, year, days_out);
 
+-- Same as pace, by county (OH, from the Secretary of State's daily county reports).
+CREATE TABLE IF NOT EXISTS pace_county (
+    state     TEXT NOT NULL,
+    year      INTEGER NOT NULL,
+    county    TEXT NOT NULL,
+    days_out  INTEGER NOT NULL,
+    method    TEXT NOT NULL,
+    party     TEXT NOT NULL,
+    n         INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_pace_county ON pace_county (state, year, days_out);
+
 -- Party of each candidate named in a poll (see tracker/sources/parties.py).
 CREATE TABLE IF NOT EXISTS candidate_party (
     poll_type TEXT NOT NULL, state TEXT NOT NULL, district TEXT NOT NULL, choice TEXT NOT NULL,

@@ -11,6 +11,8 @@ Sources
 - UF Election Lab 2024 US.csv: the final version plus every Internet Archive capture taken
   during the 2024 race, used for same-days-out comparisons where a capture exists.
 - NC State Board of Elections absentee voter files for 2022 and 2024 (exact daily pace).
+- Ohio Secretary of State absentee dashboard, Nov 2024 general (exact daily pace, statewide and
+  by county; the dashboard has no party data before Nov 2024).
 """
 import argparse
 import csv
@@ -21,7 +23,7 @@ import zipfile
 from datetime import date, datetime
 
 from .common import ELECTION_DAYS, ROOT, STATES, fetch
-from .sources import nc_voter_file, pa_mail_file, registration
+from .sources import nc_voter_file, oh_sos, pa_mail_file, registration
 
 REF = ROOT / "data" / "reference"
 EAVS = {
@@ -190,6 +192,12 @@ def build_nc():
     _write("nc_pace.csv", ["state", "year", "days_out", "method", "party", "race", "age_group", "n"], rows)
 
 
+def build_oh():
+    state, county = oh_sos.aggregate(2024)
+    _write("oh_pace.csv", ["state", "year", "days_out", "method", "party", "race", "age_group", "n"], state)
+    _write("oh_county_pace.csv", ["state", "year", "county", "days_out", "method", "party", "n"], county)
+
+
 def load(con):
     """Load the committed reference CSVs into the DB (idempotent)."""
     def rows(name):
@@ -207,8 +215,12 @@ def load(con):
         con.executemany("INSERT OR REPLACE INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         [[year, *r] for r in rows(p.name)])
     con.execute("DELETE FROM pace WHERE year < 2026")
-    for p in sorted(REF.glob("*_pace.csv")):  # nc_pace.csv, pa_pace.csv, ...
-        con.executemany("INSERT INTO pace VALUES (?,?,?,?,?,?,?,?)", rows(p.name))
+    for p in sorted(REF.glob("*_pace.csv")):  # nc_pace.csv, pa_pace.csv, oh_pace.csv, ...
+        if not p.name.endswith("_county_pace.csv"):
+            con.executemany("INSERT INTO pace VALUES (?,?,?,?,?,?,?,?)", rows(p.name))
+    con.execute("DELETE FROM pace_county WHERE year < 2026")
+    for p in sorted(REF.glob("*_county_pace.csv")):
+        con.executemany("INSERT INTO pace_county VALUES (?,?,?,?,?,?,?)", rows(p.name))
     con.execute("DELETE FROM registration WHERE year < 2026")
     con.executemany("INSERT INTO registration VALUES (?,?,?,?,?,?)", rows("registration.csv"))
     con.execute("DELETE FROM ref_results")
@@ -218,7 +230,7 @@ def load(con):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "results", "registration"])
+    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "oh", "results", "registration"])
     ap.add_argument("--from-archive", type=int, metavar="CYCLE",
                     help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
@@ -232,6 +244,8 @@ if __name__ == "__main__":
         build_nc()
     if a.build in ("all", "pa"):
         build_pa()
+    if a.build in ("all", "oh"):
+        build_oh()
     if a.build in ("all", "registration"):
         build_registration()
     if a.build in ("all", "results"):
