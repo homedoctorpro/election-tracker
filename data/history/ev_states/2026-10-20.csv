@@ -1,0 +1,50 @@
+snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,total_voted,voted_dem,voted_rep,voted_other,turn_2022,pct_of_2022_turnout,data_source
+2026-10-20,AK,Alaska,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,267047,0.0,https://www.elections.alaska.gov/research/statistics/#aeqstats
+2026-10-20,AR,Arkansas,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,914227,0.0,Arkansas Secretary of State
+2026-10-20,AZ,Arizona,2026-10-20,3252470.0,401968.0,0.0,401968.0,158311.0,153962.0,89695.0,2592313,15.51,https://www.stealth-analytics.com/early-ballots
+2026-10-20,CA,California,2026-10-19,23400991.0,1548252.0,0.0,1548252.0,750460.0,453297.0,319252.0,11146610,13.89,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
+2026-10-20,CO,Colorado,2026-10-19,4043982.0,505011.0,1206.0,506217.0,169024.0,122396.0,214797.0,2540666,19.92,Colorado Secretary of State
+2026-10-20,CT,Connecticut,2026-10-19,49452.0,19217.0,0.0,19217.0,9964.0,3666.0,5587.0,1297811,1.48,Connecticut Secretary of the State
+2026-10-20,DC,District of Columbia,2026-10-19,492023.0,23696.0,0.0,23696.0,0.0,0.0,0.0,205774,11.52,https://dcboe.org/
+2026-10-20,DE,Delaware,2026-10-16,12043.0,12043.0,0.0,12043.0,7846.0,2348.0,1849.0,325632,3.7,Delaware Department of Elections
+2026-10-20,FL,Florida,2026-10-20,2398435.0,937283.0,174084.0,1111367.0,466977.0,411653.0,232737.0,7796916,14.25,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
+2026-10-20,GA,Georgia,2026-10-20,144130.0,46627.0,980370.0,1026997.0,0.0,0.0,0.0,3964926,25.9,https://mvp.sos.ga.gov/s/voter-absentee-files
+2026-10-20,HI,Hawaii,2026-10-19,724028.0,14801.0,0.0,14801.0,0.0,0.0,0.0,423443,3.5,https://elections.hawaii.gov/resources/absentee-voting-report/
+2026-10-20,IA,Iowa,2026-10-20,159510.0,15664.0,77505.0,93169.0,49898.0,27387.0,15884.0,1230417,7.57,Iowa Secretary of State
+2026-10-20,ID,Idaho,2026-10-19,148820.0,54899.0,7485.0,62384.0,11824.0,32506.0,10569.0,595350,10.48,Idaho Secretary of State
+2026-10-20,IL,Illinois,2026-10-20,1115987.0,348635.0,172666.0,521301.0,0.0,0.0,0.0,4144125,12.58,https://www.elections.il.gov/VotingAndRegistrationSystems/PreElectionCounts.aspx
+2026-10-20,IN,Indiana,2026-10-20,254331.0,196610.0,0.0,196610.0,0.0,0.0,0.0,1880755,10.45,Indiana Secretary of State
+2026-10-20,KS,Kansas,2026-10-19,92115.0,1239.0,23879.0,25118.0,13930.0,7855.0,3333.0,1008998,2.49,Kansas Secretary of State
+2026-10-20,KY,Kentucky,2026-10-20,64250.0,20763.0,0.0,20763.0,11665.0,7359.0,1739.0,1502550,1.38,https://elect.ky.gov/Pages/default.aspx
+2026-10-20,LA,Louisiana,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1410466,0.0,https://www.sos.la.gov/ElectionsAndVoting/Pages/EarlyVotingStatisticsStatewide.aspx
+2026-10-20,MA,Massachusetts,2026-10-19,1025861.0,305504.0,46094.0,351598.0,0.0,0.0,0.0,2511461,14.0,Massachusetts Secretary of the Commonwealth
+2026-10-20,MD,Maryland,2026-10-20,629415.0,218469.0,0.0,218469.0,150153.0,35938.0,32378.0,2031635,10.75,https://elections.maryland.gov/press_room/index.html
+2026-10-20,ME,Maine,2026-10-16,176965.0,101403.0,0.0,101403.0,53928.0,19722.0,27753.0,680909,14.89,https://www.maine.gov/sos/cec/elec/data/index.html
+2026-10-20,MI,Michigan,2026-10-20,2127758.0,789654.0,0.0,789654.0,0.0,0.0,0.0,4500400,17.55,Data provided by Michigan Secretary of State
+2026-10-20,MN,Minnesota,2026-10-16,438943.0,121382.0,80870.0,202252.0,0.0,0.0,0.0,2526646,8.0,https://www.sos.mn.gov/election-administration-campaigns/data-maps/absentee-data/
+2026-10-20,MO,Missouri,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2304250,0.0,TBD
+2026-10-20,MS,Mississippi,2026-10-19,37101.0,29647.0,0.0,29647.0,0.0,0.0,0.0,709100,4.18,Mississippi Secretary of State - Statewide Election Management System
+2026-10-20,MT,Montana,2026-10-20,520806.0,92931.0,0.0,92931.0,0.0,0.0,0.0,468326,19.84,https://sosmt.gov/elections/absentee-ballot-count/
+2026-10-20,NC,North Carolina,2026-10-20,154395.0,44166.0,688929.0,733095.0,327800.0,151906.0,253389.0,3790202,19.34,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
+2026-10-20,ND,North Dakota,2026-10-19,51487.0,24755.0,0.0,24755.0,0.0,0.0,0.0,242566,10.21,https://vip.sos.nd.gov/abev.aspx?eid=348
+2026-10-20,NE,Nebraska,2026-10-20,227351.0,91658.0,13179.0,104837.0,45201.0,42040.0,17596.0,682716,15.36,Data file provided by Nebraska Secretary of State
+2026-10-20,NJ,New Jersey,2026-10-20,914165.0,387599.0,0.0,387599.0,255981.0,73540.0,58078.0,2645539,14.65,New Jersey Secretary of State
+2026-10-20,NM,New Mexico,2026-10-19,86073.0,23401.0,74093.0,97494.0,56922.0,25797.0,14775.0,714754,13.64,New Mexico Secretary of State
+2026-10-20,NV,Nevada,2026-10-19,2054074.0,77502.0,88.0,77590.0,31149.0,24976.0,21465.0,1023617,7.58,https://www.nvsos.gov/elections/election-information/vivid-project
+2026-10-20,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
+2026-10-20,OH,Ohio,2026-10-20,698785.0,271956.0,404880.0,676836.0,0.0,0.0,0.0,4201368,16.11,https://data.ohiosos.gov/portal/election-dashboards
+2026-10-20,OK,Oklahoma,2026-10-20,64776.0,19684.0,0.0,19684.0,8748.0,8570.0,2366.0,1153284,1.71,Oklahoma State Board of Elections
+2026-10-20,OR,Oregon,2026-10-19,3117439.0,11486.0,0.0,11486.0,6084.0,3001.0,2401.0,1997689,0.57,https://sos.oregon.gov/elections/Documents/Ballot-Return-Dashboard-Nov-3-2026.pdf
+2026-10-20,PA,Pennsylvania,2026-10-20,1189324.0,635088.0,0.0,635088.0,429002.0,150383.0,55703.0,5410022,11.74,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
+2026-10-20,RI,Rhode Island,2026-10-19,31701.0,8788.0,21314.0,30102.0,14358.0,2527.0,13217.0,361449,8.33,Rhode Island Secretary of State
+2026-10-20,SC,South Carolina,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1718626,0.0,https://scvotes.gov/elections-statistics/voter-participation/
+2026-10-20,SD,South Dakota,2026-10-19,41466.0,31731.0,0.0,31731.0,10114.0,16410.0,5207.0,354670,8.95,South Dakota Secretary of State
+2026-10-20,TN,Tennessee,2026-10-20,0.0,0.0,397417.0,397417.0,0.0,0.0,0.0,1756397,22.63,https://sos.tn.gov/govotetn
+2026-10-20,TX,Texas,2026-10-20,76626.0,76626.0,419376.0,496002.0,0.0,0.0,0.0,8151590,6.08,https://www.sos.state.tx.us/elections/historical/index.shtml
+2026-10-20,UT,Utah,2026-10-20,1787786.0,26278.0,0.0,26278.0,5669.0,14244.0,6365.0,1084634,2.42,Utah Lt. Governor
+2026-10-20,VA,Virginia,2026-10-20,455731.0,226810.0,544106.0,770916.0,0.0,0.0,0.0,3021956,25.51,https://www.vpap.org/elections/early-voting/
+2026-10-20,VT,Vermont,2026-10-20,457838.0,70966.0,0.0,70966.0,0.0,0.0,0.0,291955,24.31,Data provided Vermont Secretary of State
+2026-10-20,WA,Washington,2026-08-12,5136372.0,0.0,0.0,0.0,0.0,0.0,0.0,3067686,0.0,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
+2026-10-20,WI,Wisconsin,2026-10-20,376019.0,191181.0,104.0,191285.0,0.0,0.0,0.0,2673154,7.16,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
+2026-10-20,WV,West Virginia,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,494753,0.0,West Virginia Secretary of State
+2026-10-20,WY,Wyoming,2026-10-20,37246.0,22403.0,0.0,22403.0,4289.0,16465.0,1649.0,198198,11.3,Wyoming Secretary of State

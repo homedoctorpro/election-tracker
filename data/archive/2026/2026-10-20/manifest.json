@@ -1,0 +1,13 @@
+{
+ "day": "2026-10-20",
+ "archived_at": "2026-10-20 11:44:43 EDT",
+ "files": [
+  "US.csv.gz",
+  "house_tossup_races.csv.gz",
+  "uf_geo.tar.gz (60 files)",
+  "votehub_polls.json.gz",
+  "pace.csv.gz",
+  "pace_county.csv.gz",
+  "registration.csv.gz"
+ ]
+}
