@@ -28,11 +28,12 @@ def _margin(d, r, o):
 def state_comparison(con, day: str):
     eavs = {(s, y): dict(total=t, pre=(m or 0) + (e or 0) + (a or 0))
             for s, y, t, m, e, a in con.execute("SELECT * FROM ref_eavs")}
-    uf24 = {}
-    for r in con.execute("""SELECT days_out, state, voted_all, voted_dem, voted_rep, voted_none,
+    uf = {}  # year -> state -> days_out -> counts
+    for r in con.execute("""SELECT year, days_out, state, voted_all, voted_dem, voted_rep, voted_none,
                                    accept_all, accept_dem, accept_rep, accept_none FROM ref_uf_snapshots
-                            WHERE year = 2024"""):
-        uf24.setdefault(r[1], {})[r[0]] = r[2:]
+                            ORDER BY snapshot_date"""):
+        uf.setdefault(r[0], {}).setdefault(r[2], {})[r[1]] = r[3:]
+    uf24 = uf.get(2024, {})
     mail26 = {}
     for st, m, v in con.execute("""SELECT state, metric, value FROM ev_values
             WHERE level='state' AND metric IN ('accept_dem','accept_rep','accept_none')
@@ -68,6 +69,17 @@ def state_comparison(con, day: str):
             row["same_day_2024"] = v[0]
             row["pct_of_same_day_2024"] = round(100 * tot / v[0], 1) if tot else None
             row["dr_margin_2024_same_day"] = _margin(*v[1:4])
+        # mail mix at the same days-out in each earlier cycle with a daily series (Iowa SOS),
+        # and the 2022 final where one exists; party_projection uses these
+        for year, by_state in uf.items():
+            s = by_state.get(st, {})
+            if year == 2022 and s.get(-1):
+                row["dr_margin_2022_final"] = _margin(*s[-1][1:4])
+                row["mail_dr_margin_2022_final"] = _margin(*s[-1][5:8])
+            near = sorted((k for k in s if k >= 0 and abs(k - dout) <= 1), key=lambda k: abs(k - dout))
+            if near and s[near[0]][4]:
+                row[f"mail_dr_margin_{year}_same_day"] = _margin(*s[near[0]][5:8])
+                row[f"mail_same_day_{year}_days_out"] = near[0]
         out.append(row)
     return {"states": out}
 
@@ -186,9 +198,10 @@ def party_projection(con, day: str):
     if that change carried over to the whole electorate.
 
     Shift = 2026 mail D-R margin minus the baseline year's mail D-R margin, both in party
-    registration terms. Where a state publishes voter-level files (NC, PA) both sides are taken
-    at the same number of days before Election Day; elsewhere the baseline is the final 2024
-    mail mix. This is arithmetic, not a forecast: registration isn't vote choice, and mail
+    registration terms. Where a state publishes voter-level files (NC, PA) or daily reports
+    (Iowa SOS, 2022 and 2024) both sides are taken at the same number of days before Election
+    Day, as are states with an archived 2024 UF snapshot within a day; elsewhere the baseline
+    is the final 2024 mail mix. This is arithmetic, not a forecast: registration isn't vote choice, and mail
     voters aren't the whole electorate."""
     res = {(s, y, r): (d, rp, o) for s, y, r, d, rp, o in con.execute("SELECT * FROM ref_results")}
     cmp = {r["state"]: r for r in state_comparison(con, day)["states"]}
@@ -222,8 +235,14 @@ def party_projection(con, day: str):
                     # how far off a comparison against the final 2024 mix would have been
                     if year == 2024 and r.get("mail_dr_margin_2024_final") is not None:
                         base["shift_vs_final"] = round(r["mail_dr_margin_2026"] - r["mail_dr_margin_2024_final"], 1)
-            elif year == 2024 and r.get("mail_dr_margin_2024_final") is not None:
-                base = {"mail_2026": r["mail_dr_margin_2026"], "mail_base": r["mail_dr_margin_2024_final"],
+            elif r.get(f"mail_dr_margin_{year}_same_day") is not None:
+                base = {"mail_2026": r["mail_dr_margin_2026"], "mail_base": r[f"mail_dr_margin_{year}_same_day"],
+                        "basis": "same day", "days_out": r[f"mail_same_day_{year}_days_out"],
+                        "n_2026": r.get("mail_party_ballots_2026")}
+                if r.get(f"mail_dr_margin_{year}_final") is not None:
+                    base["shift_vs_final"] = round(r["mail_dr_margin_2026"] - r[f"mail_dr_margin_{year}_final"], 1)
+            elif r.get(f"mail_dr_margin_{year}_final") is not None:
+                base = {"mail_2026": r["mail_dr_margin_2026"], "mail_base": r[f"mail_dr_margin_{year}_final"],
                         "basis": "final", "n_2026": r.get("mail_party_ballots_2026")}
             y = {"result": result, "race": race}
             if base:

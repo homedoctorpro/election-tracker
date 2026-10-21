@@ -13,6 +13,13 @@ Sources
 - NC State Board of Elections absentee voter files for 2022 and 2024 (exact daily pace).
 - Ohio Secretary of State absentee dashboard, Nov 2024 general (exact daily pace, statewide and
   by county; the dashboard has no party data before Nov 2024).
+- Iowa Secretary of State "Absentee Ballot Statistics" by congressional district for the 2018,
+  2022 and 2024 generals (sos.iowa.gov/elections/pdf/<year>/general/AbsenteeCongressional<year>.pdf).
+  Each PDF holds every daily report of the cycle; ia_sos_absentee.csv sums the districts to
+  statewide ballots received by party per report date, with in-person (Counter / In-Office,
+  Satellite, In-Person) split out for 2022 and 2024 (the 2018 file has no receipt method).
+  The site blocks scripted downloads, so the CSV was extracted by hand in a browser; party sums
+  were checked against each report's Grand Total. Loaded over UF's Iowa rows (see load()).
 """
 import argparse
 import csv
@@ -198,6 +205,35 @@ def build_oh():
     _write("oh_county_pace.csv", ["state", "year", "county", "days_out", "method", "party", "n"], county)
 
 
+IA_EDAY = {2018: date(2018, 11, 6), **ELECTION_DAYS}
+
+
+def ia_snapshots(csv_rows):
+    """Iowa SOS daily absentee reports as ref_uf_snapshots rows. They replace UF's 2024 Iowa rows,
+    which count every absentee ballot as mail (in-person absentee included) and so can't be
+    compared with 2026's mail-only figures. A report dated after Election Day is the final
+    (days_out -1); "none" is No Party + Libertarian + Other, as in UF's files. Mail = all
+    received minus in-person; 2018 has no in-person split, so its mail columns are empty."""
+    last = {}
+    for r in csv_rows:
+        last[r[0]] = max(last.get(r[0], ""), r[1])
+    out = []
+    for year, d, dem, rep, np_, lib, oth, tot, i_d, i_r, i_o in csv_rows:
+        days = (IA_EDAY[int(year)] - date.fromisoformat(d)).days
+        if days < 0 and d != last[year]:
+            continue  # only the last post-election report stands as the final
+        year = int(year)
+        dem, rep, tot = int(dem), int(rep), int(tot)
+        none = int(np_) + int(lib) + int(oth)
+        mail = [None] * 5
+        if i_d is not None:
+            i_d, i_r, i_o = int(i_d), int(i_r), int(i_o)
+            inp = i_d + i_r + i_o
+            mail = [tot - inp, inp, dem - i_d, rep - i_r, none - i_o]
+        out.append([year, d, days if days >= 0 else -1, "IA", tot, dem, rep, none, *mail])
+    return out
+
+
 def load(con):
     """Load the committed reference CSVs into the DB (idempotent)."""
     def rows(name):
@@ -214,6 +250,10 @@ def load(con):
         year = int(p.name[2:6])
         con.executemany("INSERT OR REPLACE INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         [[year, *r] for r in rows(p.name)])
+    ia = ia_snapshots(rows("ia_sos_absentee.csv"))
+    for year in {r[0] for r in ia}:
+        con.execute("DELETE FROM ref_uf_snapshots WHERE state='IA' AND year=?", (year,))
+    con.executemany("INSERT INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", ia)
     con.execute("DELETE FROM pace WHERE year < 2026")
     for p in sorted(REF.glob("*_pace.csv")):  # nc_pace.csv, pa_pace.csv, oh_pace.csv, ...
         if not p.name.endswith("_county_pace.csv"):
