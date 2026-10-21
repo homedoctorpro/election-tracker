@@ -537,11 +537,12 @@ const scol=v=>v==null?'var(--muted)':v>=0?'var(--dem)':'var(--rep)';
 const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
 // a county lean taken at the same days out (TX, OH vs 2024) counts as solid
 const bgSolid=b=>bgKind(b)==='same'||!!(b.headline&&b.headline.same_day);
-const bgLabel=b=>bgKind(b)==='county'&&b.headline.same_day?'county_sd':bgKind(b);
-const TIER={same:'same day · all votes',final:'vs final · mail only',county:'county lean · all votes',county_sd:'county lean · same day',none:'turnout only'};
+const bgLabel=b=>bgKind(b)==='county'&&b.headline.same_day?'county_sd':b.headline&&b.headline.votes==='primary'?'same_primary':bgKind(b);
+const TIER={same:'same day · all votes',same_primary:'same day · primary party',final:'vs final · mail only',county:'county lean · all votes',county_sd:'county lean · same day',none:'turnout only'};
 const TIER_T={same:'All early votes (mail and in person) by party, compared with the same number of days before Election Day in 2024, from voter files or daily state reports. The most reliable read.',
   final:'Mail ballots only, compared with the final 2024 mail-ballot mix rather than the same day. Early mail returns usually lean more Democratic than the final count, so this overstates any move toward D. In-person votes are left out because in-person voting starts later and only a few days of it are in.',
   county:'No usable party data, so the signal is the 2024 presidential margin of the counties this year\'s early votes (mail and in person) come from, compared with the same figure for the whole 2024 early vote by county. 2026 is only partway through, so the mix of counties still moves.',
+  same_primary:'Ohio has no party registration. Its daily data tags each voter with the party ballot they last took in a primary (or unaffiliated), and that tag is compared with the same day in 2024. It isn\'t registration: a busy primary on one side tags more voters with that party, so part of a shift can come from which primaries drew voters.',
   county_sd:'No party registration, but the state reports early votes by county every day, so this compares where this year\'s early votes come from (by each county\'s 2024 presidential margin) with where the 2024 early vote came from at the same number of days out.',
   none:'No party registration and no county file, so only turnout is shown.'};
 
@@ -597,7 +598,7 @@ function bgCard(b,E){
     <div class="head"><span class="big" style="color:${scol(v)}">${v==null?'–':sgn(v)}</span><span class="basis">${h?esc(h.basis):'no party or county data'}</span></div>
     <div class="line"><span>2026 early vote</span><b>${fmt(b.ev.total)}</b></div>
     <div class="line"><span>Pace</span><span>${pc?`<b>${pct(pc.pct,0)}</b> ${pc.label}`:'–'}</span></div>
-    ${h?`<div class="line"><span>D&minus;R, ${h.votes==='mail'?'mail':'all early'}</span><span><span class="muted">${h.year} ${sgn(h.from)} →</span> <b style="color:${scol(h.to)}">${sgn(h.to)}</b></span></div>`:''}
+    ${h?`<div class="line"><span>D&minus;R, ${h.votes==='mail'?'mail':h.votes==='primary'?'primary party':'all early'}</span><span><span class="muted">${h.year} ${sgn(h.from)} →</span> <b style="color:${scol(h.to)}">${sgn(h.to)}</b></span></div>`:''}
     ${p?`<div class="line"><span>Party mix, all early votes</span><b style="color:${scol(b.ev.dr)}">${sgn(b.ev.dr)}</b></div>${bar}`:'<div class="line"><span>Party mix</span><span class="muted">no party registration</span></div>'}
     <div class="mini">${minis.join('')}</div>
     ${Object.keys(sp).length?`<div class="basis" style="margin-top:6px">${Object.keys(sp).some(y=>y!='2026')?`Ballots so far vs ${Object.keys(sp).filter(y=>y!='2026').join(', ')} at this point`:'2026 ballots so far (no earlier cycle at this point)'}</div>${bgChart(sp,{w:220,h:34,xmax:45,mini:true})}`:''}

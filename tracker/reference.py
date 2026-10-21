@@ -304,6 +304,11 @@ def load(con):
     for year in {r[0] for r in ia}:
         con.execute("DELETE FROM ref_uf_snapshots WHERE state='IA' AND year=?", (year,))
     con.executemany("INSERT INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", ia)
+    # Florida's 2022 final vote-by-mail and early-vote counts by party, from the Division of
+    # Elections' archived status report (dos.fl.gov/media/706191/2022-ge-rptstatuscountsarchive-ev-vbm.pdf,
+    # STATE TOTAL rows; "none" = No Party Affiliation + Other). UF has no 2022 files.
+    con.executemany("INSERT OR REPLACE INTO ref_uf_snapshots VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    rows("fl_dos_2022_final.csv"))
     con.execute("DELETE FROM pace WHERE year < 2026")
     for p in sorted(REF.glob("*_pace.csv")):  # nc_pace.csv, pa_pace.csv, oh_pace.csv, ...
         if not p.name.endswith("_county_pace.csv"):

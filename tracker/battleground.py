@@ -26,6 +26,7 @@ from .compare import _margin, days_out, party_projection, state_comparison
 from .reference import county_key
 
 STATES = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI", "IA", "OH", "ME", "KS", "FL", "TX"]
+PRIMARY_PARTY = {"OH"}  # "party" is the last primary ballot taken, not registration
 
 
 def _pace_curves(con, st):
@@ -261,7 +262,10 @@ def battlegrounds(con, day, hist, race_summary):
             if v:
                 lean[str(y)] = v
         same = [y for y, s in shifts.items() if s.get("basis") == "same day"]
-        tier = ("same_day" if same else "turnout" if exact else "final" if shifts else "county")
+        # Ohio's daily data carries the party ballot each voter last took in a primary. It isn't
+        # registration, but it's the same definition in 2024 and 2026, so it's compared same-day.
+        primary = st in PRIMARY_PARTY and any(v["dr_base"] is not None for v in pace.values())
+        tier = ("same_day" if same or primary else "turnout" if exact else "final" if shifts else "county")
         # Headline per baseline year: the most reliable shift available, with the two margins it
         # compares. Same day: all early votes (mail and in person), since both years are counted
         # through the same day. Vs final (2024 only): mail ballots, because in-person voting starts
@@ -272,12 +276,15 @@ def battlegrounds(con, day, hist, race_summary):
             pc, head = pace.get(y), None
             if tier == "same_day" and pc and pc["dr_base"] is not None and pc["dr_now"] is not None:
                 head = {"value": round(pc["dr_now"] - pc["dr_base"], 1), "from": pc["dr_base"], "to": pc["dr_now"],
-                        "year": y, "votes": "all", "kind": "same", "basis": f"all early votes vs {y} same day"}
-            elif tier == "final" and y == "2024":
-                s = shifts["2024"]
+                        "year": y, "votes": "primary" if primary else "all", "kind": "same",
+                        "basis": f"{'primary-ballot party of ' if primary else ''}all early votes vs {y} same day"}
+            elif tier == "final" and shifts.get(y, {}).get("basis") == "final":
+                # 2024 for every vs-final state; 2022 only where a 2022 final mail mix is on file (FL)
+                s = shifts[y]
                 head = {"value": round(s["mail_2026"] - s["mail_base"], 1), "from": s["mail_base"], "to": s["mail_2026"],
-                        "year": y, "votes": "mail", "kind": "final", "basis": "mail ballots vs 2024 final"}
-            elif tier != "same_day" and y in lean:
+                        "year": y, "votes": "mail", "kind": "final", "basis": f"mail ballots vs {y} final"}
+            elif (tier != "same_day" or primary) and y in lean:
+                # (a primary-party state with no daily data for this year falls back to county lean)
                 lv = lean[y]
                 head = {"value": lv["shift"], "from": lv["base"], "to": lv["early_2026"], "year": y, "votes": "all",
                         "kind": "county", "same_day": lv["basis"] == "same day",
@@ -326,6 +333,8 @@ def battlegrounds(con, day, hist, race_summary):
                 if pts:
                     trend["series"]["2024"] = pts
                 trend["final"]["2024"] = head["from"]
+                if heads.get("2022", {}).get("kind") == "final":
+                    trend["final"]["2022"] = heads["2022"]["from"]
             else:
                 trend["final"] = {y: v["base"] for y, v in lean.items()}
         races = []
