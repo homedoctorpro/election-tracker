@@ -655,7 +655,7 @@ function bgOverview(B){
     ['county','County lean: all early votes','no usable party data. The 2024 margin of the counties this year\'s early votes come from, vs the 2024 statewide margin. Part of the gap is just which counties vote early.'],
     ['none','Turnout only','no party registration and no county file.']];
   const tick=v=>v===0?'0':(v<0?'R+':'D+')+Math.abs(v);
-  $('#ov').innerHTML=`<h2>Battlegrounds at a glance</h2>
+  $('#ov').innerHTML=`<h2 style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Battlegrounds at a glance <a href="share.png" target="_blank" rel="noopener" style="font-size:13px;font-weight:500">Share image</a></h2>
     <div class="small muted">${fmt(tot)} early votes across ${B.length} states, data through ${esc(B.map(b=>b.data_through).sort().pop())}. Each line runs from the 2024 D&minus;R margin to 2026's; the arrow's color shows which way it moved. Click a state for detail.</div>
     <div class="ov-key"><span><i style="border:2px solid var(--muted);background:var(--panel)"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>solid line: same-day comparison</span><span>dashed: vs final or county lean (rough)</span><span>faded: too few votes in to read</span></div>

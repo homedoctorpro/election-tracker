@@ -8,7 +8,7 @@ import json
 import shutil
 from pathlib import Path
 
-from . import battleground, compare
+from . import battleground, compare, share
 from .common import ROOT, now_et, today_et
 
 HISTORY = ROOT / "data" / "history" / "ev_states"
@@ -101,4 +101,8 @@ def build(con):
     SITE.mkdir(exist_ok=True)
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     shutil.copy(TEMPLATE, SITE / "index.html")
-    return {"polls": len(recent_polls), "states": len(data["ev_states"]), "history_days": len(list(HISTORY.glob("*.csv")))}
+    try:
+        card = share.build(SITE, data["battlegrounds"], data["generated"])
+    except Exception as e:  # the share image must never block the site build
+        card = f"share card failed: {e}"
+    return {"share": card,"polls": len(recent_polls), "states": len(data["ev_states"]), "history_days": len(list(HISTORY.glob("*.csv")))}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battleground Early Vote</title>
+<meta name="description" content="How the 2026 early vote's party margin compares with 2024 in 13 battleground states.">
+<meta property="og:title" content="How the 2026 early vote has shifted since 2024">
+<meta property="og:description" content="Early-vote party margin vs 2024 in 13 battleground states, updated twice a day.">
+<meta property="og:image" content="https://homedoctorpro.github.io/election-tracker/share.png">
+<meta property="og:image:width" content="1080"><meta property="og:image:height" content="1350">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* A fixed 1080x1350 card (4:5), scaled down to fit narrower screens. share.png is a screenshot of it. */
+:root{--bg:#f6f4ef;--card:#fff;--ink:#16181d;--muted:#6b6f78;--line:#e6e2d9;--dem:#2459d8;--rep:#d6312b;--dem-t:#e6edfc;--rep-t:#fbe8e7}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);overflow-x:hidden}
+#wrap{position:relative;width:100%;overflow:hidden}
+#stage{position:absolute;left:0;top:0}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+#stage{width:1080px;height:1350px;transform-origin:0 0;padding:58px 60px 44px;display:flex;flex-direction:column}
+.kicker{font-size:22px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dem)}
+h1{font-size:58px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-top:10px}
+.sub{font-size:24px;color:var(--muted);margin-top:12px}
+.key{display:flex;align-items:center;gap:26px;font-size:21px;color:var(--muted);margin:26px 0 8px}
+.key i{display:inline-block;width:20px;height:20px;border-radius:50%;vertical-align:-3px;margin-right:8px}
+.key .ax{margin-left:auto;font-weight:600}
+.key .ax b{color:var(--rep)}.key .ax em{font-style:normal;color:var(--dem)}
+.grp{display:flex;align-items:baseline;gap:12px;margin:16px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.grp b{font-size:20px;letter-spacing:.1em;text-transform:uppercase}
+.grp span{font-size:19px;color:var(--muted)}
+.row{display:grid;grid-template-columns:318px 1fr 140px;align-items:center;gap:22px;height:62px;border-bottom:1px solid var(--line)}
+.row.early{opacity:.4}
+.st{line-height:1.1}.st b{font-size:27px;font-weight:700}.st small{display:block;font-size:17px;color:var(--muted);margin-top:3px;white-space:nowrap}
+.tr{position:relative;height:30px}
+.tr .bg{position:absolute;left:0;right:0;top:12px;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--rep-t),#efede8 50%,var(--dem-t))}
+.tr .mid{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#b9b5ac}
+.tr .ln{position:absolute;top:13px;height:4px;border-radius:2px}
+.tr .ln.dash{background-image:repeating-linear-gradient(90deg,currentColor 0 8px,transparent 8px 13px)!important;background-color:transparent!important}
+.tr .o,.tr .s{position:absolute;top:5px;width:20px;height:20px;margin-left:-10px;border-radius:50%}
+.tr .o{border:4px solid #8a8e96;background:var(--card)}
+.sh{text-align:right;font-size:34px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.foot{margin-top:auto;padding-top:18px;font-size:17.5px;line-height:1.4;color:var(--muted)}
+.foot b{color:var(--ink);font-weight:600}
+.url{margin-top:10px;font-size:20px;font-weight:600;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage"></div></div>
+<script>
+const DATA=/*DATA*/null;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sgn=v=>v==null?'':(v>=0?'D+':'R+')+Math.abs(v).toFixed(1);
+const col=v=>v>=0?'var(--dem)':'var(--rep)';
+const k=v=>v>=1e6?(v/1e6).toFixed(2).replace(/0$/,'')+'M':Math.round(v/1e3)+'K';
+const kind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
+const early=b=>b.tier!=='same_day'&&b.headline&&((b.shifts['2024']?.n_2026??1e9)<5000||(b.pct_of_final_2024??100)<5);
+function pace(b){for(const y of ['2024'])if(b.pace[y])return `${Math.round(b.pace[y].pct)}% of 2024 to date`;
+  return b.pct_of_final_2024!=null?`${Math.round(b.pct_of_final_2024)}% of 2024 total`:''}
+function render(){
+  const B=DATA.battlegrounds.filter(b=>b.headline);
+  const vals=B.flatMap(b=>[b.headline.from,b.headline.to]).map(Math.abs);
+  const lim=Math.max(20,Math.ceil(Math.max(...vals)/10)*10),pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
+  const thru=DATA.battlegrounds.map(b=>b.data_through).sort().pop();
+  const d=new Date(thru+'T12:00:00'),left=Math.round((new Date('2026-11-03T12:00:00')-d)/864e5);
+  const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const row=b=>{const h=b.headline,a=pos(h.from),z=pos(h.to),c=col(h.value),kd=kind(b);
+    return `<div class="row${early(b)?' early':''}">
+      <div class="st"><b>${esc(b.state_name)}</b><small>${k(b.ev.total)} votes${pace(b)?' · '+pace(b):''}${early(b)?' · too early':''}</small></div>
+      <div class="tr"><div class="bg"></div><div class="mid"></div>
+        <div class="ln${kd==='same'?'':' dash'}" style="left:${Math.min(a,z)}%;width:${Math.abs(z-a)}%;background:${c};color:${c}"></div>
+        <div class="o" style="left:${a}%"></div><div class="s" style="left:${z}%;background:${col(h.to)}"></div></div>
+      <div class="sh" style="color:${c}">${sgn(h.value)}</div></div>`};
+  const by=(a,b)=>(early(a)-early(b))||b.headline.value-a.headline.value;
+  const G=[['same','Same day','all early votes vs this point in 2024'],
+    ['final','Mail vs final','mail ballots vs the final 2024 mix'],
+    ['county','County lean','no party registration']];
+  const missing=DATA.battlegrounds.filter(b=>!b.headline).map(b=>b.state_name);
+  document.getElementById('stage').innerHTML=`
+    <div class="kicker">2026 early vote · battlegrounds</div>
+    <h1>How the early vote has shifted since 2024</h1>
+    <div class="sub">D&minus;R margin of early votes, 2024 to 2026. Through ${date}, ${left} days to Election Day.</div>
+    <div class="key"><span><i style="border:4px solid #8a8e96;background:#fff"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
+      <span>Dashed = rougher comparison</span><span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
+    ${G.map(([g,t,s])=>{const L=B.filter(b=>kind(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
+    <div class="foot"><b>Same day</b> is the most reliable read. <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count. <b>County lean</b> weights early votes by each county's 2024 result.${missing.length?` ${esc(missing.join(', '))}: no party or county data.`:''} Party registration is not vote choice.
+      Sources: UF Election Lab; NC, PA, IA and OH election offices; VoteHub.
+      <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
+}
+function fit(){const w=document.getElementById('wrap'),s=Math.min(1,w.clientWidth/1080);
+  document.getElementById('stage').style.transform=`scale(${s})`;w.style.height=1350*s+'px'}
+render();fit();addEventListener('resize',fit);
+</script>
+</body>
+</html>
