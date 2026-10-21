@@ -45,6 +45,12 @@ h1{font-size:58px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .foot{margin-top:auto;padding-top:18px;font-size:17.5px;line-height:1.4;color:var(--muted)}
 .foot b{color:var(--ink);font-weight:600}
 .url{margin-top:10px;font-size:20px;font-weight:600;color:var(--ink)}
+/* both: two shift columns */
+.row.b3{grid-template-columns:300px 1fr 104px 104px;gap:14px;height:58px}
+.row.b3.hd{height:auto;border:0;font-size:16px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:8px}
+.sh2{text-align:right;font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sh2 sup{font-size:16px}
+.row.b3.hd .sh2{font-size:15px;font-weight:600}
 /* trend: small multiples */
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 20px;margin-top:4px}
 .pn{border-top:2px solid var(--ink);padding-top:5px}
@@ -150,7 +156,47 @@ function renderTrend(){
 }
 function fit(){const w=document.getElementById('wrap'),s=Math.min(1,w.clientWidth/1080);
   document.getElementById('stage').style.transform=`scale(${s})`;w.style.height=1350*s+'px'}
-(MODE==='trend'?renderTrend:render)();fit();addEventListener('resize',fit);
+// both: 2022, 2024 and 2026 on one axis per state, with the shift against each year
+function renderBoth(){
+  const H=b=>b.headlines||{},B=DATA.battlegrounds.filter(b=>H(b)['2024']||H(b)['2022']);
+  // 2022 shares the axis only when it measures the same thing as 2024 (same 2026 value)
+  const same22=b=>{const a=H(b)['2024'],c=H(b)['2022'];return a&&c&&a.kind===c.kind&&a.to===c.to};
+  const vals=B.flatMap(b=>[H(b)['2024']?.from,H(b)['2024']?.to,same22(b)?H(b)['2022'].from:null]).filter(v=>v!=null).map(Math.abs);
+  const lim=Math.max(20,Math.ceil(Math.max(...vals)/10)*10),pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
+  const thru=DATA.battlegrounds.map(b=>b.data_through).sort().pop();
+  const d=new Date(thru+'T12:00:00'),left=Math.round((new Date('2026-11-03T12:00:00')-d)/864e5);
+  const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const C22='#9aa0a8',C24='#e08a1e';
+  const num=(h,star)=>h?`<span style="color:${col(h.value)}">${sgn(h.value)}${star?'<sup>*</sup>':''}</span>`:'<span style="color:#b9b5ac">&ndash;</span>';
+  const row=b=>{const a=H(b)['2024'],c=H(b)['2022'],m=a||c,to=m.to,solid=m.kind==='same'||m.same_day;
+    const seg=(from,color)=>`<div class="ln${solid?'':' dash'}" style="left:${Math.min(pos(from),pos(to))}%;width:${Math.abs(pos(to)-pos(from))}%;background:${color};color:${color};height:3px;top:13.5px;opacity:.8"></div>`;
+    const dot=(v,color)=>`<div class="o" style="left:${pos(v)}%;border-color:${color}"></div>`;
+    const show22=c&&(!a||same22(b));
+    return `<div class="row b3${early(b)?' early':''}">
+      <div class="st"><b>${esc(b.state_name)}</b><small>${k(b.ev.total)} votes${pace(b)?' · '+pace(b):''}</small></div>
+      <div class="tr"><div class="bg"></div><div class="mid"></div>
+        ${show22?seg(c.from,C22):''}${a?seg(a.from,C24):''}${show22?dot(c.from,C22):''}${a?dot(a.from,C24):''}
+        <div class="s" style="left:${pos(to)}%;background:${col(to)}"></div></div>
+      <div class="sh2">${num(a)}</div><div class="sh2">${num(c,c&&a&&!same22(b))}</div></div>`};
+  const kindOf=b=>(H(b)['2024']||H(b)['2022']).kind;
+  const by=(x,y)=>(early(x)-early(y))||((H(y)['2024']||H(y)['2022']).value-(H(x)['2024']||H(x)['2022']).value);
+  const G=[['same','Same day','all early votes vs this point in each year'],['final','Mail vs final','mail ballots vs the final 2024 mix'],
+    ['county','County lean','where early votes come from (2024 margin of each county)']];
+  const missing=DATA.battlegrounds.filter(b=>!B.includes(b)).map(b=>b.state_name);
+  const starred=B.filter(b=>H(b)['2022']&&H(b)['2024']&&!same22(b)).map(b=>b.state);
+  document.getElementById('stage').innerHTML=`
+    <div class="kicker">2026 early vote · battlegrounds</div>
+    <h1>The early vote vs 2022 and 2024</h1>
+    <div class="sub">D&minus;R margin of early votes. Through ${date}, ${left} days to Election Day.</div>
+    <div class="key"><span><i style="border:4px solid ${C22};background:#fff"></i>2022</span><span><i style="border:4px solid ${C24};background:#fff"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
+      <span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
+    <div class="row b3 hd"><span></span><span></span><span class="sh2">vs 2024</span><span class="sh2">vs 2022</span></div>
+    ${G.map(([g,t,s])=>{const L=B.filter(b=>kindOf(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
+    <div class="foot"><b>Same day</b> is the most reliable read. <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count. <b>County lean</b> uses the same day where the state reports daily (Texas, Ohio vs 2024), otherwise that year's final early vote by county.${starred.length?` <b>*</b> No 2022 party data in ${esc(starred.join(', '))}, so their 2022 shift is county lean and isn't drawn.`:''}${missing.length?` ${esc(missing.join(', '))}: no data.`:''}
+      Sources: UF Election Lab; NC, PA, IA, OH and TX election offices; EAC.
+      <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
+}
+(MODE==='trend'?renderTrend:MODE==='both'?renderBoth:render)();fit();addEventListener('resize',fit);
 </script>
 </body>
 </html>

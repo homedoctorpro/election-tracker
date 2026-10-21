@@ -38,6 +38,7 @@ The headline shift uses the most reliable comparison the state has, and every ro
 **Share images:** every site build also writes three fixed 1080×1350 cards (4:5, sized for phones and social posts), each as a page and a headless-Chrome screenshot (`tracker/share.py`), published next to the dashboard so the same link always shows the latest numbers:
 - `share.png`: the shift in each state's early-vote margin since 2024.
 - `share-2022.png`: the same since 2022. Only NC, PA and IA have 2022 party data; the rest use county lean against the 2022 early vote.
+- `share-both.png`: 2022, 2024 and 2026 on one axis per state, with the shift against each year. 2022 is drawn only where it measures the same thing as 2024; in the mail-vs-final states the 2022 shift is county lean, so it's listed with an asterisk instead.
 - `share-trend.png`: each state's margin by days before Election Day, 2026 against 2024 and 2022. Same-day states have every day of all three cycles. Mail states show the 2024 final as a dashed line and the few 2024 days on file as dots. County-lean states show their daily lean against the whole 2024 and 2022 early vote. Daily 2026 figures come from the committed archive (`data/archive/2026/`), skipping days with under 1,000 ballots or under 5% of the latest count.
 
 The `.html` pages carry preview tags, so a pasted link shows the image. The PNGs are skipped if no Chrome or Edge is found; set `CHROME` to point at one.

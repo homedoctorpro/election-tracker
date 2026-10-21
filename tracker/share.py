@@ -16,7 +16,7 @@ from .common import find_chrome
 TEMPLATE = Path(__file__).parent / "share.html"
 
 
-CARDS = {"share": "2024", "share-2022": "2022", "share-trend": "trend"}
+CARDS = {"share": "2024", "share-2022": "2022", "share-both": "both", "share-trend": "trend"}
 
 
 def build(site: Path, battlegrounds: list, generated: str) -> str:
