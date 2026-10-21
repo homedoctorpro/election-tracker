@@ -8,7 +8,7 @@ import json
 import shutil
 from pathlib import Path
 
-from . import compare
+from . import battleground, compare
 from .common import ROOT, now_et, today_et
 
 HISTORY = ROOT / "data" / "history" / "ev_states"
@@ -40,6 +40,18 @@ def load_history():
             for r in csv.DictReader(f):
                 if r["total_voted"]:
                     hist.setdefault(r["state"], []).append([p.stem, float(r["total_voted"])])
+    return hist
+
+
+def load_history_rows():
+    """Every saved daily state row, numbers parsed, by state."""
+    hist = {}
+    for p in sorted(HISTORY.glob("*.csv")):
+        with open(p, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                for k in ("total_voted", "voted_dem", "voted_rep", "voted_other", "mail_returned", "in_person"):
+                    r[k] = float(r[k]) if r[k] else None
+                hist.setdefault(r["state"], []).append(r)
     return hist
 
 
@@ -84,6 +96,7 @@ def build(con):
         "oh_pace": compare.state_pace(con, "OH"),
         "oh_counties": compare.county_same_day(con, "OH"),
         "projection": compare.party_projection(con, today_et()),
+        "battlegrounds": battleground.battlegrounds(con, today_et(), load_history_rows(), summary),
     }
     SITE.mkdir(exist_ok=True)
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")

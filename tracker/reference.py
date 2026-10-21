@@ -160,6 +160,31 @@ def build_results():
     _write("results_state.csv", ["state", "year", "race", "dem", "rep", "other"], rows)
 
 
+COUNTY_2024 = ("https://raw.githubusercontent.com/tonmcg/US_County_Level_Election_Results_08-24/master/"
+               "2024_US_County_Level_Presidential_Results.csv")
+
+
+def county_key(name):
+    """County name as matched between results and UF's county files ("St. Clair County" -> "stclair")."""
+    s = name.lower().replace(" county", "").replace("saint", "st").replace("st.", "st")
+    return re.sub(r"[^a-z]", "", s)
+
+
+def build_county_results():
+    """2024 presidential results by county (tonmcg/US_County_Level_Election_Results_08-24, compiled
+    from state and county canvasses). Counties are stored under county_key()."""
+    by_name = {v: k for k, v in STATES.items()}
+    tot = {}  # AK house districts and DC wards share a key once numbers are stripped: sum them
+    for r in csv.DictReader(io.StringIO(fetch(COUNTY_2024).decode("utf-8-sig"))):
+        st = by_name.get(r["state_name"])
+        if st:
+            t = tot.setdefault((st, county_key(r["county_name"])), [0, 0, 0])
+            for i, k in enumerate(("votes_dem", "votes_gop", "total_votes")):
+                t[i] += int(float(r[k]))
+    _write("county_results.csv", ["state", "year", "county", "dem", "rep", "total"],
+           [(st, 2024, c, *v) for (st, c), v in tot.items()])
+
+
 PA_REG_PDFS = {
     2022: "voter-registration-statistics/2022%20Election%20VR%20Statistics.pdf",
     2024: "voter-registration-statistics/2024%20Election%20Nov..pdf",
@@ -263,6 +288,8 @@ def load(con):
         con.executemany("INSERT INTO pace_county VALUES (?,?,?,?,?,?,?)", rows(p.name))
     con.execute("DELETE FROM registration WHERE year < 2026")
     con.executemany("INSERT INTO registration VALUES (?,?,?,?,?,?)", rows("registration.csv"))
+    con.execute("DELETE FROM ref_county_results")
+    con.executemany("INSERT INTO ref_county_results VALUES (?,?,?,?,?,?)", rows("county_results.csv"))
     con.execute("DELETE FROM ref_results")
     con.executemany("INSERT INTO ref_results VALUES (?,?,?,?,?,?)", rows("results_state.csv"))
     # hand-entered from each state's certified canvass (the FEC doesn't cover governors)
@@ -273,7 +300,8 @@ def load(con):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "oh", "results", "registration"])
+    ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "oh", "results", "registration",
+                                        "county_results"])
     ap.add_argument("--from-archive", type=int, metavar="CYCLE",
                     help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
@@ -293,3 +321,5 @@ if __name__ == "__main__":
         build_registration()
     if a.build in ("all", "results"):
         build_results()
+    if a.build in ("all", "county_results"):
+        build_county_results()

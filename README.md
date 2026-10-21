@@ -25,6 +25,17 @@ VoteHub only gives candidate names, so `tracker/sources/parties.py` adds a party
 
 Names that can't be matched unambiguously get no party, so the page never guesses. One-letter typos in poll data (e.g. "Maura Healy") are matched within the same race. Every poll view shows party tags and margins as D/R/I +n; `race_summary.csv` adds `party_a`, `party_b` and a signed `margin_d_minus_r`.
 
+## Battlegrounds tab
+
+The first tab has one card per battleground state (`STATES` in `tracker/battleground.py`): AZ, GA, MI, NC, NV, PA, WI, IA, OH, ME, KS, FL and TX. Each card shows the top 2026 race's poll margin, 2026 early votes and their pace, the party mix, and a headline shift toward D or R. Hover over a card, or tap it, for cumulative and party-mix charts by days out for every cycle on file, the same-day comparison table, the mail shift projection and the county lean.
+
+The headline uses the most reliable comparison the state has, and the card shows which one:
+- **same day** (solid card): mail-ballot party mix compared at the same days out, from voter files (NC, PA) or daily state reports (IA).
+- **vs final** (hatched): the 2024 final mail mix (AZ, NV, ME, KS, FL). This overstates any move toward D early on.
+- **county lean** (hatched): for states without party registration (GA, MI, WI, and OH, whose primary-ballot "party" isn't comparable). It's the 2024 presidential margin of the counties this year's early votes come from, weighted by each county's early votes, minus the 2024 statewide margin. County results are in `data/reference/county_results.csv` (from [tonmcg/US_County_Level_Election_Results_08-24](https://github.com/tonmcg/US_County_Level_Election_Results_08-24); D and R totals match the FEC exactly in the states checked). No 2024 county early-vote counts exist, so this is compared with final 2024 turnout, and part of the gap is just which counties vote early. Texas has no UF county file and Maine's is by town, so neither has a county lean.
+
+Cards with under 5,000 mail ballots, or under 5% of the 2024 early vote, are faded, marked "too early", and left out of the D/R counts at the top.
+
 ## 2022 / 2024 comparisons
 
 The "vs 2022 / 2024" tab and `data/latest/compare_states.csv` compare each state's 2026 early vote with earlier cycles:
