@@ -51,12 +51,12 @@ def _increments(cum, year):
     return county_rows, state_rows
 
 
-def _civix(type_, tries=5, **params):
+def _civix(type_, tries=3, **params):
     """One Civix API file, decoded. The API sometimes answers with a 502 page; retry those."""
     q = "&".join(f"{k}={v}" for k, v in params.items())
     url = f"{CIVIX}?type={type_}" + (f"&{q}" if q else "")
     for attempt in range(tries):
-        text = chrome_get(url)
+        text = chrome_get(url, retries=1)  # a bot-check page raises at once: no point retrying it
         try:
             return json.loads(base64.b64decode(json.loads(text)["upload"]).decode("utf-8"))
         except (ValueError, KeyError):

@@ -34,7 +34,7 @@ jobs:
         id: run
         run: |
           set +e
-          python -m tracker.run --site --archive
+          python -u -m tracker.run --site --archive
           echo "rc=$?" >> "$GITHUB_OUTPUT"
 
       - name: Commit daily history and archive

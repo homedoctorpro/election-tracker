@@ -82,8 +82,13 @@ def chrome_get(url: str, retries: int = 3) -> str:
         raise RuntimeError("no Chrome or Edge found (set CHROME)")
     last = ""
     for attempt in range(retries):
-        r = subprocess.run([exe, "--headless=new", "--disable-gpu", "--virtual-time-budget=15000", "--dump-dom", url],
-                           capture_output=True, timeout=120, text=True, encoding="utf-8", errors="replace")
+        try:
+            r = subprocess.run([exe, "--headless=new", "--disable-gpu", "--no-sandbox", "--virtual-time-budget=15000",
+                                "--dump-dom", url], capture_output=True, timeout=60, text=True, encoding="utf-8",
+                               errors="replace")
+        except subprocess.TimeoutExpired:
+            last = "(timed out)"
+            continue
         last = r.stdout
         # a Cloudflare challenge page is titled "Just a moment..."; normal pages may still load its script
         if "<title>Just a moment" not in last and len(last) > 200:
