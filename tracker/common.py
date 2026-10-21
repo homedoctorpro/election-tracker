@@ -55,6 +55,44 @@ def fetch_json(url: str):
     return None if body is None else json.loads(body)
 
 
+CHROMES = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser",
+           r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+           r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"]
+
+
+def find_chrome() -> str | None:
+    """A Chrome or Edge binary (CHROME env var first). GitHub's Ubuntu runners have google-chrome."""
+    import os
+    import shutil
+    for b in [os.environ.get("CHROME")] + CHROMES:
+        if b and (shutil.which(b) or Path(b).exists()):
+            return shutil.which(b) or b
+    return None
+
+
+def chrome_get(url: str, retries: int = 3) -> str:
+    """GET a page through headless Chrome and return the rendered DOM. For sites whose bot
+    checks turn away plain HTTP clients but let a real browser through (Texas SOS). A JSON
+    response comes back inside <pre>...</pre>."""
+    import html
+    import re
+    import subprocess
+    exe = find_chrome()
+    if not exe:
+        raise RuntimeError("no Chrome or Edge found (set CHROME)")
+    last = ""
+    for attempt in range(retries):
+        r = subprocess.run([exe, "--headless=new", "--disable-gpu", "--virtual-time-budget=15000", "--dump-dom", url],
+                           capture_output=True, timeout=120, text=True, encoding="utf-8", errors="replace")
+        last = r.stdout
+        # a Cloudflare challenge page is titled "Just a moment..."; normal pages may still load its script
+        if "<title>Just a moment" not in last and len(last) > 200:
+            m = re.search(r"<pre[^>]*>(.*)</pre>", last, re.S)
+            return html.unescape(m.group(1)) if m else last
+        time.sleep(3 * (attempt + 1))
+    raise RuntimeError(f"chrome_get blocked or empty for {url}: {last[:200]}")
+
+
 def save_raw(source: str, name: str, body: bytes, day: str) -> Path:
     """Archive the untouched download so any day can be re-parsed later."""
     p = RAW / day / source / name

@@ -8,22 +8,12 @@ The PNG is skipped, not failed, when no Chrome or Edge is installed. GitHub's Ub
 have google-chrome; set CHROME to point at another binary.
 """
 import json
-import os
-import shutil
 import subprocess
 from pathlib import Path
 
+from .common import find_chrome
+
 TEMPLATE = Path(__file__).parent / "share.html"
-BROWSERS = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser",
-            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-            r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"]
-
-
-def _browser():
-    for b in [os.environ.get("CHROME")] + BROWSERS:
-        if b and (shutil.which(b) or Path(b).exists()):
-            return shutil.which(b) or b
-    return None
 
 
 CARDS = {"share": "2024", "share-2022": "2022", "share-trend": "trend"}
@@ -32,7 +22,7 @@ CARDS = {"share": "2024", "share-2022": "2022", "share-trend": "trend"}
 def build(site: Path, battlegrounds: list, generated: str) -> str:
     data = json.dumps({"generated": generated, "battlegrounds": battlegrounds}, separators=(",", ":"))
     tpl = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/null", data.replace("</", "<\\/"))
-    exe = _browser()
+    exe = find_chrome()
     for name, mode in CARDS.items():
         page = site / f"{name}.html"
         page.write_text(tpl.replace("/*MODE*/'2024'", f"'{mode}'")

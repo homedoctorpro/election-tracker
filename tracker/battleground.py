@@ -45,7 +45,8 @@ def _pace_curves(con, st):
                 cum[p] = cum.get(p, 0) + n
             tot = sum(cum.values())
             dem, rep = cum.get("dem", 0), cum.get("rep", 0)
-            pts.append([d, tot, _margin(dem, rep, tot - dem - rep)])
+            # no party data at all (Texas): no margin, rather than a fake 0
+            pts.append([d, tot, _margin(dem, rep, tot - dem - rep) if "dem" in cum or "rep" in cum else None])
         out[year] = [p for p in pts if p[0] <= 60]
     return out
 
@@ -89,22 +90,49 @@ def _county_ref(con, st):
         "SELECT county, fips, dem, rep, total FROM ref_county_pres WHERE state=? AND year=2024", (st,)) if t}
 
 
-def _county_lean(con, st, ev, base_year, ref=None):
+def _lean_of(ref, counts):
+    """(2024 presidential margin weighted by `counts` [(county, votes)], votes matched)."""
+    num = den = 0
+    for c, v in counts:
+        r = ref.get(county_key(c))
+        if r and v:
+            num += v * r[1]
+            den += v
+    return (num / den if den else None), den
+
+
+def _pace_county_counts(con, st, year, dout):
+    """Cumulative early votes by county through `dout` days out, from daily county data."""
+    return con.execute("SELECT county, SUM(n) FROM pace_county WHERE state=? AND year=? AND days_out >= ? "
+                       "GROUP BY county", (st, year, dout)).fetchall()
+
+
+def _county_lean(con, st, ev, base_year, ref=None, same_day=None):
     """The 2024 presidential D-R margin of the counties this year's early votes come from
     (weighted by each county's early votes so far, `ev` = [(county name, votes)]), next to the
-    same figure for `base_year`'s final early vote by county (EAVS). Both sides are early votes,
-    so the usual pull of early voting toward metro counties mostly cancels out; what's left is
-    where this year's early vote is coming from compared with last time. The base is final while
-    2026 is partial, so it still moves as more counties vote.
+    same figure for `base_year`'s early vote by county. Both sides are early votes, so the
+    usual pull of early voting toward metro counties mostly cancels out; what's left is where
+    this year's early vote is coming from compared with last time.
 
-    Counties with no EAVS early count are left out of both sides. Where the state has no county
-    EAVS data (Wisconsin), 2024 falls back to 2024 turnout and 2022 has no lean."""
+    The base is `same_day` ([(county, votes)] at the same days out, where a state publishes
+    daily county counts: Texas, Ohio 2024) or else the final early vote by county from EAVS,
+    which is a full count against a partial 2026 one. Counties with no base count are left out
+    of both sides. Where the state has no county EAVS data (Wisconsin), 2024 falls back to 2024
+    turnout and 2022 has no lean."""
     ref = ref or _county_ref(con, st)
     if not ref:
         return None
-    base = {f: e for f, e in con.execute(
-        "SELECT fips, early FROM ref_county_early WHERE state=? AND year=?", (st, base_year))}
-    basis = "early votes"
+    if same_day:
+        base = {}
+        for c, n in same_day:
+            r = ref.get(county_key(c))
+            if r:
+                base[r[0]] = base.get(r[0], 0) + n
+        basis = "same day"
+    else:
+        base = {f: e for f, e in con.execute(
+            "SELECT fips, early FROM ref_county_early WHERE state=? AND year=?", (st, base_year))}
+        basis = "early votes"
     if not any(base.values()):
         if base_year != 2024:
             return None
@@ -217,11 +245,21 @@ def battlegrounds(con, day, hist, race_summary):
                 pace[str(year)] = {"pct": round(100 * cur[1] / prev[1], 1), "base": prev[1],
                                    "dr_base": prev[2], "dr_now": cur[2], "days_out": prev[0]}
         shifts = {y: p[y] for y in ("2022", "2024") if p.get(y, {}).get("shift") is not None}
-        ev = con.execute("""SELECT geo, value FROM ev_values WHERE state=? AND level='county' AND metric='voted_all'
-                            AND snapshot_date=(SELECT MAX(snapshot_date) FROM ev_values)""", (st,)).fetchall()
         ref = _county_ref(con, st)
-        lean = {str(y): _county_lean(con, st, ev, y, ref) for y in (2024, 2022)}
-        lean = {y: v for y, v in lean.items() if v}
+        # 2026 county counts: the state's own daily county data where it exists (TX, OH), so the
+        # base can be taken at the same days out; otherwise UF's latest county file
+        pc_years = {y for (y,) in con.execute("SELECT DISTINCT year FROM pace_county WHERE state=?", (st,))}
+        if 2026 in pc_years:
+            ev = _pace_county_counts(con, st, 2026, dout)
+        else:
+            ev = con.execute("""SELECT geo, value FROM ev_values WHERE state=? AND level='county' AND metric='voted_all'
+                                AND snapshot_date=(SELECT MAX(snapshot_date) FROM ev_values)""", (st,)).fetchall()
+        lean = {}
+        for y in (2024, 2022):
+            sd = _pace_county_counts(con, st, y, dout) if 2026 in pc_years and y in pc_years else None
+            v = _county_lean(con, st, ev, y, ref, same_day=sd)
+            if v:
+                lean[str(y)] = v
         same = [y for y, s in shifts.items() if s.get("basis") == "same day"]
         tier = ("same_day" if same else "turnout" if exact else "final" if shifts else "county")
         # Headline per baseline year: the most reliable shift available, with the two margins it
@@ -242,7 +280,8 @@ def battlegrounds(con, day, hist, race_summary):
             elif tier != "same_day" and y in lean:
                 lv = lean[y]
                 head = {"value": lv["shift"], "from": lv["base"], "to": lv["early_2026"], "year": y, "votes": "all",
-                        "kind": "county", "basis": f"county lean of early votes vs {y} {lv['basis']}"}
+                        "kind": "county", "same_day": lv["basis"] == "same day",
+                        "basis": f"county lean of early votes vs {y} {lv['basis']}"}
             if head:
                 heads[y] = head
         head = heads.get("2024")
@@ -258,6 +297,23 @@ def battlegrounds(con, day, hist, race_summary):
                     trend["series"][str(y)] = pts
                     if y < 2026:
                         trend["final"][str(y)] = pts[-1][1]
+        elif kind == "county" and 2026 in pc_years:
+            # daily county data: county lean on every day of each cycle, all at matching days out
+            trend = {"measure": "county", "series": {}, "final": {}}
+            for y in sorted(pc_years):
+                pts = []
+                for (d,) in con.execute("SELECT DISTINCT days_out FROM pace_county WHERE state=? AND year=? "
+                                        "AND days_out <= 30 ORDER BY days_out DESC", (st, y)):
+                    m, n = _lean_of(ref, _pace_county_counts(con, st, y, d))
+                    if m is not None and n >= 1000:
+                        pts.append([d, round(m, 1)])
+                if pts:
+                    trend["series"][str(y)] = pts
+                    if y < 2026:
+                        trend["final"][str(y)] = pts[-1][1]
+            for y, v in lean.items():
+                if y not in trend["series"]:
+                    trend["final"][y] = v["base"]
         elif kind in ("final", "county"):
             d26 = _daily_2026(con, days, st)
             trend = {"measure": "mail" if kind == "final" else "county", "series": {}, "final": {}}

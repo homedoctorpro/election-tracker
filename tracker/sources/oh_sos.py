@@ -88,7 +88,12 @@ def _decode(shape, n):
 
 
 def _day(ms):
-    return None if ms is None else date(1970, 1, 1) + timedelta(milliseconds=ms)
+    """Power BI dates are epoch milliseconds, except ones it can't express that way (a county
+    record dated in the year 206 came back as the string '0206-01-02T00:00:00'): those are
+    mistyped, so they count as no date and keep() drops them."""
+    if isinstance(ms, (int, float)):
+        return date(1970, 1, 1) + timedelta(milliseconds=ms)
+    return None
 
 
 def aggregate(year: int, cutoff: date | None = None):
