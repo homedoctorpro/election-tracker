@@ -30,7 +30,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-21,NE,Nebraska,2026-10-21,230463.0,99936.0,15564.0,115500.0,49021.0,47199.0,19280.0,682716,16.92,Data file provided by Nebraska Secretary of State
 2026-10-21,NJ,New Jersey,2026-10-21,916452.0,404461.0,0.0,404461.0,266355.0,76663.0,61443.0,2645539,15.29,New Jersey Secretary of State
 2026-10-21,NM,New Mexico,2026-10-20,87517.0,29327.0,96686.0,126013.0,72859.0,33844.0,19310.0,714754,17.63,New Mexico Secretary of State
-2026-10-21,NV,Nevada,2026-10-21,2088142.0,132772.0,71966.0,204738.0,74894.0,70228.0,48065.0,1023617,20.0,https://www.nvsos.gov/elections/election-information/vivid-project
+2026-10-21,NV,Nevada,2026-10-21,2079311.0,132772.0,71966.0,204738.0,56158.0,47704.0,37053.0,1023617,20.0,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-21,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
 2026-10-21,OH,Ohio,2026-10-20,698785.0,271956.0,404880.0,676836.0,0.0,0.0,0.0,4201368,16.11,https://data.ohiosos.gov/portal/election-dashboards
 2026-10-21,OK,Oklahoma,2026-10-21,64919.0,20720.0,0.0,20720.0,9182.0,9012.0,2526.0,1153284,1.8,Oklahoma State Board of Elections
