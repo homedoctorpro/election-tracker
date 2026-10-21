@@ -62,7 +62,7 @@ python -m tracker.reference --build all
 
 ## Daily archive (for future cycles)
 
-Every morning the cloud job saves that day's full snapshot to `data/archive/2026/YYYY-MM-DD/` and commits it to GitHub. That's about 0.5 MB a day:
+The cloud job runs at 7:15 AM and again at 10 PM ET (UF posts updates through the day, so the evening run catches them). Each run saves that day's full snapshot, the evening one replacing the morning's, to `data/archive/2026/YYYY-MM-DD/` and commits it to GitHub. That's about 0.5 MB a day:
 - the UF national, county, district and race-rating files, exactly as downloaded
 - the full VoteHub poll history
 - NC accepted ballots by return date, party, race, age and method (counts only)

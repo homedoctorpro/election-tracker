@@ -3,6 +3,9 @@ name: Daily refresh
 on:
   schedule:
     - cron: "15 11 * * *"   # 7:15 AM EDT / 6:15 AM EST
+    # UF posts updates through the day (e.g. Florida at 7:36 PM EDT on 10-20). A run on the same
+    # ET date replaces that day's snapshot, so the evening run just makes it more complete.
+    - cron: "0 2 * * *"     # 10:00 PM EDT / 9:00 PM EST (previous day in ET)
   workflow_dispatch:
 
 permissions:
