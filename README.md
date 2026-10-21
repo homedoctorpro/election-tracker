@@ -27,14 +27,14 @@ Names that can't be matched unambiguously get no party, so the page never guesse
 
 ## Battlegrounds tab
 
-The first tab has one card per battleground state (`STATES` in `tracker/battleground.py`): AZ, GA, MI, NC, NV, PA, WI, IA, OH, ME, KS, FL and TX. Each card shows the top 2026 race's poll margin, 2026 early votes and their pace, the party mix, and a headline shift toward D or R. Hover over a card, or tap it, for cumulative and party-mix charts by days out for every cycle on file, the same-day comparison table, the mail shift projection and the county lean.
+The first tab covers the battleground states (`STATES` in `tracker/battleground.py`): AZ, GA, MI, NC, NV, PA, WI, IA, OH, ME, KS, FL and TX. At the top, an at-a-glance chart gives each state one row: a line from its 2024 D−R margin to its 2026 margin, the shift, turnout pace and the poll margins, grouped by how solid the comparison is. Below it, one card per state adds the vote counts, party mix and a mini chart. Hover over a row or card, or tap it, for cumulative and party-mix charts by days out for every cycle on file, the same-day comparison table, the mail shift projection and the county lean.
 
-The headline uses the most reliable comparison the state has, and the card shows which one:
-- **same day** (solid card): mail-ballot party mix compared at the same days out, from voter files (NC, PA) or daily state reports (IA).
-- **vs final** (hatched): the 2024 final mail mix (AZ, NV, ME, KS, FL). This overstates any move toward D early on.
-- **county lean** (hatched): for states without party registration (GA, MI, WI, and OH, whose primary-ballot "party" isn't comparable). It's the 2024 presidential margin of the counties this year's early votes come from, weighted by each county's early votes, minus the 2024 statewide margin. County results are in `data/reference/county_results.csv` (from [tonmcg/US_County_Level_Election_Results_08-24](https://github.com/tonmcg/US_County_Level_Election_Results_08-24); D and R totals match the FEC exactly in the states checked). No 2024 county early-vote counts exist, so this is compared with final 2024 turnout, and part of the gap is just which counties vote early. Texas has no UF county file and Maine's is by town, so neither has a county lean.
+The headline shift uses the most reliable comparison the state has, and every row and card says which one and which votes it counts:
+- **same day · all votes** (solid): all early votes, mail and in person, compared at the same days out in 2024, from voter files (NC, PA) or daily state reports (IA). The mail-only shifts (registration-adjusted for NC and PA) are on the card too.
+- **vs final · mail only** (hatched): mail ballots compared with the final 2024 mail mix (AZ, NV, ME, KS, FL). This overstates any move toward D early on. In-person votes are left out because in-person voting starts later, so only a few days of it would be compared with the whole 2024 in-person vote.
+- **county lean · all votes** (hatched): for states without party registration (GA, MI, WI, and OH, whose primary-ballot "party" isn't comparable). It's the 2024 presidential margin of the counties this year's early votes come from, weighted by each county's early votes, minus the 2024 statewide margin. County results are in `data/reference/county_results.csv` (from [tonmcg/US_County_Level_Election_Results_08-24](https://github.com/tonmcg/US_County_Level_Election_Results_08-24); D and R totals match the FEC exactly in the states checked). No 2024 county early-vote counts exist, so this is compared with final 2024 turnout, and part of the gap is just which counties vote early. Texas has no UF county file and Maine's is by town, so neither has a county lean.
 
-Cards with under 5,000 mail ballots, or under 5% of the 2024 early vote, are faded, marked "too early", and left out of the D/R counts at the top.
+Cards with under 5,000 mail ballots, or under 5% of the 2024 early vote, are faded, marked "too early", and sorted to the bottom of their group.
 
 ## 2022 / 2024 comparisons
 

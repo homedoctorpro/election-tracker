@@ -89,7 +89,6 @@ tr.click{cursor:pointer}
 }
 .up{color:#15803d;font-weight:600}.down{color:#b91c1c;font-weight:600}
 /* battlegrounds */
-.bg-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
 .bg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
 .card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 13px 9px;cursor:pointer;overflow:hidden;
   background-image:linear-gradient(var(--tint,transparent),var(--tint,transparent))}
@@ -100,8 +99,8 @@ tr.click{cursor:pointer}
 .card h3{margin:0;font-size:16px;display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .card h3 .chip{font-weight:500;font-size:10.5px;white-space:nowrap}
 .card .races{font-size:12px;color:var(--muted);margin:2px 0 6px;min-height:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .head{display:flex;align-items:baseline;gap:8px}
-.card .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.card .head{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px}
+.card .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
 .card .basis{font-size:11.5px;color:var(--muted);line-height:1.2}
 .card .line{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-top:5px;font-variant-numeric:tabular-nums}
 .card .line span:first-child{color:var(--muted)}
@@ -122,6 +121,32 @@ tr.click{cursor:pointer}
 #bg-pop table td,#bg-pop table th{padding:5px 6px;font-size:12.5px}
 #bg-pop h4{margin:12px 0 2px;font-size:13px}
 #bg-shade{position:fixed;inset:0;z-index:29;background:rgba(0,0,0,.35)}
+/* overview: one row per state */
+.ov{padding:12px 14px 8px;margin-bottom:14px}
+.ov h2{font-size:17px;margin:0 0 2px}
+.ov-row,.ov-hd,.ov-ax{display:grid;grid-template-columns:118px minmax(0,1fr) 70px 138px 128px;gap:10px;align-items:center}
+.ov-hd{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:6px 0 4px;border-bottom:1px solid var(--line)}
+.ov-row{padding:5px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.ov-row:hover{background:var(--hl)}
+.ov-row.early{opacity:.45}
+.ov-st b{font-size:14px}.ov-st small{display:block;color:var(--muted);font-size:11px}
+.ov-n{text-align:right;font-variant-numeric:tabular-nums}
+.ov-g{padding:12px 0 3px;font-size:12.5px}.ov-g b{font-size:13px}.ov-g span{color:var(--muted)}
+.ov-tr{position:relative;height:24px}
+.ov-tr .bg{position:absolute;inset:10px 0;background:linear-gradient(90deg,color-mix(in srgb,var(--rep) 14%,transparent),transparent 50%,color-mix(in srgb,var(--dem) 14%,transparent));border-radius:3px}
+.ov-tr .mid{position:absolute;left:50%;top:2px;bottom:2px;width:1px;background:var(--muted)}
+.ov-tr .ln{position:absolute;top:11px;height:2px}
+.ov-tr .ln.dash{background:repeating-linear-gradient(90deg,currentColor 0 4px,transparent 4px 7px)!important}
+.ov-tr .o,.ov-tr .s{position:absolute;top:6px;width:12px;height:12px;margin-left:-6px;border-radius:50%}
+.ov-tr .o{border:2px solid var(--muted);background:var(--panel)}
+.ov-ax div{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.ov-key{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted);margin:4px 0 2px;align-items:center}
+.ov-key i{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+@media (max-width:700px){
+  .ov-row,.ov-hd,.ov-ax{grid-template-columns:44px minmax(0,1fr) 58px}
+  .ov-row>:nth-child(n+4),.ov-hd>:nth-child(n+4),.ov-ax>:nth-child(n+4){display:none}
+  .ov-st small,.ov-st .nm{display:none}
+}
 #bg-shade[hidden]{display:none}
 footer{margin-top:28px;color:var(--muted);font-size:12.5px}
 footer a{color:var(--accent)}
@@ -149,7 +174,8 @@ svg.spark{vertical-align:middle}
 </nav>
 
 <section id="s-bg" class="on">
-  <div class="bg-top" id="bg-top"></div>
+  <div class="panel ov" id="ov"></div>
+  <h2 style="font-size:17px;margin:4px 0 6px">State detail</h2>
   <div class="pm-tools" style="margin-top:0">
     <span class="small muted">Sort:</span>
     <button class="seg" data-bs="shift" aria-pressed="true">Shift toward D</button>
@@ -157,9 +183,9 @@ svg.spark{vertical-align:middle}
     <button class="seg" data-bs="name" aria-pressed="false">State</button>
   </div>
   <div class="tierkey">
-    <span><i></i>Solid: compared at the same point in 2022 / 2024</span>
-    <span><i class="soft"></i>Hatched: compared with a final count or county lean, so read as rough</span>
-    <span>Big number: change in party mix since the baseline, D+ means toward Democrats. Hover or tap a state for detail.</span>
+    <span><i></i>Solid card: all early votes, compared with the same day in 2024</span>
+    <span><i class="soft"></i>Hatched card: mail ballots vs the final 2024 mix, or county lean, so read as rough</span>
+    <span>Big number: change in D&minus;R margin since 2024, D+ means toward Democrats. Hover or tap a state for detail.</span>
   </div>
   <div class="bg-grid" id="bg-grid"></div>
   <p class="small muted" style="margin-top:10px">
@@ -507,11 +533,13 @@ function cmp(){
 const BG_YCOL={2018:'#a78bfa',2022:'var(--oth)',2024:'#d97706',2026:'var(--accent)'};
 const sgn=v=>v==null||isNaN(v)?'–':(v>=0?'D +':'R +')+Math.abs(v).toFixed(1);
 const scol=v=>v==null?'var(--muted)':v>=0?'var(--dem)':'var(--rep)';
-const TIER={same_day:'same day',turnout:'same-day turnout',final:'vs final',county:'county lean'};
-const TIER_T={same_day:'Party mix compared at the same number of days before Election Day, from voter files or daily state reports.',
-  turnout:'Same-day turnout comparison. Party here is the primary ballot a voter last took, not registration, so the party mix is not compared.',
-  final:'Party mix compared with the final 2024 mail mix, not the same day. Early returns usually lean more Democratic than the final count, so this overstates any move toward D.',
-  county:'No party registration. The signal is the 2024 lean of the counties the early vote is coming from.'};
+// what the headline compares: same day (all early votes), vs final (mail only), or county lean
+const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
+const TIER={same:'same day · all votes',final:'vs final · mail only',county:'county lean · all votes',none:'turnout only'};
+const TIER_T={same:'All early votes (mail and in person) by party, compared with the same number of days before Election Day in 2024, from voter files or daily state reports. The most reliable read.',
+  final:'Mail ballots only, compared with the final 2024 mail-ballot mix rather than the same day. Early mail returns usually lean more Democratic than the final count, so this overstates any move toward D. In-person votes are left out because in-person voting starts later and only a few days of it are in.',
+  county:'No usable party data, so the signal is the 2024 presidential margin of the counties this year\'s early votes (mail and in person) come from, compared with the 2024 statewide margin. Part of the gap is just which counties vote early.',
+  none:'No party registration and no county file, so only turnout is shown.'};
 
 function bgPace(b){ // best available turnout comparison
   for(const y of ['2024','2022'])if(b.pace[y])return {pct:b.pace[y].pct,label:`of ${y} same day`,same:true};
@@ -544,7 +572,7 @@ function bgChart(series,{w=300,h=150,xmax=60,fmtY=v=>v,zero=false,marker=null,mi
 const bgLegend=ys=>`<div class="lg">${ys.map(y=>`<span><i style="background:${BG_YCOL[y]}"></i>${y}</span>`).join('')}<span>x: days before Election Day</span></div>`;
 
 function bgCard(b,E){
-  const h=b.headline,v=h?h.value:null,pc=bgPace(b);
+  const h=b.headline,v=h?h.value:null,pc=bgPace(b),early=bgEarly(b),kd=bgKind(b);
   const a=v==null?0:Math.min(Math.abs(v),20)/20*22+4;
   const tint=v==null?'transparent':`color-mix(in srgb,${scol(v)} ${a.toFixed(0)}%,transparent)`;
   const race=b.races.map(r=>{const m=+r.margin_d_minus_r;const lead=m>=0?r.party_a==='D'?r.candidate_a:r.candidate_b:r.party_a==='R'?r.candidate_a:r.candidate_b;
@@ -552,20 +580,22 @@ function bgCard(b,E){
   const p=E&&((E.voted_dem||0)+(E.voted_rep||0)+(E.voted_other||0));
   const bar=p?`<div class="bar"><span style="width:${100*E.voted_dem/p}%;background:var(--dem)"></span><span style="width:${100*E.voted_rep/p}%;background:var(--rep)"></span><span style="width:${100*E.voted_other/p}%;background:var(--oth)"></span></div>`:'';
   const minis=[];
-  ['2022','2024'].forEach(y=>{const s=b.shifts[y];if(s)minis.push(`<span title="2026 mail ${sgn(s.mail_2026)} vs ${y} ${s.basis==='same day'?'same day':'final'} ${sgn(s.mail_base)}">vs ${y}${s.basis==='same day'?'':' final'} <b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></span>`)});
-  if(b.county_lean)minis.push(`<span title="2024 margin of the counties this year's early vote comes from: ${sgn(b.county_lean.early_2026)}, vs ${sgn(b.county_lean.turnout_2024)} statewide in 2024">county lean <b style="color:${scol(b.county_lean.shift)}">${sgn(b.county_lean.shift)}</b></span>`);
+  if(kd==='same'&&b.pace['2022']&&b.pace['2022'].dr_base!=null){const q=b.pace['2022'];
+    minis.push(`<span title="All early votes: 2026 ${sgn(q.dr_now)} vs 2022 same day ${sgn(q.dr_base)}">all vs 2022 <b style="color:${scol(q.dr_now-q.dr_base)}">${sgn(q.dr_now-q.dr_base)}</b></span>`)}
+  ['2022','2024'].forEach(y=>{const s=b.shifts[y];if(s&&kd==='same')minis.push(`<span title="Mail ballots only: 2026 ${sgn(s.mail_2026)} vs ${y} same day ${sgn(s.mail_base)}${s.reg_adjusted?', adjusted for party registration':''}">mail vs ${y} <b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></span>`)});
+  if(b.county_lean&&kd!=='county')minis.push(`<span title="2024 margin of the counties this year's early vote comes from: ${sgn(b.county_lean.early_2026)}, vs ${sgn(b.county_lean.turnout_2024)} statewide in 2024">county lean <b style="color:${scol(b.county_lean.shift)}">${sgn(b.county_lean.shift)}</b></span>`);
   // mini chart: each cycle's cumulative ballots up to this point in the calendar only
   const sp={};Object.entries(b.curves).forEach(([y,c])=>{if(+y>=2022){const s=c.filter(q=>q[0]>=b.days_out&&q[0]<=45).map(q=>[q[0],q[1]]);if(s.length)sp[y]=s}});
-  const early=bgEarly(b);
-  return `<div class="card${b.tier==='same_day'?'':' soft'}" style="--tint:${tint}${early?';opacity:.55':''}" tabindex="0" data-st="${b.state}">
-    <h3><span>${esc(b.state_name)}</span><span>${early?'<span class="chip" title="Under 5,000 mail ballots, or under 5% of the 2024 early vote, so far">too early</span> ':''}<span class="chip" title="${esc(TIER_T[b.tier])}">${TIER[b.tier]}</span></span></h3>
+  return `<div class="card${kd==='same'?'':' soft'}" style="--tint:${tint}${early?';opacity:.55':''}" tabindex="0" data-st="${b.state}">
+    <h3><span>${esc(b.state_name)}</span><span>${early?'<span class="chip" title="Under 5,000 mail ballots, or under 5% of the 2024 early vote, so far">too early</span> ':''}<span class="chip" title="${esc(TIER_T[kd])}">${TIER[kd]}</span></span></h3>
     <div class="races">${race||'no recent statewide polls'}</div>
     <div class="head"><span class="big" style="color:${scol(v)}">${v==null?'–':sgn(v)}</span><span class="basis">${h?esc(h.basis):'no party or county data'}</span></div>
     <div class="line"><span>2026 early vote</span><b>${fmt(b.ev.total)}</b></div>
     <div class="line"><span>Pace</span><span>${pc?`<b>${pct(pc.pct,0)}</b> ${pc.label}`:'–'}</span></div>
-    ${p?`<div class="line"><span>Party mix so far</span><b style="color:${scol(b.ev.dr)}">${sgn(b.ev.dr)}</b></div>${bar}`:'<div class="line"><span>Party mix</span><span class="muted">no party registration</span></div>'}
+    ${h?`<div class="line"><span>D&minus;R, ${h.votes==='mail'?'mail':'all early'}</span><span><span class="muted">${h.year} ${sgn(h.from)} →</span> <b style="color:${scol(h.to)}">${sgn(h.to)}</b></span></div>`:''}
+    ${p?`<div class="line"><span>Party mix, all early votes</span><b style="color:${scol(b.ev.dr)}">${sgn(b.ev.dr)}</b></div>${bar}`:'<div class="line"><span>Party mix</span><span class="muted">no party registration</span></div>'}
     <div class="mini">${minis.join('')}</div>
-    ${Object.keys(sp).length?`<div class="basis" style="margin-top:6px">Ballots so far vs ${Object.keys(sp).filter(y=>y!='2026').join(', ')||'–'} at this point</div>${bgChart(sp,{w:220,h:34,xmax:45,mini:true})}`:''}
+    ${Object.keys(sp).length?`<div class="basis" style="margin-top:6px">${Object.keys(sp).some(y=>y!='2026')?`Ballots so far vs ${Object.keys(sp).filter(y=>y!='2026').join(', ')} at this point`:'2026 ballots so far (no earlier cycle at this point)'}</div>${bgChart(sp,{w:220,h:34,xmax:45,mini:true})}`:''}
   </div>`;
 }
 // too early to read a party shift: same-day comparisons are matched on timing, so only the
@@ -584,8 +614,9 @@ function bgDetail(b,E){
   const cl=b.county_lean;
   const E2=E||{};
   return `<button class="x" aria-label="Close">×</button>
-    <h2>${esc(b.state_name)} <span class="chip">${TIER[b.tier]}</span></h2>
-    <div class="small muted">Data through ${esc(b.data_through)} · ${b.days_out} days before Election Day. ${esc(TIER_T[b.tier])}</div>
+    <h2>${esc(b.state_name)} <span class="chip">${TIER[bgKind(b)]}</span></h2>
+    <div class="small muted">Data through ${esc(b.data_through)} · ${b.days_out} days before Election Day. ${esc(TIER_T[bgKind(b)])}</div>
+    ${b.headline?`<div style="margin-top:6px">Headline: <b style="color:${scol(b.headline.value)}">${sgn(b.headline.value)}</b> <span class="small muted">(${esc(b.headline.basis)}: ${b.headline.year} ${sgn(b.headline.from)} → 2026 ${sgn(b.headline.to)})</span></div>`:''}
     <div class="small" style="margin-top:6px">${b.races.map(r=>`<div>${r.office}: ${cand(r.candidate_a,r.party_a)} ${r.a_avg} · ${cand(r.candidate_b,r.party_b)} ${r.b_avg} <span class="muted">(${r.polls_averaged} polls, latest ${esc(r.latest_poll_end)})</span></div>`).join('')||'<span class="muted">No recent statewide polls.</span>'}</div>
     <div class="two">
       <div><h4>Early votes, cumulative</h4>${bgLegend(ys)}${bgChart(tot,{fmtY:k,marker:b.days_out})}</div>
@@ -596,21 +627,48 @@ function bgDetail(b,E){
       ${b.pct_of_final_2022!=null?` ${pct(b.pct_of_final_2022)} of the whole 2022 early vote`:''}${b.pct_of_final_2024!=null?`, ${pct(b.pct_of_final_2024)} of 2024's.`:'.'}</div>
     ${rows?`<h4>Same point in earlier cycles</h4><table><thead><tr><th class="l"></th><th>Ballots then</th><th>2026 as %</th><th>D&minus;R then</th></tr></thead><tbody>${rows}</tbody></table>`:''}
     ${sh?`<h4>Mail-ballot shift, and the result if it carried over</h4><table><thead><tr><th class="l"></th><th>2026 mail</th><th>Then</th><th>Shift</th><th>Actual result</th><th>If shift held</th></tr></thead><tbody>${sh}</tbody></table><div class="small muted">Arithmetic, not a forecast: registration isn't vote choice, and mail voters aren't the whole electorate.</div>`:''}
-    ${cl?`<h4>County lean</h4><div class="small">This year's early votes come from counties that voted <b>${sgn(cl.early_2026)}</b> in 2024, weighted by each county's early votes so far. The whole 2024 vote came from counties that voted ${sgn(cl.turnout_2024)} (the statewide result). Difference: <b style="color:${scol(cl.shift)}">${sgn(cl.shift)}</b>, across ${cl.counties} counties. No 2024 county early-vote counts exist to compare at the same point, so part of this gap is just which counties vote early.</div>`:''}`;
+    ${cl?`<h4>County lean</h4><div class="small">This year's early votes come from counties that voted <b>${sgn(cl.early_2026)}</b> in 2024, weighted by each county's early votes so far. The whole 2024 vote came from counties that voted ${sgn(cl.turnout_2024)} (the statewide result). Difference: <b style="color:${scol(cl.shift)}">${sgn(cl.shift)}</b>, across ${cl.counties} counties and ${fmt(cl.ballots)} ballots in UF's county file${cl.ballots<.95*(b.ev.total||0)?`, which is behind the statewide total of ${fmt(b.ev.total)}`:''}. No 2024 county early-vote counts exist to compare at the same point, so part of this gap is just which counties vote early.</div>`:''}`;
+}
+
+// one row per state: 2024 margin (hollow) to 2026 margin (solid) on a shared R-D axis,
+// grouped by how solid the comparison is
+function bgOverview(B){
+  const vals=B.filter(b=>b.headline).flatMap(b=>[b.headline.from,b.headline.to]).map(Math.abs);
+  const lim=Math.max(20,Math.ceil(Math.max(...vals,0)/10)*10),pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
+  const tot=B.reduce((a,b)=>a+(b.ev.total||0),0);
+  const polls=b=>b.races.map(r=>`${r.office==='Senate'?'Sen':'Gov'} <b style="color:${scol(+r.margin_d_minus_r)}">${(+r.margin_d_minus_r>=0?'D':'R')}+${Math.abs(+r.margin_d_minus_r).toFixed(1)}</b>`).join(' ')||'<span class="muted">no recent polls</span>';
+  const row=b=>{const h=b.headline,pc=bgPace(b),kd=bgKind(b),early=bgEarly(b);
+    let tr='<span class="muted small">no party or county data</span>';
+    if(h){const a=pos(h.from),z=pos(h.to),c=scol(h.value);
+      tr=`<div class="ov-tr" title="${esc(h.basis)}: ${h.year} ${sgn(h.from)} → 2026 ${sgn(h.to)}"><div class="bg"></div><div class="mid"></div>
+        <div class="ln${kd==='same'?'':' dash'}" style="left:${Math.min(a,z)}%;width:${Math.abs(z-a)}%;background:${c};color:${c}"></div>
+        <div class="o" style="left:${a}%"></div><div class="s" style="left:${z}%;background:${scol(h.to)}"></div></div>`}
+    return `<div class="ov-row${early?' early':''}" data-st="${b.state}" tabindex="0">
+      <div class="ov-st"><b>${b.state}</b> <span class="nm">${esc(b.state_name)}</span><small>${fmt(b.ev.total)} early votes${early?' · too early':''}</small></div>
+      ${tr}
+      <div class="ov-n"><b style="color:${scol(h?.value)}">${h?sgn(h.value):'–'}</b></div>
+      <div class="small" style="white-space:nowrap">${pc?`<b>${pct(pc.pct,0)}</b> <span class="muted">of 2024 ${pc.same?'same day':'final'}</span>`:'–'}</div>
+      <div class="small">${polls(b)}</div></div>`};
+  const hs=b=>b.headline?b.headline.value:-1e9;
+  const groups=[['same','Same day: all early votes (mail and in person)','compared with the same number of days before Election Day in 2024. The most reliable read.'],
+    ['final','Vs final: mail ballots only','compared with the final 2024 mail-ballot mix, not the same day. Early mail leans more D than the final count, so these overstate any D move.'],
+    ['county','County lean: all early votes','no usable party data. The 2024 margin of the counties this year\'s early votes come from, vs the 2024 statewide margin. Part of the gap is just which counties vote early.'],
+    ['none','Turnout only','no party registration and no county file.']];
+  const tick=v=>v===0?'0':(v<0?'R+':'D+')+Math.abs(v);
+  $('#ov').innerHTML=`<h2>Battlegrounds at a glance</h2>
+    <div class="small muted">${fmt(tot)} early votes across ${B.length} states, data through ${esc(B.map(b=>b.data_through).sort().pop())}. Each line runs from the 2024 D&minus;R margin to 2026's; the arrow's color shows which way it moved. Click a state for detail.</div>
+    <div class="ov-key"><span><i style="border:2px solid var(--muted);background:var(--panel)"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
+      <span>solid line: same-day comparison</span><span>dashed: vs final or county lean (rough)</span><span>faded: too few votes in to read</span></div>
+    <div class="ov-hd"><span>State</span><span style="text-align:center">R ← D&minus;R margin → D</span><span class="ov-n">Shift</span><span>Turnout pace</span><span>Polls</span></div>`
+    +groups.map(([k,t,d])=>{const L=B.filter(b=>bgKind(b)===k).sort((a,b)=>(bgEarly(a)-bgEarly(b))||hs(b)-hs(a));
+      return L.length?`<div class="ov-g"><b>${t}</b> <span>${d}</span></div>`+L.map(row).join(''):''}).join('')
+    +`<div class="ov-ax"><span></span><div>${[-lim,-lim/2,0,lim/2,lim].map(v=>`<span>${tick(v)}</span>`).join('')}</div><span></span><span></span><span></span></div>`;
 }
 
 function battlegrounds(){
   const B=D.battlegrounds||[];if(!B.length){$('#bg-grid').innerHTML='<p class="muted">No battleground data yet.</p>';return}
   const E={};D.ev_states.forEach(r=>E[r.state]=r);
-  const tot=B.reduce((a,b)=>a+(b.ev.total||0),0);
-  const hv=B.filter(b=>b.headline&&!bgEarly(b)),toD=hv.filter(b=>b.headline.value>0),toR=hv.filter(b=>b.headline.value<0);
-  const solid=B.filter(b=>b.tier==='same_day'),sp=B.map(b=>({b,p:bgPace(b)})).filter(x=>x.p&&x.p.same);
-  const card=(l,v,s)=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
-  $('#bg-top').innerHTML=card('Early votes, these states',fmt(tot),`${B.length} battlegrounds`)
-    +card('Moving toward D',`<span style="color:var(--dem)">${toD.length}</span> <span class="muted" style="font-size:16px">of ${hv.length}</span>`,toD.map(b=>b.state).join(' · ')||'none')
-    +card('Moving toward R',`<span style="color:var(--rep)">${toR.length}</span> <span class="muted" style="font-size:16px">of ${hv.length}</span>`,toR.map(b=>b.state).join(' · ')||'none')
-    +card('Same-day party shift',`<div style="font-size:15px;line-height:1.5">${solid.map(b=>`${b.state} <span style="color:${scol(b.headline.value)}">${sgn(b.headline.value)}</span>`).join('<br>')||'–'}</div>`,'mail mix vs 2024, the most reliable reads')
-    +card('Turnout vs same day',`<div style="font-size:15px;line-height:1.5">${sp.map(x=>`${x.b.state} ${pct(x.p.pct,0)}`).join('<br>')||'–'}</div>`,sp.length?'of 2024 at this point':'');
+  bgOverview(B);
   let sort='shift';
   const hs=b=>b.headline&&!bgEarly(b)?b.headline.value:-1e9; // too-early states sort last
   const by={shift:(a,b)=>hs(b)-hs(a),
@@ -627,12 +685,15 @@ function battlegrounds(){
     pop.style.transform='none';const r=el.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight,vw=innerWidth,vh=innerHeight;
     let x=r.right+10;if(x+pw>vw-8)x=r.left-pw-10;if(x<8)x=Math.max(8,(vw-pw)/2);
     pop.style.left=x+'px';pop.style.top=Math.max(8,Math.min(r.top,vh-ph-8))+'px'};
-  const grid=$('#bg-grid'),hover=matchMedia('(hover:hover) and (pointer:fine)').matches;
-  if(hover){grid.addEventListener('mouseover',e=>{const c=e.target.closest('.card');if(!c||pinned)return;clearTimeout(timer);timer=setTimeout(()=>open(c,false),220)});
-    grid.addEventListener('mouseleave',()=>{clearTimeout(timer);if(!pinned)close()});
-    grid.addEventListener('mouseout',e=>{if(!e.relatedTarget||!e.relatedTarget.closest||!e.relatedTarget.closest('.card'))clearTimeout(timer)})}
-  grid.addEventListener('click',e=>{const c=e.target.closest('.card');if(c){clearTimeout(timer);open(c,true)}});
-  grid.addEventListener('keydown',e=>{const c=e.target.closest('.card');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(c,true)}});
+  // the same handlers serve the overview rows and the cards (anything with data-st)
+  const hover=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  [$('#ov'),$('#bg-grid')].forEach(grid=>{
+    if(hover){grid.addEventListener('mouseover',e=>{const c=e.target.closest('[data-st]');if(!c||pinned)return;clearTimeout(timer);timer=setTimeout(()=>open(c,false),250)});
+      grid.addEventListener('mouseleave',()=>{clearTimeout(timer);if(!pinned)close()});
+      grid.addEventListener('mouseout',e=>{if(!e.relatedTarget||!e.relatedTarget.closest||!e.relatedTarget.closest('[data-st]'))clearTimeout(timer)})}
+    grid.addEventListener('click',e=>{const c=e.target.closest('[data-st]');if(c){clearTimeout(timer);open(c,true)}});
+    grid.addEventListener('keydown',e=>{const c=e.target.closest('[data-st]');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();open(c,true)}});
+  });
   shade.onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 }
 

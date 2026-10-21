@@ -100,7 +100,8 @@ def _county_lean(con, st):
         return None
     d, r, t = (sum(x[i] for x in res.values()) for i in range(3))
     early, base = round(100 * num / den, 1), round(100 * (d - r) / t, 1)
-    return {"early_2026": early, "turnout_2024": base, "shift": round(early - base, 1), "counties": len(ev)}
+    return {"early_2026": early, "turnout_2024": base, "shift": round(early - base, 1), "counties": len(ev),
+            "ballots": den}
 
 
 def battlegrounds(con, day, hist, race_summary):
@@ -123,21 +124,30 @@ def battlegrounds(con, day, hist, race_summary):
             prev = _at(curves.get(year, []), dout, exact)
             if cur and prev and prev[1]:
                 pace[str(year)] = {"pct": round(100 * cur[1] / prev[1], 1), "base": prev[1],
-                                   "dr_base": prev[2], "days_out": prev[0]}
+                                   "dr_base": prev[2], "dr_now": cur[2], "days_out": prev[0]}
         shifts = {y: p[y] for y in ("2022", "2024") if p.get(y, {}).get("shift") is not None}
         lean = _county_lean(con, st)
         same = [y for y, s in shifts.items() if s.get("basis") == "same day"]
         tier = ("same_day" if same else "turnout" if exact else "final" if shifts else "county")
-        # headline: the most reliable shift available
+        # Headline: the most reliable shift available, with the two margins it compares.
+        # Same day: all early votes (mail and in person), since both years are counted through the
+        # same day. Vs final: mail ballots only, because in-person voting starts later and the
+        # final in-person mix would be compared with only a few days of it. County lean: all
+        # early votes.
         head = None
         for y in ("2024", "2022"):
-            if y in same:
-                head = {"value": shifts[y]["shift"], "basis": f"mail vs {y} same day"}
+            pc = pace.get(y)
+            if y in same and pc and pc["dr_base"] is not None and pc["dr_now"] is not None:
+                head = {"value": round(pc["dr_now"] - pc["dr_base"], 1), "from": pc["dr_base"], "to": pc["dr_now"],
+                        "year": y, "votes": "all", "basis": f"all early votes vs {y} same day"}
                 break
         if not head and "2024" in shifts:
-            head = {"value": shifts["2024"]["shift"], "basis": "mail vs 2024 final"}
+            s = shifts["2024"]
+            head = {"value": round(s["mail_2026"] - s["mail_base"], 1), "from": s["mail_base"], "to": s["mail_2026"],
+                    "year": "2024", "votes": "mail", "basis": "mail ballots vs 2024 final"}
         if not head and lean:
-            head = {"value": lean["shift"], "basis": "county lean vs 2024 turnout"}
+            head = {"value": lean["shift"], "from": lean["turnout_2024"], "to": lean["early_2026"],
+                    "year": "2024", "votes": "all", "basis": "county lean of all early votes vs 2024 turnout"}
         races = []
         for r in race_summary:
             if r["state"] == st and not r["district"] and r["status"] == "ok" and r["office"] in ("Senate", "Governor"):
