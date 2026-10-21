@@ -125,10 +125,18 @@ CREATE TABLE IF NOT EXISTS ref_results (
 );
 
 -- Presidential results by county, used to read the partisan lean of where early votes come from.
-CREATE TABLE IF NOT EXISTS ref_county_results (
-    state TEXT NOT NULL, year INTEGER NOT NULL, county TEXT NOT NULL,
+DROP TABLE IF EXISTS ref_county_results;  -- replaced by ref_county_pres (adds fips)
+CREATE TABLE IF NOT EXISTS ref_county_pres (
+    state TEXT NOT NULL, year INTEGER NOT NULL, county TEXT NOT NULL, fips TEXT,
     dem INTEGER, rep INTEGER, total INTEGER,
     PRIMARY KEY (state, year, county)
+);
+
+-- Final pre-Election-Day votes and all votes by county, from EAVS (jurisdictions summed to county).
+CREATE TABLE IF NOT EXISTS ref_county_early (
+    state TEXT NOT NULL, year INTEGER NOT NULL, fips TEXT NOT NULL,
+    early INTEGER, total INTEGER,
+    PRIMARY KEY (state, year, fips)
 );
 
 -- Final pre-Election-Day votes from the EAC's Election Administration and Voting Survey.

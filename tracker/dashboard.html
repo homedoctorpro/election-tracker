@@ -189,7 +189,7 @@ svg.spark{vertical-align:middle}
   </div>
   <div class="bg-grid" id="bg-grid"></div>
   <p class="small muted" style="margin-top:10px">
-    <b>Shift</b> is the 2026 mail-ballot D&minus;R margin (party registration) minus the same figure in the baseline year. <b>County lean</b>, used where voters don't register by party, is the 2024 presidential margin of the counties this year's early votes come from, minus the 2024 statewide margin. Where early voting runs heavier in big metro counties, county lean tilts toward D for reasons that have nothing to do with 2026, so treat it as a rough signal. <b>Pace</b> is 2026 ballots as a share of the same point in an earlier cycle, or of that cycle's whole early vote where no same-day count exists.
+    <b>Shift</b> is the 2026 D&minus;R margin (party registration) minus the same figure in 2024: all early votes at the same point in same-day states, mail ballots against the final 2024 mail mix in vs-final states. <b>County lean</b>, used where voters don't register by party, is the 2024 presidential margin of the counties this year's early votes come from, minus the same figure for the 2024 early vote by county (EAC survey). The 2024 base is the full early vote while 2026 is partway through, so treat it as a rough signal. <b>Pace</b> is 2026 ballots as a share of the same point in an earlier cycle, or of that cycle's whole early vote where no same-day count exists.
   </p>
 </section>
 <div id="bg-shade" hidden></div>
@@ -538,7 +538,7 @@ const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==
 const TIER={same:'same day · all votes',final:'vs final · mail only',county:'county lean · all votes',none:'turnout only'};
 const TIER_T={same:'All early votes (mail and in person) by party, compared with the same number of days before Election Day in 2024, from voter files or daily state reports. The most reliable read.',
   final:'Mail ballots only, compared with the final 2024 mail-ballot mix rather than the same day. Early mail returns usually lean more Democratic than the final count, so this overstates any move toward D. In-person votes are left out because in-person voting starts later and only a few days of it are in.',
-  county:'No usable party data, so the signal is the 2024 presidential margin of the counties this year\'s early votes (mail and in person) come from, compared with the 2024 statewide margin. Part of the gap is just which counties vote early.',
+  county:'No usable party data, so the signal is the 2024 presidential margin of the counties this year\'s early votes (mail and in person) come from, compared with the same figure for the whole 2024 early vote by county. 2026 is only partway through, so the mix of counties still moves.',
   none:'No party registration and no county file, so only turnout is shown.'};
 
 function bgPace(b){ // best available turnout comparison
@@ -583,7 +583,8 @@ function bgCard(b,E){
   if(kd==='same'&&b.pace['2022']&&b.pace['2022'].dr_base!=null){const q=b.pace['2022'];
     minis.push(`<span title="All early votes: 2026 ${sgn(q.dr_now)} vs 2022 same day ${sgn(q.dr_base)}">all vs 2022 <b style="color:${scol(q.dr_now-q.dr_base)}">${sgn(q.dr_now-q.dr_base)}</b></span>`)}
   ['2022','2024'].forEach(y=>{const s=b.shifts[y];if(s&&kd==='same')minis.push(`<span title="Mail ballots only: 2026 ${sgn(s.mail_2026)} vs ${y} same day ${sgn(s.mail_base)}${s.reg_adjusted?', adjusted for party registration':''}">mail vs ${y} <b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></span>`)});
-  if(b.county_lean&&kd!=='county')minis.push(`<span title="2024 margin of the counties this year's early vote comes from: ${sgn(b.county_lean.early_2026)}, vs ${sgn(b.county_lean.turnout_2024)} statewide in 2024">county lean <b style="color:${scol(b.county_lean.shift)}">${sgn(b.county_lean.shift)}</b></span>`);
+  const cl=b.county_lean&&b.county_lean['2024'];
+  if(cl&&kd!=='county')minis.push(`<span title="2024 margin of the counties this year's early vote comes from: ${sgn(cl.early_2026)}, vs ${sgn(cl.base)} for the 2024 ${esc(cl.basis)}">county lean <b style="color:${scol(cl.shift)}">${sgn(cl.shift)}</b></span>`);
   // mini chart: each cycle's cumulative ballots up to this point in the calendar only
   const sp={};Object.entries(b.curves).forEach(([y,c])=>{if(+y>=2022){const s=c.filter(q=>q[0]>=b.days_out&&q[0]<=45).map(q=>[q[0],q[1]]);if(s.length)sp[y]=s}});
   return `<div class="card${kd==='same'?'':' soft'}" style="--tint:${tint}${early?';opacity:.55':''}" tabindex="0" data-st="${b.state}">
@@ -611,7 +612,7 @@ function bgDetail(b,E){
   const ys=Object.keys(tot),k=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?Math.round(v/1e3)+'K':Math.round(v);
   const rows=Object.entries(b.pace).map(([y,p])=>`<tr><td class="l">${y}, ${p.days_out} days out</td><td>${fmt(p.base)}</td><td><b>${pct(p.pct,0)}</b></td><td>${sgn(p.dr_base)}</td></tr>`).join('');
   const sh=Object.entries(b.shifts).map(([y,s])=>`<tr><td class="l">vs ${y} ${s.basis==='same day'?`(same day, ${s.days_out} out)`:'(final)'}</td><td>${sgn(s.mail_2026)}</td><td>${sgn(s.mail_base)}</td><td><b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></td><td class="muted">${sgn(s.result)} ${esc(s.race||'')}</td><td><b>${sgn(s.projected)}</b></td></tr>`).join('');
-  const cl=b.county_lean;
+  const CL=Object.entries(b.county_lean||{});
   const E2=E||{};
   return `<button class="x" aria-label="Close">×</button>
     <h2>${esc(b.state_name)} <span class="chip">${TIER[bgKind(b)]}</span></h2>
@@ -627,7 +628,9 @@ function bgDetail(b,E){
       ${b.pct_of_final_2022!=null?` ${pct(b.pct_of_final_2022)} of the whole 2022 early vote`:''}${b.pct_of_final_2024!=null?`, ${pct(b.pct_of_final_2024)} of 2024's.`:'.'}</div>
     ${rows?`<h4>Same point in earlier cycles</h4><table><thead><tr><th class="l"></th><th>Ballots then</th><th>2026 as %</th><th>D&minus;R then</th></tr></thead><tbody>${rows}</tbody></table>`:''}
     ${sh?`<h4>Mail-ballot shift, and the result if it carried over</h4><table><thead><tr><th class="l"></th><th>2026 mail</th><th>Then</th><th>Shift</th><th>Actual result</th><th>If shift held</th></tr></thead><tbody>${sh}</tbody></table><div class="small muted">Arithmetic, not a forecast: registration isn't vote choice, and mail voters aren't the whole electorate.</div>`:''}
-    ${cl?`<h4>County lean</h4><div class="small">This year's early votes come from counties that voted <b>${sgn(cl.early_2026)}</b> in 2024, weighted by each county's early votes so far. The whole 2024 vote came from counties that voted ${sgn(cl.turnout_2024)} (the statewide result). Difference: <b style="color:${scol(cl.shift)}">${sgn(cl.shift)}</b>, across ${cl.counties} counties and ${fmt(cl.ballots)} ballots in UF's county file${cl.ballots<.95*(b.ev.total||0)?`, which is behind the statewide total of ${fmt(b.ev.total)}`:''}. No 2024 county early-vote counts exist to compare at the same point, so part of this gap is just which counties vote early.</div>`:''}`;
+    ${CL.length?`<h4>County lean</h4><div class="small">This year's early votes come from counties that voted <b>${sgn(CL[0][1].early_2026)}</b> in 2024 for president, weighted by each county's early votes so far (${fmt(CL[0][1].ballots)} ballots in UF's county file${CL[0][1].ballots<.95*(b.ev.total||0)?`, which is behind the statewide total of ${fmt(b.ev.total)}`:''}).
+      ${CL.map(([y,c])=>`The whole ${y} ${c.basis==='turnout'?'vote':'early vote'} came from counties that voted ${sgn(c.base)}: difference <b style="color:${scol(c.shift)}">${sgn(c.shift)}</b>.`).join(' ')}
+      Earlier early votes by county are final totals from the EAC survey${CL.some(([y,c])=>c.basis==='turnout')?' (2024 turnout where the survey has no county early votes)':''}, while 2026 is partway through.</div>`:''}`;
 }
 
 // one row per state: 2024 margin (hollow) to 2026 margin (solid) on a shared R-D axis,
@@ -652,10 +655,10 @@ function bgOverview(B){
   const hs=b=>b.headline?b.headline.value:-1e9;
   const groups=[['same','Same day: all early votes (mail and in person)','compared with the same number of days before Election Day in 2024. The most reliable read.'],
     ['final','Vs final: mail ballots only','compared with the final 2024 mail-ballot mix, not the same day. Early mail leans more D than the final count, so these overstate any D move.'],
-    ['county','County lean: all early votes','no usable party data. The 2024 margin of the counties this year\'s early votes come from, vs the 2024 statewide margin. Part of the gap is just which counties vote early.'],
+    ['county','County lean: all early votes','no usable party data. The 2024 margin of the counties this year\'s early votes come from, vs the same figure for the whole 2024 early vote.'],
     ['none','Turnout only','no party registration and no county file.']];
   const tick=v=>v===0?'0':(v<0?'R+':'D+')+Math.abs(v);
-  $('#ov').innerHTML=`<h2 style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Battlegrounds at a glance <a href="share.png" target="_blank" rel="noopener" style="font-size:13px;font-weight:500">Share image</a></h2>
+  $('#ov').innerHTML=`<h2 style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Battlegrounds at a glance <span style="font-size:13px;font-weight:500">Share images: <a href="share.png" target="_blank" rel="noopener">vs 2024</a> · <a href="share-2022.png" target="_blank" rel="noopener">vs 2022</a> · <a href="share-trend.png" target="_blank" rel="noopener">day by day</a></span></h2>
     <div class="small muted">${fmt(tot)} early votes across ${B.length} states, data through ${esc(B.map(b=>b.data_through).sort().pop())}. Each line runs from the 2024 D&minus;R margin to 2026's; the arrow's color shows which way it moved. Click a state for detail.</div>
     <div class="ov-key"><span><i style="border:2px solid var(--muted);background:var(--panel)"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>solid line: same-day comparison</span><span>dashed: vs final or county lean (rough)</span><span>faded: too few votes in to read</span></div>

@@ -45,22 +45,33 @@ h1{font-size:58px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .foot{margin-top:auto;padding-top:18px;font-size:17.5px;line-height:1.4;color:var(--muted)}
 .foot b{color:var(--ink);font-weight:600}
 .url{margin-top:10px;font-size:20px;font-weight:600;color:var(--ink)}
+/* trend: small multiples */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 22px;margin-top:4px}
+.pn{border-top:2px solid var(--ink);padding-top:5px}
+.pn h3{display:flex;justify-content:space-between;align-items:baseline;font-size:22px;font-weight:700}
+.pn h3 span{font-size:22px;font-weight:800}
+.pn .m{font-size:15px;color:var(--muted);margin:0 0 2px;white-space:nowrap}
+.pn svg{display:block}
+.pn.sec{border-top-color:#b9b5ac}
 </style>
 </head>
 <body>
 <div id="wrap"><div id="stage"></div></div>
 <script>
 const DATA=/*DATA*/null;
+const MODE=/*MODE*/'2024'; // '2024' or '2022': shift since that year; 'trend': margin by day
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const sgn=v=>v==null?'':(v>=0?'D+':'R+')+Math.abs(v).toFixed(1);
 const col=v=>v>=0?'var(--dem)':'var(--rep)';
 const k=v=>v>=1e6?(v/1e6).toFixed(2).replace(/0$/,'')+'M':Math.round(v/1e3)+'K';
-const kind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
-const early=b=>b.tier!=='same_day'&&b.headline&&((b.shifts['2024']?.n_2026??1e9)<5000||(b.pct_of_final_2024??100)<5);
-function pace(b){for(const y of ['2024'])if(b.pace[y])return `${Math.round(b.pace[y].pct)}% of 2024 to date`;
-  return b.pct_of_final_2024!=null?`${Math.round(b.pct_of_final_2024)}% of 2024 total`:''}
+const Y=MODE==='2022'?'2022':'2024';
+const head=b=>(b.headlines||{})[Y];
+const kind=b=>head(b)?head(b).kind:'none';
+const early=b=>kind(b)!=='same'&&head(b)&&((b.shifts['2024']?.n_2026??1e9)<5000||(b.pct_of_final_2024??100)<5);
+function pace(b){if(b.pace[Y])return `${Math.round(b.pace[Y].pct)}% of ${Y} to date`;
+  const f=b['pct_of_final_'+Y];return f!=null?`${Math.round(f)}% of ${Y} total`:''}
 function render(){
-  const B=DATA.battlegrounds.filter(b=>b.headline);
+  const B=DATA.battlegrounds.filter(head).map(b=>({...b,headline:head(b)}));
   const vals=B.flatMap(b=>[b.headline.from,b.headline.to]).map(Math.abs);
   const lim=Math.max(20,Math.ceil(Math.max(...vals)/10)*10),pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
   const thru=DATA.battlegrounds.map(b=>b.data_through).sort().pop();
@@ -74,24 +85,72 @@ function render(){
         <div class="o" style="left:${a}%"></div><div class="s" style="left:${z}%;background:${col(h.to)}"></div></div>
       <div class="sh" style="color:${c}">${sgn(h.value)}</div></div>`};
   const by=(a,b)=>(early(a)-early(b))||b.headline.value-a.headline.value;
-  const G=[['same','Same day','all early votes vs this point in 2024'],
+  const G=[['same','Same day',`all early votes vs this point in ${Y}`],
     ['final','Mail vs final','mail ballots vs the final 2024 mix'],
-    ['county','County lean','no party registration']];
-  const missing=DATA.battlegrounds.filter(b=>!b.headline).map(b=>b.state_name);
+    ['county','County lean',Y==='2022'?'no 2022 party data: where early votes come from vs 2022':`no party registration: where early votes come from vs ${Y}`]];
+  const missing=DATA.battlegrounds.filter(b=>!head(b)).map(b=>b.state_name);
   document.getElementById('stage').innerHTML=`
     <div class="kicker">2026 early vote · battlegrounds</div>
-    <h1>How the early vote has shifted since 2024</h1>
-    <div class="sub">D&minus;R margin of early votes, 2024 to 2026. Through ${date}, ${left} days to Election Day.</div>
-    <div class="key"><span><i style="border:4px solid #8a8e96;background:#fff"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
+    <h1>How the early vote has shifted since ${Y}</h1>
+    <div class="sub">D&minus;R margin of early votes, ${Y}${Y==='2022'?' (last midterm)':''} to 2026. Through ${date}, ${left} days to Election Day.</div>
+    <div class="key"><span><i style="border:4px solid #8a8e96;background:#fff"></i>${Y}</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>Dashed = rougher comparison</span><span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
     ${G.map(([g,t,s])=>{const L=B.filter(b=>kind(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
-    <div class="foot"><b>Same day</b> is the most reliable read. <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count. <b>County lean</b> weights early votes by each county's 2024 result.${missing.length?` ${esc(missing.join(', '))}: no party or county data.`:''} Party registration is not vote choice.
-      Sources: UF Election Lab; NC, PA, IA and OH election offices; VoteHub.
+    <div class="foot"><b>Same day</b> is the most reliable read.${Y==='2024'?' <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count.':''}
+      <b>County lean</b> is the 2024 presidential margin of the counties early votes come from, this year vs the whole ${Y} early vote by county.${missing.length?` ${esc(missing.join(', '))}: no ${Y} party or county data.`:''} Party registration is not vote choice.
+      Sources: UF Election Lab; NC, PA, IA and OH election offices; EAC; VoteHub.
+      <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
+}
+
+// trend: the headline measure by days before Election Day, one small chart per state
+const TC={2022:'#9aa0a8',2024:'#e08a1e',2026:'var(--dem)'};
+function chart(t,dout){
+  const W=310,H=150,P={l:44,r:8,t:6,b:22},X0=30;
+  const S=Object.entries(t.series).map(([y,s])=>[y,s.filter(p=>p[0]<=X0)]).filter(([y,s])=>s.length);
+  const vals=S.flatMap(([y,s])=>s.map(p=>p[1])).concat(Object.values(t.final));
+  if(!vals.length)return '';
+  let lo=Math.min(...vals),hi=Math.max(...vals);const pad=Math.max(3,(hi-lo)*.15);lo-=pad;hi+=pad;
+  const x=d=>P.l+(X0-d)/X0*(W-P.l-P.r),y=v=>H-P.b-(v-lo)/(hi-lo)*(H-P.t-P.b);
+  const step=(hi-lo)>40?20:(hi-lo)>16?10:5;
+  let g='';
+  for(let v=Math.ceil(lo/step)*step;v<=hi;v+=step)g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="${v===0?'#9a968d':'#e6e2d9'}" stroke-width="${v===0?1.5:1}"/><text x="${P.l-6}" y="${y(v)+5}" text-anchor="end" font-size="14" fill="#6b6f78">${v===0?'0':(v>0?'D':'R')+Math.abs(v)}</text>`;
+  [30,20,10,0].forEach(d=>g+=`<text x="${x(d)}" y="${H-5}" text-anchor="middle" font-size="14" fill="#6b6f78">${d}</text>`);
+  g+=`<line x1="${x(dout)}" x2="${x(dout)}" y1="${P.t}" y2="${H-P.b}" stroke="#b9b5ac" stroke-dasharray="3 4"/>`;
+  // a year with only a final value: dashed reference line
+  Object.entries(t.final).forEach(([yr,v])=>{if(!(t.series[yr]||[]).some(p=>p[0]<=X0)||t.measure==='mail')
+    g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="${TC[yr]}" stroke-width="2" stroke-dasharray="6 5"/>`});
+  // past-cycle mail figures are a few scattered days, so they're dots rather than a line
+  S.sort((a,b)=>a[0]-b[0]).forEach(([yr,s])=>{const w=yr==='2026'?4:2.5;
+    if(t.measure==='mail'&&yr!=='2026'){s.forEach(p=>g+=`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="4" fill="${TC[yr]}"/>`);return}
+    g+=s.length>1?`<polyline fill="none" stroke="${TC[yr]}" stroke-width="${w}" stroke-linejoin="round" points="${s.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`:'';
+    const e=s[s.length-1];g+=`<circle cx="${x(e[0])}" cy="${y(e[1])}" r="${yr==='2026'?5.5:3.5}" fill="${TC[yr]}"/>`});
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg>`;
+}
+function renderTrend(){
+  const ord={same:0,final:1,county:2},M={all:'All early votes',mail:'Mail ballots',county:'County lean of early votes'};
+  const B=DATA.battlegrounds.filter(b=>b.trend&&b.trend.series['2026']).sort((a,b)=>(ord[a.headline.kind]-ord[b.headline.kind])||b.headline.value-a.headline.value);
+  const thru=DATA.battlegrounds.map(b=>b.data_through).sort().pop();
+  const d=new Date(thru+'T12:00:00'),left=Math.round((new Date('2026-11-03T12:00:00')-d)/864e5);
+  const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const pn=b=>{const t=b.trend,s=t.series['2026'],now=s[s.length-1][1];
+    const h=b.headline;
+    return `<div class="pn${h.kind==='same'?'':' sec'}"><h3>${esc(b.state_name)}<span style="color:${col(now)}">${sgn(now)}</span></h3>
+      <div class="m">${M[t.measure]} · <b style="color:${col(h.value)}">${sgn(h.value)}</b> vs 2024</div>${chart(t,b.days_out)}</div>`};
+  const missing=DATA.battlegrounds.filter(b=>!B.includes(b)).map(b=>b.state_name);
+  document.getElementById('stage').innerHTML=`
+    <div class="kicker">2026 early vote · battlegrounds</div>
+    <h1>The early vote, day by day</h1>
+    <div class="sub">D&minus;R margin by days before Election Day. Through ${date}, ${left} days to go.</div>
+    <div class="key"><span><i style="background:${TC[2026]}"></i>2026</span><span><i style="background:${TC[2024]}"></i>2024</span><span><i style="background:${TC[2022]}"></i>2022</span>
+      <span>Dashed line = that year's final</span></div>
+    <div class="grid">${B.map(pn).join('')}</div>
+    <div class="foot"><b>All early votes</b>: every day of all three cycles. <b>Mail ballots</b>: 2024 dots are the few days on file. <b>County lean</b>: the 2024 presidential margin of the counties early votes come from, where party data isn't usable; dashed lines are the whole 2024 and 2022 early vote.${missing.length?` ${esc(missing.join(', '))}: no daily data.`:''}
+      Sources: UF Election Lab; NC, PA, IA, OH election offices; EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }
 function fit(){const w=document.getElementById('wrap'),s=Math.min(1,w.clientWidth/1080);
   document.getElementById('stage').style.transform=`scale(${s})`;w.style.height=1350*s+'px'}
-render();fit();addEventListener('resize',fit);
+(MODE==='trend'?renderTrend:render)();fit();addEventListener('resize',fit);
 </script>
 </body>
 </html>

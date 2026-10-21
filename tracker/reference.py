@@ -178,11 +178,36 @@ def build_county_results():
     for r in csv.DictReader(io.StringIO(fetch(COUNTY_2024).decode("utf-8-sig"))):
         st = by_name.get(r["state_name"])
         if st:
-            t = tot.setdefault((st, county_key(r["county_name"])), [0, 0, 0])
-            for i, k in enumerate(("votes_dem", "votes_gop", "total_votes")):
+            t = tot.setdefault((st, county_key(r["county_name"])), [r["county_fips"].zfill(5), 0, 0, 0])
+            for i, k in enumerate(("votes_dem", "votes_gop", "total_votes"), 1):
                 t[i] += int(float(r[k]))
-    _write("county_results.csv", ["state", "year", "county", "dem", "rep", "total"],
+    _write("county_results.csv", ["state", "year", "county", "fips", "dem", "rep", "total"],
            [(st, 2024, c, *v) for (st, c), v in tot.items()])
+
+
+def build_eavs_county():
+    """EAVS pre-Election-Day votes by county for 2022 and 2024: mail + early in person + mail in
+    all-mail jurisdictions, with negative "not available" codes skipped (a county with none of
+    the three reported is left blank). Jurisdictions are summed to their county by the first five
+    digits of the ten-digit FIPS code; states whose codes aren't county-based (Wisconsin's
+    municipalities) are left out."""
+    rows = []
+    for year, url in EAVS.items():
+        with zipfile.ZipFile(io.BytesIO(fetch(url, timeout=300))) as z:
+            name = next(n for n in z.namelist() if n.lower().endswith(".csv"))
+            data = list(csv.DictReader(io.TextIOWrapper(z.open(name), encoding="latin-1")))
+        by = {}
+        for r in data:
+            st, f = r["State_Abbr"].strip(), r["FIPSCode"].strip()
+            if st not in STATES or len(f) != 10:
+                continue
+            parts = [_n(r.get(k)) for k in ("F1d", "F1f", "F1g")]
+            c = by.setdefault((st, f[:5]), [None, 0])
+            if any(p is not None for p in parts):
+                c[0] = (c[0] or 0) + sum(p or 0 for p in parts)
+            c[1] += _n(r.get("F1a")) or 0
+        rows += [(st, year, f, None if e is None else int(e), int(t)) for (st, f), (e, t) in sorted(by.items())]
+    _write("eavs_county.csv", ["state", "year", "fips", "early", "total"], rows)
 
 
 PA_REG_PDFS = {
@@ -288,8 +313,10 @@ def load(con):
         con.executemany("INSERT INTO pace_county VALUES (?,?,?,?,?,?,?)", rows(p.name))
     con.execute("DELETE FROM registration WHERE year < 2026")
     con.executemany("INSERT INTO registration VALUES (?,?,?,?,?,?)", rows("registration.csv"))
-    con.execute("DELETE FROM ref_county_results")
-    con.executemany("INSERT INTO ref_county_results VALUES (?,?,?,?,?,?)", rows("county_results.csv"))
+    con.execute("DELETE FROM ref_county_pres")
+    con.executemany("INSERT INTO ref_county_pres VALUES (?,?,?,?,?,?,?)", rows("county_results.csv"))
+    con.execute("DELETE FROM ref_county_early")
+    con.executemany("INSERT INTO ref_county_early VALUES (?,?,?,?,?)", rows("eavs_county.csv"))
     con.execute("DELETE FROM ref_results")
     con.executemany("INSERT INTO ref_results VALUES (?,?,?,?,?,?)", rows("results_state.csv"))
     # hand-entered from each state's certified canvass (the FEC doesn't cover governors)
@@ -301,7 +328,7 @@ def load(con):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "oh", "results", "registration",
-                                        "county_results"])
+                                        "county_results", "eavs_county"])
     ap.add_argument("--from-archive", type=int, metavar="CYCLE",
                     help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
@@ -323,3 +350,5 @@ if __name__ == "__main__":
         build_results()
     if a.build in ("all", "county_results"):
         build_county_results()
+    if a.build in ("all", "eavs_county"):
+        build_eavs_county()
