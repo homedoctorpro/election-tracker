@@ -40,15 +40,25 @@ def _signed_get(path, key_id, key):
         return json.load(r)
 
 
-def _num(d, *keys):
-    """First numeric value among `keys` (Kalshi reports some fields in cents, newer ones in dollars)."""
-    for k in keys:
-        if d.get(k) is not None:
-            try:
-                return float(d[k]) / (100 if not k.endswith(("_dollars", "_fp")) else 1)
-            except (TypeError, ValueError):
-                pass
-    return None
+def dollars(d, base):
+    """Kalshi is migrating numeric fields, so read whichever form is present (same rules as
+    Tallysheet's readDollars): `<base>_dollars` is a dollar string; a bare number is integer
+    cents (revenue: 9852); a bare string is dollars (fee_cost: "1.723500")."""
+    v = d.get(f"{base}_dollars")
+    if v not in (None, ""):
+        return float(v)
+    v = d.get(base)
+    if isinstance(v, (int, float)):
+        return v / 100
+    return float(v) if v not in (None, "") else 0.0
+
+
+def count(d, base):
+    """Contract counts: `<base>_fp` (fixed-point string) or a bare number."""
+    v = d.get(f"{base}_fp")
+    if v in (None, ""):
+        v = d.get(base)
+    return float(v) if v not in (None, "") else 0.0
 
 
 def main():
@@ -61,7 +71,10 @@ def main():
     bal = _signed_get("/trade-api/v2/portfolio/balance", key_id, key)
     print(f"Balance: ${_num(bal, 'balance_dollars', 'balance') or 0:,.2f}")
 
-    # overall win/loss across settled markets: payout minus what the contracts cost
+    # Overall win/loss across settled markets, by the same formula as Tallysheet
+    # (Documents/tallysheet, tallysheet.vercel.app): revenue + $1 x min(yes, no) - yes cost
+    # - no cost - fees. The min() term counts cash-outs: opposing yes/no pairs redeem $1 each
+    # before settlement, and the settlement record leaves them out of revenue.
     wins = losses = 0
     net = 0.0
     cursor = ""
@@ -71,14 +84,17 @@ def main():
         for x in s.get("settlements", []):
             cost = (_num(x, "yes_total_cost_dollars", "yes_total_cost") or 0) + \
                    (_num(x, "no_total_cost_dollars", "no_total_cost") or 0)
-            pnl = (_num(x, "revenue_dollars", "revenue") or 0) - cost
+            pairs = min(float(x.get("yes_count_fp") or x.get("yes_count") or 0),
+                        float(x.get("no_count_fp") or x.get("no_count") or 0))
+            fees = _num(x, "fee_cost_dollars", "fee_cost") or 0
+            pnl = (_num(x, "revenue_dollars", "revenue") or 0) + pairs - cost - fees
             net += pnl
             wins += pnl > 0
             losses += pnl < 0
         cursor = s.get("cursor")
         if not cursor:
             break
-    print(f"Settled: {wins} won, {losses} lost, net ${net:+,.2f} (before fees)")
+    print(f"Settled: {wins} won, {losses} lost, net ${net:+,.2f}")
 
     pos = _signed_get("/trade-api/v2/portfolio/positions?limit=200", key_id, key)
     positions = [p for p in pos.get("market_positions", []) if _num(p, "position_fp", "position")]
