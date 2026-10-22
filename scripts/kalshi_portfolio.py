@@ -69,7 +69,7 @@ def main():
         key = serialization.load_pem_private_key(f.read(), password=None)
 
     bal = _signed_get("/trade-api/v2/portfolio/balance", key_id, key)
-    print(f"Balance: ${_num(bal, 'balance_dollars', 'balance') or 0:,.2f}")
+    print(f"Balance: ${dollars(bal, 'balance'):,.2f}")
 
     # Overall win/loss across settled markets, by the same formula as Tallysheet
     # (Documents/tallysheet, tallysheet.vercel.app): revenue + $1 x min(yes, no) - yes cost
@@ -79,15 +79,11 @@ def main():
     net = 0.0
     cursor = ""
     while True:
-        s = _signed_get("/trade-api/v2/portfolio/settlements?limit=200" + (f"&cursor={cursor}" if cursor else ""),
+        s = _signed_get("/trade-api/v2/portfolio/settlements?limit=1000" + (f"&cursor={cursor}" if cursor else ""),
                         key_id, key)
         for x in s.get("settlements", []):
-            cost = (_num(x, "yes_total_cost_dollars", "yes_total_cost") or 0) + \
-                   (_num(x, "no_total_cost_dollars", "no_total_cost") or 0)
-            pairs = min(float(x.get("yes_count_fp") or x.get("yes_count") or 0),
-                        float(x.get("no_count_fp") or x.get("no_count") or 0))
-            fees = _num(x, "fee_cost_dollars", "fee_cost") or 0
-            pnl = (_num(x, "revenue_dollars", "revenue") or 0) + pairs - cost - fees
+            pnl = (dollars(x, "revenue") + min(count(x, "yes_count"), count(x, "no_count"))
+                   - dollars(x, "yes_total_cost") - dollars(x, "no_total_cost") - dollars(x, "fee_cost"))
             net += pnl
             wins += pnl > 0
             losses += pnl < 0
@@ -97,7 +93,7 @@ def main():
     print(f"Settled: {wins} won, {losses} lost, net ${net:+,.2f}")
 
     pos = _signed_get("/trade-api/v2/portfolio/positions?limit=200", key_id, key)
-    positions = [p for p in pos.get("market_positions", []) if _num(p, "position_fp", "position")]
+    positions = [p for p in pos.get("market_positions", []) if count(p, "position")]
 
     # the tracker's read for each race, keyed by the Democratic candidate's market ticker
     races = {}
@@ -115,11 +111,11 @@ def main():
     print(f"\n{len(positions)} open position(s)")
     for p in positions:
         t = p["ticker"]
-        n = _num(p, "position_fp", "position") * (1 if p.get("position_fp") else 100)  # contracts; + yes, - no
+        n = count(p, "position")  # contracts: positive = yes, negative = no
         m = json.load(urllib.request.urlopen(f"{HOST}/trade-api/v2/markets/{t}", timeout=30))["market"]
-        bid, ask = _num(m, "yes_bid_dollars"), _num(m, "yes_ask_dollars")
+        bid, ask = dollars(m, "yes_bid"), dollars(m, "yes_ask")
         line = f"\n{t}: {'YES' if n > 0 else 'NO'} x{abs(n):g}  ({m.get('yes_sub_title')})  market {bid}/{ask}"
-        line += f"  exposure ${_num(p, 'market_exposure_dollars', 'market_exposure') or 0:,.2f}"
+        line += f"  exposure ${dollars(p, 'market_exposure'):,.2f}"
         print(line)
         match = next((v for (st, off), v in races.items() if v[0]["kalshi"]["candidate"] == m.get("yes_sub_title")), None)
         if match:
