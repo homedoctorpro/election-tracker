@@ -109,6 +109,14 @@ CREATE TABLE IF NOT EXISTS candidate_party (
     PRIMARY KEY (poll_type, state, district, choice)
 );
 
+-- Kalshi prices for the Democratic candidate in tracked Senate and governor races (public
+-- market data, no account). Price is in dollars (0-1), i.e. the implied probability.
+CREATE TABLE IF NOT EXISTS kalshi_prices (
+    snapshot_date TEXT NOT NULL, state TEXT NOT NULL, office TEXT NOT NULL, ticker TEXT NOT NULL,
+    candidate TEXT, yes_bid REAL, yes_ask REAL, last_price REAL, volume REAL, volume_24h REAL,
+    PRIMARY KEY (snapshot_date, state, office)
+);
+
 -- Registered voters by party (NC, PA). Past cycles from data/reference/registration.csv,
 -- 2026 refreshed daily. as_of = date of the snapshot.
 CREATE TABLE IF NOT EXISTS registration (

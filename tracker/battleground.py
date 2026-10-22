@@ -24,6 +24,7 @@ from pathlib import Path
 from .common import GOVERNOR_2026, SENATE_2026
 from .compare import _margin, days_out, party_projection, state_comparison
 from .reference import county_key
+from .sources.kalshi import price as kalshi_price
 
 STATES = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI", "IA", "OH", "ME", "KS", "FL", "TX"]
 PRIMARY_PARTY = {"OH"}  # "party" is the last primary ballot taken, not registration
@@ -228,6 +229,12 @@ def battlegrounds(con, day, hist, race_summary):
     proj = {r["state"]: r for r in party_projection(con, day)}
     pace_states = {s for (s,) in con.execute("SELECT DISTINCT state FROM pace WHERE year=2026")}
     days = _archive_days()
+    # latest Kalshi price for the Democratic candidate, by (state, office)
+    kalshi = {}
+    for st_, office, cand, bid, ask, last, vol in con.execute(
+            """SELECT state, office, candidate, yes_bid, yes_ask, last_price, volume FROM kalshi_prices
+               WHERE snapshot_date=(SELECT MAX(snapshot_date) FROM kalshi_prices)"""):
+        kalshi[(st_, office)] = {"candidate": cand, "price": kalshi_price((bid, ask, last)), "volume": vol}
     out = []
     for st in STATES:
         c = cmp.get(st)
@@ -367,6 +374,10 @@ def battlegrounds(con, day, hist, race_summary):
                 races.append({k: r[k] for k in ("office", "candidate_a", "party_a", "a_avg", "candidate_b",
                                                  "party_b", "b_avg", "margin_d_minus_r", "polls_averaged",
                                                  "latest_poll_end")})
+        for r in races:
+            k = kalshi.get((st, r["office"]))
+            if k:
+                r["kalshi"] = k
         races.sort(key=lambda r: (r["office"] != ("Senate" if st in SENATE_2026 else "Governor")))
         out.append({
             "state": st, "state_name": c["state_name"], "data_through": c["data_through"], "days_out": dout,

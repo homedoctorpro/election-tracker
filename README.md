@@ -14,6 +14,7 @@ Two runners:
 | Early vote: all states, counties, congressional districts | [UF Election Lab](https://election.lab.ufl.edu/early-vote/2026-early-voting/) | Compiled from each state's official reports. CC BY-NC-ND 4.0, so attribute it and don't use it commercially. AL and NH aren't in their file. |
 | House race ratings (10 outlets) | UF Election Lab `house_tossup_races.csv` | Cook, Inside Elections, Sabato, Economist, Split Ticket, DDHQ, 50+1, Fox, Silver, RCP |
 | Senate, Governor, House, generic-ballot polls | [VoteHub API](https://votehub.com/polls/api/) | Free API. It returns the full poll history on every call. |
+| Kalshi prices for the Democratic candidate in each tracked Senate and governor race | [Kalshi public trade API](https://api.elections.kalshi.com/trade-api/v2/markets/) | No account needed. Tickers are in `tracker/sources/kalshi.py`. Shown as "K D 42%" next to each race's poll margin. |
 | Texas early vote by county and day | [Texas SOS Election Information & Turnout Data](https://goelect.txelections.civixapps.com/ivis-evr-ui/evr) | Aggregate county counts, through headless Chrome. See "Texas" below. |
 | Ohio early vote by party, age, county and day | [Ohio SOS Absentee and Early Voting Dashboard](https://data.ohiosos.gov/portal/election-dashboards) | Queried through the dashboard's public Power BI endpoint, which returns aggregate counts. See "Ohio" below. |
 
@@ -86,6 +87,15 @@ Georgia also publishes voter-level absentee files with dates, but its download p
 The reference data in `data/reference/` is built once and committed. To rebuild it (this downloads about 400 MB):
 ```bash
 python -m tracker.reference --build all
+```
+
+## Your Kalshi positions
+
+`scripts/kalshi_portfolio.py` prints your Kalshi balance and open positions, each next to the tracker's poll average and early-vote read for that race. It's read-only (GET requests only) and reads your API key from environment variables on your machine:
+```powershell
+$env:KALSHI_KEY_ID = "<your API key id>"
+$env:KALSHI_KEY_FILE = "C:\path\to\kalshi-private-key.pem"
+python scripts\kalshi_portfolio.py
 ```
 
 ## Daily archive (for future cycles)

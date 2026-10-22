@@ -124,7 +124,7 @@ tr.click{cursor:pointer}
 /* overview: one row per state */
 .ov{padding:12px 14px 8px;margin-bottom:14px}
 .ov h2{font-size:17px;margin:0 0 2px}
-.ov-row,.ov-hd,.ov-ax{display:grid;grid-template-columns:118px minmax(0,1fr) 70px 138px 128px;gap:10px;align-items:center}
+.ov-row,.ov-hd,.ov-ax{display:grid;grid-template-columns:118px minmax(0,1fr) 70px 138px 150px;gap:10px;align-items:center}
 .ov-hd{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:6px 0 4px;border-bottom:1px solid var(--line)}
 .ov-row{padding:5px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
 .ov-row:hover{background:var(--hl)}
@@ -535,6 +535,8 @@ const sgn=v=>v==null||isNaN(v)?'–':(v>=0?'D +':'R +')+Math.abs(v).toFixed(1);
 const scol=v=>v==null?'var(--muted)':v>=0?'var(--dem)':'var(--rep)';
 // what the headline compares: same day (all early votes), vs final (mail only), or county lean
 const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
+// Kalshi price for the Democratic candidate, as a percent chance
+const kp=r=>r.kalshi&&r.kalshi.price!=null?`<span class="muted" title="Kalshi: ${esc(r.kalshi.candidate)} to win, ${Math.round(100*r.kalshi.price)}% (midpoint of bid and ask)">K D ${Math.round(100*r.kalshi.price)}%</span>`:'';
 // in-person party mix vs the final 2024 in-person mix, shown beside mail-vs-final headlines
 const bgIP=b=>{const i=b.inperson;if(!i||bgKind(b)!=='final'||i.final['2024']==null)return null;
   return {now:i['2026'],base:i.final['2024'],base22:i.final['2022'],shift:i['2026']-i.final['2024'],n:i.n}};
@@ -584,7 +586,7 @@ function bgCard(b,E){
   const a=v==null?0:Math.min(Math.abs(v),20)/20*22+4;
   const tint=v==null?'transparent':`color-mix(in srgb,${scol(v)} ${a.toFixed(0)}%,transparent)`;
   const race=b.races.map(r=>{const m=+r.margin_d_minus_r;const lead=m>=0?r.party_a==='D'?r.candidate_a:r.candidate_b:r.party_a==='R'?r.candidate_a:r.candidate_b;
-    return `${r.office==='Senate'?'Sen':'Gov'}: ${esc(String(lead).split(' ').slice(-1)[0])} <b style="color:${scol(m)}">${m>=0?'D':'R'}+${Math.abs(m).toFixed(1)}</b>`}).join(' · ');
+    return `${r.office==='Senate'?'Sen':'Gov'}: ${esc(String(lead).split(' ').slice(-1)[0])} <b style="color:${scol(m)}">${m>=0?'D':'R'}+${Math.abs(m).toFixed(1)}</b> ${kp(r)}`}).join(' · ');
   const p=E&&((E.voted_dem||0)+(E.voted_rep||0)+(E.voted_other||0));
   const bar=p?`<div class="bar"><span style="width:${100*E.voted_dem/p}%;background:var(--dem)"></span><span style="width:${100*E.voted_rep/p}%;background:var(--rep)"></span><span style="width:${100*E.voted_other/p}%;background:var(--oth)"></span></div>`:'';
   const minis=[];
@@ -629,7 +631,7 @@ function bgDetail(b,E){
     <h2>${esc(b.state_name)} <span class="chip">${TIER[bgLabel(b)]}</span></h2>
     <div class="small muted">Data through ${esc(b.data_through)} · ${b.days_out} days before Election Day. ${esc(TIER_T[bgLabel(b)])}</div>
     ${b.headline?`<div style="margin-top:6px">Headline: <b style="color:${scol(b.headline.value)}">${sgn(b.headline.value)}</b> <span class="small muted">(${esc(b.headline.basis)}: ${b.headline.year} ${sgn(b.headline.from)} → 2026 ${sgn(b.headline.to)})</span></div>`:''}
-    <div class="small" style="margin-top:6px">${b.races.map(r=>`<div>${r.office}: ${cand(r.candidate_a,r.party_a)} ${r.a_avg} · ${cand(r.candidate_b,r.party_b)} ${r.b_avg} <span class="muted">(${r.polls_averaged} polls, latest ${esc(r.latest_poll_end)})</span></div>`).join('')||'<span class="muted">No recent statewide polls.</span>'}</div>
+    <div class="small" style="margin-top:6px">${b.races.map(r=>`<div>${r.office}: ${cand(r.candidate_a,r.party_a)} ${r.a_avg} · ${cand(r.candidate_b,r.party_b)} ${r.b_avg} <span class="muted">(${r.polls_averaged} polls, latest ${esc(r.latest_poll_end)})</span>${r.kalshi&&r.kalshi.price!=null?` · Kalshi: ${esc(r.kalshi.candidate)} <b>${Math.round(100*r.kalshi.price)}%</b> to win <span class="muted">($${fmt(r.kalshi.volume)} traded)</span>`:''}</div>`).join('')||'<span class="muted">No recent statewide polls.</span>'}</div>
     <div class="two">
       <div><h4>Early votes, cumulative</h4>${bgLegend(ys)}${bgChart(tot,{fmtY:k,marker:b.days_out})}</div>
       <div><h4>Party mix (D&minus;R, all early votes)</h4>${Object.keys(mar).length?bgLegend(Object.keys(mar))+bgChart(mar,{fmtY:v=>(v>=0?'D':'R')+Math.abs(Math.round(v)),zero:true,marker:b.days_out}):'<p class="small muted">No party data for this state.</p>'}</div>
@@ -651,7 +653,7 @@ function bgOverview(B){
   const vals=B.filter(b=>b.headline).flatMap(b=>[b.headline.from,b.headline.to]).map(Math.abs);
   const lim=Math.max(20,Math.ceil(Math.max(...vals,0)/10)*10),pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
   const tot=B.reduce((a,b)=>a+(b.ev.total||0),0);
-  const polls=b=>b.races.map(r=>`${r.office==='Senate'?'Sen':'Gov'} <b style="color:${scol(+r.margin_d_minus_r)}">${(+r.margin_d_minus_r>=0?'D':'R')}+${Math.abs(+r.margin_d_minus_r).toFixed(1)}</b>`).join(' ')||'<span class="muted">no recent polls</span>';
+  const polls=b=>b.races.map(r=>`${r.office==='Senate'?'Sen':'Gov'} <b style="color:${scol(+r.margin_d_minus_r)}">${(+r.margin_d_minus_r>=0?'D':'R')}+${Math.abs(+r.margin_d_minus_r).toFixed(1)}</b> ${kp(r)}`).join('<br>')||'<span class="muted">no recent polls</span>';
   const row=b=>{const h=b.headline,pc=bgPace(b),kd=bgKind(b),early=bgEarly(b);
     let tr='<span class="muted small">no party or county data</span>';
     if(h){const a=pos(h.from),z=pos(h.to),c=scol(h.value);
@@ -674,7 +676,7 @@ function bgOverview(B){
     <div class="small muted">${fmt(tot)} early votes across ${B.length} states, data through ${esc(B.map(b=>b.data_through).sort().pop())}. Each line runs from the 2024 D&minus;R margin to 2026's; the arrow's color shows which way it moved. Click a state for detail.</div>
     <div class="ov-key"><span><i style="border:2px solid var(--muted);background:var(--panel)"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>solid line: same-day comparison</span><span>dashed: vs final or county lean (rough)</span><span>faded: too few votes in to read</span></div>
-    <div class="ov-hd"><span>State</span><span style="text-align:center">R ← D&minus;R margin → D</span><span class="ov-n">Shift</span><span>Turnout pace</span><span>Polls</span></div>`
+    <div class="ov-hd"><span>State</span><span style="text-align:center">R ← D&minus;R margin → D</span><span class="ov-n">Shift</span><span>Turnout pace</span><span>Polls · Kalshi (D)</span></div>`
     +groups.map(([k,t,d])=>{const L=B.filter(b=>bgKind(b)===k).sort((a,b)=>(bgEarly(a)-bgEarly(b))||hs(b)-hs(a));
       return L.length?`<div class="ov-g"><b>${t}</b> <span>${d}</span></div>`+L.flatMap(b=>bgIP(b)&&b.headlines_ip&&b.headlines_ip['2024']?[{...b,_part:'mail'},{...b,_part:'ip',headline:b.headlines_ip['2024']}]:[b]).map(row).join(''):''}).join('')
     +`<div class="ov-ax"><span></span><div>${[-lim,-lim/2,0,lim/2,lim].map(v=>`<span>${tick(v)}</span>`).join('')}</div><span></span><span></span><span></span></div>`;

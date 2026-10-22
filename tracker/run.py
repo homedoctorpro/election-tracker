@@ -13,7 +13,7 @@ from .common import now_et, today_et
 from .export import export_all
 from . import site
 from . import archive, reference
-from .sources import (nc_voter_file, oh_sos, pa_mail_file, parties, registration, tx_sos, uf_early_vote,
+from .sources import (kalshi, nc_voter_file, oh_sos, pa_mail_file, parties, registration, tx_sos, uf_early_vote,
                       votehub_polls)
 
 SOURCES = {
@@ -24,6 +24,7 @@ SOURCES = {
     "pa_pace": pa_mail_file.collect,
     "oh_pace": oh_sos.collect,
     "tx_pace": tx_sos.collect,
+    "kalshi": kalshi.collect,
     "registration": registration.collect,
 }
 
