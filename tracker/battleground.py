@@ -354,6 +354,13 @@ def battlegrounds(con, day, hist, race_summary):
                     ip["final"][str(y)] = _margin(d_, r_, n_)
             if not ip["final"]:
                 ip = None
+        # vs-final states get the in-person comparison as its own headline, so pages can show
+        # mail and in person as separate rows
+        ip_heads = {}
+        if ip and tier == "final":
+            for y, base in ip["final"].items():
+                ip_heads[y] = {"value": round(ip["2026"] - base, 1), "from": base, "to": ip["2026"], "year": y,
+                               "votes": "inperson", "kind": "final", "basis": f"in-person early votes vs {y} final"}
         races = []
         for r in race_summary:
             if r["state"] == st and not r["district"] and r["status"] == "ok" and r["office"] in ("Senate", "Governor"):
@@ -367,7 +374,7 @@ def battlegrounds(con, day, hist, race_summary):
             "has_senate": st in SENATE_2026, "has_governor": st in GOVERNOR_2026,
             "ev": {"total": c["ev_2026"], "dr": c["dr_margin_2026"], "mail_dr": c.get("mail_dr_margin_2026")},
             "pct_of_final_2022": c.get("pct_of_final_2022"), "pct_of_final_2024": c.get("pct_of_final_2024"),
-            "pace": pace, "shifts": shifts, "county_lean": lean, "inperson": ip,
+            "pace": pace, "shifts": shifts, "county_lean": lean, "inperson": ip, "headlines_ip": ip_heads,
             "curves": {str(y): v for y, v in curves.items()},
             "final_dr": {"2024": c.get("dr_margin_2024_final"), "2022": c.get("dr_margin_2022_final")},
         })

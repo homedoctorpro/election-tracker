@@ -22,7 +22,7 @@ html,body{background:var(--bg);overflow-x:hidden}
 body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
 #stage{width:1080px;height:1350px;transform-origin:0 0;padding:58px 60px 44px;display:flex;flex-direction:column}
 .kicker{font-size:22px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dem)}
-h1{font-size:58px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-top:10px}
+h1{font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-top:10px}
 .sub{font-size:24px;color:var(--muted);margin-top:12px}
 .key{display:flex;align-items:center;gap:26px;font-size:21px;color:var(--muted);margin:26px 0 8px}
 .key i{display:inline-block;width:20px;height:20px;border-radius:50%;vertical-align:-3px;margin-right:8px}
@@ -31,9 +31,9 @@ h1{font-size:58px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .grp{display:flex;align-items:baseline;gap:12px;margin:16px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
 .grp b{font-size:20px;letter-spacing:.1em;text-transform:uppercase}
 .grp span{font-size:19px;color:var(--muted)}
-.row{display:grid;grid-template-columns:318px 1fr 140px;align-items:center;gap:22px;height:62px;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:318px 1fr 140px;align-items:center;gap:22px;height:49px;border-bottom:1px solid var(--line)}
 .row.early{opacity:.4}
-.st{line-height:1.1}.st b{font-size:27px;font-weight:700}.st small{display:block;font-size:17px;color:var(--muted);margin-top:3px;white-space:nowrap}
+.st{line-height:1.1}.st b{font-size:25px;font-weight:700}.st b .part{font-size:17px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.st small{display:block;font-size:16px;color:var(--muted);margin-top:3px;white-space:nowrap}
 .tr{position:relative;height:30px}
 .tr .bg{position:absolute;left:0;right:0;top:12px;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--rep-t),#efede8 50%,var(--dem-t))}
 .tr .mid{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#b9b5ac}
@@ -46,7 +46,7 @@ h1{font-size:58px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .foot b{color:var(--ink);font-weight:600}
 .url{margin-top:10px;font-size:20px;font-weight:600;color:var(--ink)}
 /* both: two shift columns */
-.row.b3{grid-template-columns:300px 1fr 104px 104px;gap:14px;height:58px}
+.row.b3{grid-template-columns:300px 1fr 104px 104px;gap:14px;height:46px}
 .row.b3.hd{height:auto;border:0;font-size:16px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:8px}
 .sh2{text-align:right;font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sh2 sup{font-size:16px}
@@ -74,11 +74,15 @@ const Y=MODE==='2022'?'2022':'2024';
 const head=b=>(b.headlines||{})[Y];
 const kind=b=>head(b)?head(b).kind:'none';
 const early=b=>kind(b)!=='same'&&head(b)&&((b.shifts['2024']?.n_2026??1e9)<5000||(b.pct_of_final_2024??100)<5);
-// vs-final states: the in-person mix so far against the final 2024 in-person mix replaces pace
-const ipTxt=b=>{const i=b.inperson,h=(b.headlines||{})['2024'];if(!i||!h||h.kind!=='final'||i.final['2024']==null)return '';
-  return `in person ${sgn(i['2026'])} (2024 final ${sgn(i.final['2024'])})`};
-function pace(b){if(ipTxt(b))return ipTxt(b);if(b.pace[Y])return `${Math.round(b.pace[Y].pct)}% of ${Y} to date`;
+function pace(b){if(b.pace[Y])return `${Math.round(b.pace[Y].pct)}% of ${Y} to date`;
   const f=b['pct_of_final_'+Y];return f!=null?`${Math.round(f)}% of ${Y} total`:''}
+// vs-final states with in-person data get two rows: mail, then in person (headlines_ip)
+function split(list){return list.flatMap(b=>{const ip=b.headlines_ip||{};if(!Object.keys(ip).length)return [b];
+  return [{...b,_part:'mail'},{...b,_part:'ip',headlines:ip,headline:ip[Y]}]})}
+const label=b=>esc(b.state_name)+(b._part==='mail'?' <span class="part">mail</span>':b._part==='ip'?' <span class="part">in person</span>':'');
+function votes(b){if(b._part==='ip')return `${k(b.inperson.n)} in-person votes`;
+  if(b._part==='mail')return `${k(b.ev.total-b.inperson.n)} mail ballots`;
+  return `${(b.headline||{}).votes==='primary'?'by primary ballot · ':''}${k(b.ev.total)} votes${pace(b)?' · '+pace(b):''}`}
 function render(){
   const B=DATA.battlegrounds.filter(head).map(b=>({...b,headline:head(b)}));
   const vals=B.flatMap(b=>[b.headline.from,b.headline.to]).map(Math.abs);
@@ -88,26 +92,26 @@ function render(){
   const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const row=b=>{const h=b.headline,a=pos(h.from),z=pos(h.to),c=col(h.value),kd=kind(b);
     return `<div class="row${early(b)?' early':''}">
-      <div class="st"><b>${esc(b.state_name)}</b><small>${h.votes==='primary'?'by primary ballot · ':''}${k(b.ev.total)} votes${pace(b)?' · '+pace(b):''}${early(b)?' · too early':''}</small></div>
+      <div class="st"><b>${label(b)}</b><small>${votes(b)}${early(b)?' · too early':''}</small></div>
       <div class="tr"><div class="bg"></div><div class="mid"></div>
         <div class="ln${kd==='same'||h.same_day?'':' dash'}" style="left:${Math.min(a,z)}%;width:${Math.abs(z-a)}%;background:${c};color:${c}"></div>
         <div class="o" style="left:${a}%"></div><div class="s" style="left:${z}%;background:${col(h.to)}"></div></div>
       <div class="sh" style="color:${c}">${sgn(h.value)}</div></div>`};
   const by=(a,b)=>(early(a)-early(b))||b.headline.value-a.headline.value;
   const G=[['same','Same day',`all early votes vs this point in ${Y}`],
-    ['final','Mail vs final','mail ballots vs the final 2024 mix'],
+    ['final','Vs final','mail and in-person votes vs the final 2024 mix'],
     ['county','County lean',Y==='2022'?'no 2022 party data: where early votes come from vs 2022':`no party registration: where early votes come from vs ${Y}`]];
   const missing=DATA.battlegrounds.filter(b=>!head(b)).map(b=>b.state_name);
   document.getElementById('stage').innerHTML=`
     <div class="kicker">2026 early vote · battlegrounds</div>
-    <h1>How the early vote has shifted since ${Y}</h1>
+    <h1>The early vote vs ${Y}</h1>
     <div class="sub">D&minus;R margin of early votes, ${Y}${Y==='2022'?' (last midterm)':''} to 2026. Through ${date}, ${left} days to Election Day.</div>
     <div class="key"><span><i style="border:4px solid #8a8e96;background:#fff"></i>${Y}</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>Dashed = rougher comparison</span><span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
-    ${G.map(([g,t,s])=>{const L=B.filter(b=>kind(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
-    <div class="foot"><b>Same day</b> is the most reliable read.${Y==='2024'?' <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count. Their in-person figure is also against 2024\'s final, and in-person voting usually gets more Republican as it goes.':''}
-      <b>County lean</b> is the 2024 presidential margin of the counties early votes come from, this year vs the ${Y} early vote by county (at the same point where the state reports daily, as Texas does; otherwise its final total).${missing.length?` ${esc(missing.join(', '))}: no ${Y} party or county data.`:''} Ohio's party is the last primary ballot a voter took, not registration. Party registration is not vote choice.
-      Sources: UF Election Lab; NC, PA, IA, OH and TX election offices; EAC; VoteHub.
+    ${G.map(([g,t,s])=>{const L=split(B.filter(b=>kind(b)===g).sort(by)).filter(b=>b.headline);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
+    <div class="foot"><b>Same day</b> is the most reliable read.${Y==='2024'?' <b>Vs final</b> rows are rough: early mail leans more Democratic than the final count, and in-person voting started later and usually gets more Republican as it goes.':''}
+      <b>County lean</b> is the 2024 presidential margin of the counties early votes come from, this year vs the ${Y} early vote by county.${missing.length?` ${esc(missing.join(', '))}: no ${Y} party or county data.`:''} Ohio: last primary ballot, not registration.
+      Sources: UF Election Lab, state election offices, EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }
 
@@ -154,7 +158,7 @@ function renderTrend(){
       <span>Dashed line = that year's final</span></div>
     <div class="grid">${B.map(pn).join('')}</div>
     <div class="foot"><b>All early votes</b>: every day of all three cycles. <b>Mail ballots</b>: 2024 dots are the few days on file. <b>County lean</b>: the 2024 presidential margin of the counties early votes come from, where party data isn't usable; daily for every cycle in Texas and Ohio, elsewhere against the whole 2024 and 2022 early vote (dashed).${missing.length?` ${esc(missing.join(', '))}: no daily data.`:''}
-      Sources: UF Election Lab; NC, PA, IA, OH, TX election offices; EAC.
+      Sources: UF Election Lab, state election offices, EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }
 function fit(){const w=document.getElementById('wrap'),s=Math.min(1,w.clientWidth/1080);
@@ -176,14 +180,14 @@ function renderBoth(){
     const dot=(v,color)=>`<div class="o" style="left:${pos(v)}%;border-color:${color}"></div>`;
     const show22=c&&(!a||same22(b));
     return `<div class="row b3${early(b)?' early':''}">
-      <div class="st"><b>${esc(b.state_name)}</b><small>${m.votes==='primary'?'by primary ballot · ':''}${k(b.ev.total)} votes${pace(b)?' · '+pace(b):''}</small></div>
+      <div class="st"><b>${label(b)}</b><small>${votes({...b,headline:m})}</small></div>
       <div class="tr"><div class="bg"></div><div class="mid"></div>
         ${show22?seg(c.from,C22):''}${a?seg(a.from,C24):''}${show22?dot(c.from,C22):''}${a?dot(a.from,C24):''}
         <div class="s" style="left:${pos(to)}%;background:${col(to)}"></div></div>
       <div class="sh2">${num(a)}</div><div class="sh2">${num(c,c&&a&&!same22(b))}</div></div>`};
   const kindOf=b=>(H(b)['2024']||H(b)['2022']).kind;
   const by=(x,y)=>(early(x)-early(y))||((H(y)['2024']||H(y)['2022']).value-(H(x)['2024']||H(x)['2022']).value);
-  const G=[['same','Same day','all early votes vs this point in each year'],['final','Mail vs final','mail ballots vs the final 2024 mix'],
+  const G=[['same','Same day','all early votes vs this point in each year'],['final','Vs final','mail and in-person votes vs the final 2024 mix'],
     ['county','County lean','where early votes come from (2024 margin of each county)']];
   const missing=DATA.battlegrounds.filter(b=>!B.includes(b)).map(b=>b.state_name);
   const starred=B.filter(b=>H(b)['2022']&&H(b)['2024']&&!same22(b)).map(b=>b.state);
@@ -194,9 +198,9 @@ function renderBoth(){
     <div class="key"><span><i style="border:4px solid ${C22};background:#fff"></i>2022</span><span><i style="border:4px solid ${C24};background:#fff"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
       <span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
     <div class="row b3 hd"><span></span><span></span><span class="sh2">vs 2024</span><span class="sh2">vs 2022</span></div>
-    ${G.map(([g,t,s])=>{const L=B.filter(b=>kindOf(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
-    <div class="foot"><b>Same day</b> is the most reliable read (Ohio's party is the last primary ballot taken, not registration). <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count; their in-person figure is against 2024's final too. <b>County lean</b> uses the same day where the state reports daily (Texas, Ohio vs 2024), otherwise that year's final early vote by county.${starred.length?` <b>*</b> No 2022 party data in ${esc(starred.join(', '))}, so their 2022 shift is county lean and isn't drawn.`:''}${missing.length?` ${esc(missing.join(', '))}: no data.`:''}
-      Sources: UF Election Lab; NC, PA, IA, OH and TX election offices; EAC.
+    ${G.map(([g,t,s])=>{const L=split(B.filter(b=>kindOf(b)===g).sort(by));return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
+    <div class="foot"><b>Same day</b> is the most reliable read (Ohio: last primary ballot taken, not registration). <b>Vs final</b> rows are rough: early mail leans more Democratic than the final count, and in-person voting gets more Republican as it goes. <b>County lean</b> uses the same day where the state reports daily (Texas, Ohio vs 2024), otherwise that year's final early vote by county.${starred.length?` <b>*</b> No 2022 party data in ${esc(starred.join(', '))}, so their 2022 shift is county lean and isn't drawn.`:''}${missing.length?` ${esc(missing.join(', '))}: no data.`:''}
+      Sources: UF Election Lab, state election offices, EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }
 (MODE==='trend'?renderTrend:MODE==='both'?renderBoth:render)();fit();addEventListener('resize',fit);

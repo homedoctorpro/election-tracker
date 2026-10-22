@@ -659,24 +659,24 @@ function bgOverview(B){
         <div class="ln${bgSolid(b)?'':' dash'}" style="left:${Math.min(a,z)}%;width:${Math.abs(z-a)}%;background:${c};color:${c}"></div>
         <div class="o" style="left:${a}%"></div><div class="s" style="left:${z}%;background:${scol(h.to)}"></div></div>`}
     return `<div class="ov-row${early?' early':''}" data-st="${b.state}" tabindex="0">
-      <div class="ov-st"><b>${b.state}</b> <span class="nm">${esc(b.state_name)}</span><small>${fmt(b.ev.total)} early votes${early?' · too early':''}${bgIP(b)?` · in person <b style="color:${scol(bgIP(b).now)}">${sgn(bgIP(b).now)}</b> (2024 final ${sgn(bgIP(b).base)})`:''}</small></div>
+      <div class="ov-st"><b>${b.state}</b> <span class="nm">${esc(b.state_name)}</span>${b._part?` <span class="chip">${b._part==='ip'?'in person':'mail'}</span>`:''}<small>${b._part==='ip'?fmt(b.inperson.n)+' in-person votes':b._part==='mail'?fmt(b.ev.total-b.inperson.n)+' mail ballots':fmt(b.ev.total)+' early votes'}${early?' · too early':''}</small></div>
       ${tr}
       <div class="ov-n"><b style="color:${scol(h?.value)}">${h?sgn(h.value):'–'}</b></div>
       <div class="small" style="white-space:nowrap">${pc?`<b>${pct(pc.pct,0)}</b> <span class="muted">of 2024 ${pc.same?'same day':'final'}</span>`:'–'}</div>
       <div class="small">${polls(b)}</div></div>`};
   const hs=b=>b.headline?b.headline.value:-1e9;
   const groups=[['same','Same day: all early votes (mail and in person)','compared with the same number of days before Election Day in 2024. The most reliable read.'],
-    ['final','Vs final: mail ballots only','compared with the final 2024 mail-ballot mix, not the same day. Early mail leans more D than the final count, so these overstate any D move.'],
+    ['final','Vs final: mail and in person, separately','compared with the final 2024 mix, not the same day. Early mail leans more D than the final count, and in-person voting gets more R as it goes, so read these as rough.'],
     ['county','County lean: all early votes','no usable party data. The 2024 margin of the counties this year\'s early votes come from, vs the same figure for the whole 2024 early vote.'],
     ['none','Turnout only','no party registration and no county file.']];
   const tick=v=>v===0?'0':(v<0?'R+':'D+')+Math.abs(v);
-  $('#ov').innerHTML=`<h2 style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Battlegrounds at a glance <span style="font-size:13px;font-weight:500">Share images: <a href="share.png" target="_blank" rel="noopener">vs 2024</a> · <a href="share-2022.png" target="_blank" rel="noopener">vs 2022</a> · <a href="share-both.png" target="_blank" rel="noopener">vs both</a> ·<a href="share-trend.png" target="_blank" rel="noopener">day by day</a></span></h2>
+  $('#ov').innerHTML=`<h2 style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Battlegrounds at a glance <span style="font-size:13px;font-weight:500">Share images: <a href="share.png" target="_blank" rel="noopener">vs 2024</a> · <a href="share-2022.png" target="_blank" rel="noopener">vs 2022</a> · <a href="share-both.png" target="_blank" rel="noopener">vs both</a> · <a href="share-trend.png" target="_blank" rel="noopener">day by day</a></span></h2>
     <div class="small muted">${fmt(tot)} early votes across ${B.length} states, data through ${esc(B.map(b=>b.data_through).sort().pop())}. Each line runs from the 2024 D&minus;R margin to 2026's; the arrow's color shows which way it moved. Click a state for detail.</div>
     <div class="ov-key"><span><i style="border:2px solid var(--muted);background:var(--panel)"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>solid line: same-day comparison</span><span>dashed: vs final or county lean (rough)</span><span>faded: too few votes in to read</span></div>
     <div class="ov-hd"><span>State</span><span style="text-align:center">R ← D&minus;R margin → D</span><span class="ov-n">Shift</span><span>Turnout pace</span><span>Polls</span></div>`
     +groups.map(([k,t,d])=>{const L=B.filter(b=>bgKind(b)===k).sort((a,b)=>(bgEarly(a)-bgEarly(b))||hs(b)-hs(a));
-      return L.length?`<div class="ov-g"><b>${t}</b> <span>${d}</span></div>`+L.map(row).join(''):''}).join('')
+      return L.length?`<div class="ov-g"><b>${t}</b> <span>${d}</span></div>`+L.flatMap(b=>bgIP(b)&&b.headlines_ip&&b.headlines_ip['2024']?[{...b,_part:'mail'},{...b,_part:'ip',headline:b.headlines_ip['2024']}]:[b]).map(row).join(''):''}).join('')
     +`<div class="ov-ax"><span></span><div>${[-lim,-lim/2,0,lim/2,lim].map(v=>`<span>${tick(v)}</span>`).join('')}</div><span></span><span></span><span></span></div>`;
 }
 
