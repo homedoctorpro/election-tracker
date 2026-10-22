@@ -1,4 +1,5 @@
-"""Your Kalshi balance and open positions, next to the tracker's poll and early-vote reads.
+"""Your Kalshi balance, overall win/loss on settled markets, and open positions next to the
+tracker's poll and early-vote reads.
 
 Read-only: it only sends GET requests (balance, positions, market prices) and never places or
 cancels orders. Run it yourself; it reads your API key from environment variables, so the key
@@ -59,6 +60,25 @@ def main():
 
     bal = _signed_get("/trade-api/v2/portfolio/balance", key_id, key)
     print(f"Balance: ${_num(bal, 'balance_dollars', 'balance') or 0:,.2f}")
+
+    # overall win/loss across settled markets: payout minus what the contracts cost
+    wins = losses = 0
+    net = 0.0
+    cursor = ""
+    while True:
+        s = _signed_get("/trade-api/v2/portfolio/settlements?limit=200" + (f"&cursor={cursor}" if cursor else ""),
+                        key_id, key)
+        for x in s.get("settlements", []):
+            cost = (_num(x, "yes_total_cost_dollars", "yes_total_cost") or 0) + \
+                   (_num(x, "no_total_cost_dollars", "no_total_cost") or 0)
+            pnl = (_num(x, "revenue_dollars", "revenue") or 0) - cost
+            net += pnl
+            wins += pnl > 0
+            losses += pnl < 0
+        cursor = s.get("cursor")
+        if not cursor:
+            break
+    print(f"Settled: {wins} won, {losses} lost, net ${net:+,.2f} (before fees)")
 
     pos = _signed_get("/trade-api/v2/portfolio/positions?limit=200", key_id, key)
     positions = [p for p in pos.get("market_positions", []) if _num(p, "position_fp", "position")]
