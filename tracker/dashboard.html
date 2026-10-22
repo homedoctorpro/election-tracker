@@ -535,6 +535,9 @@ const sgn=v=>v==null||isNaN(v)?'–':(v>=0?'D +':'R +')+Math.abs(v).toFixed(1);
 const scol=v=>v==null?'var(--muted)':v>=0?'var(--dem)':'var(--rep)';
 // what the headline compares: same day (all early votes), vs final (mail only), or county lean
 const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
+// in-person party mix vs the final 2024 in-person mix, shown beside mail-vs-final headlines
+const bgIP=b=>{const i=b.inperson;if(!i||bgKind(b)!=='final'||i.final['2024']==null)return null;
+  return {now:i['2026'],base:i.final['2024'],base22:i.final['2022'],shift:i['2026']-i.final['2024'],n:i.n}};
 // a county lean taken at the same days out (TX, OH vs 2024) counts as solid
 const bgSolid=b=>bgKind(b)==='same'||!!(b.headline&&b.headline.same_day);
 const bgLabel=b=>bgKind(b)==='county'&&b.headline.same_day?'county_sd':b.headline&&b.headline.votes==='primary'?'same_primary':bgKind(b);
@@ -585,6 +588,8 @@ function bgCard(b,E){
   const p=E&&((E.voted_dem||0)+(E.voted_rep||0)+(E.voted_other||0));
   const bar=p?`<div class="bar"><span style="width:${100*E.voted_dem/p}%;background:var(--dem)"></span><span style="width:${100*E.voted_rep/p}%;background:var(--rep)"></span><span style="width:${100*E.voted_other/p}%;background:var(--oth)"></span></div>`:'';
   const minis=[];
+  const ip=bgIP(b);
+  if(ip)minis.push(`<span title="In-person early votes so far ${sgn(ip.now)} vs the final 2024 in-person mix ${sgn(ip.base)}. In-person voting started later and usually gets more Republican as it goes, so this is rough until more of it is in.">in person vs 2024 final <b style="color:${scol(ip.shift)}">${sgn(ip.shift)}</b></span>`);
   if(kd==='same'&&b.pace['2022']&&b.pace['2022'].dr_base!=null){const q=b.pace['2022'];
     minis.push(`<span title="All early votes: 2026 ${sgn(q.dr_now)} vs 2022 same day ${sgn(q.dr_base)}">all vs 2022 <b style="color:${scol(q.dr_now-q.dr_base)}">${sgn(q.dr_now-q.dr_base)}</b></span>`)}
   ['2022','2024'].forEach(y=>{const s=b.shifts[y];if(s&&kd==='same')minis.push(`<span title="Mail ballots only: 2026 ${sgn(s.mail_2026)} vs ${y} same day ${sgn(s.mail_base)}${s.reg_adjusted?', adjusted for party registration':''}">mail vs ${y} <b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></span>`)});
@@ -599,6 +604,7 @@ function bgCard(b,E){
     <div class="line"><span>2026 early vote</span><b>${fmt(b.ev.total)}</b></div>
     <div class="line"><span>Pace</span><span>${pc?`<b>${pct(pc.pct,0)}</b> ${pc.label}`:'–'}</span></div>
     ${h?`<div class="line"><span>D&minus;R, ${h.votes==='mail'?'mail':h.votes==='primary'?'primary party':'all early'}</span><span><span class="muted">${h.year} ${sgn(h.from)} →</span> <b style="color:${scol(h.to)}">${sgn(h.to)}</b></span></div>`:''}
+    ${ip?`<div class="line"><span>D&minus;R, in person</span><span><span class="muted">2024 final ${sgn(ip.base)} →</span> <b style="color:${scol(ip.now)}">${sgn(ip.now)}</b></span></div>`:''}
     ${p?`<div class="line"><span>Party mix, all early votes</span><b style="color:${scol(b.ev.dr)}">${sgn(b.ev.dr)}</b></div>${bar}`:'<div class="line"><span>Party mix</span><span class="muted">no party registration</span></div>'}
     <div class="mini">${minis.join('')}</div>
     ${Object.keys(sp).length?`<div class="basis" style="margin-top:6px">${Object.keys(sp).some(y=>y!='2026')?`Ballots so far vs ${Object.keys(sp).filter(y=>y!='2026').join(', ')} at this point`:'2026 ballots so far (no earlier cycle at this point)'}</div>${bgChart(sp,{w:220,h:34,xmax:45,mini:true})}`:''}
@@ -628,6 +634,7 @@ function bgDetail(b,E){
       <div><h4>Early votes, cumulative</h4>${bgLegend(ys)}${bgChart(tot,{fmtY:k,marker:b.days_out})}</div>
       <div><h4>Party mix (D&minus;R, all early votes)</h4>${Object.keys(mar).length?bgLegend(Object.keys(mar))+bgChart(mar,{fmtY:v=>(v>=0?'D':'R')+Math.abs(Math.round(v)),zero:true,marker:b.days_out}):'<p class="small muted">No party data for this state.</p>'}</div>
     </div>
+    ${bgIP(b)?(ip=>`<h4>In-person early votes</h4><div class="small">${fmt(ip.n)} in-person early votes so far, <b>${sgn(ip.now)}</b>. The whole 2024 in-person early vote finished at ${sgn(ip.base)}${ip.base22!=null?`, and 2022's at ${sgn(ip.base22)}`:''}: a gap of <b style="color:${scol(ip.shift)}">${sgn(ip.shift)}</b> against 2024. In-person voting started later than mail and usually gets more Republican as it goes, so read this as rough until more of the in-person window is in; there's no 2024 in-person count at this same point to compare with.</div>`)(bgIP(b)):''}
     <h4>2026 so far</h4>
     <div class="small">${fmt(b.ev.total)} early votes: ${fmt(E2.mail_returned)} by mail, ${fmt(E2.in_person)} in person.${b.ev.dr!=null?` Party mix ${sgn(b.ev.dr)}, mail ballots ${sgn(b.ev.mail_dr)}.`:''}
       ${b.pct_of_final_2022!=null?` ${pct(b.pct_of_final_2022)} of the whole 2022 early vote`:''}${b.pct_of_final_2024!=null?`, ${pct(b.pct_of_final_2024)} of 2024's.`:'.'}</div>
@@ -652,7 +659,7 @@ function bgOverview(B){
         <div class="ln${bgSolid(b)?'':' dash'}" style="left:${Math.min(a,z)}%;width:${Math.abs(z-a)}%;background:${c};color:${c}"></div>
         <div class="o" style="left:${a}%"></div><div class="s" style="left:${z}%;background:${scol(h.to)}"></div></div>`}
     return `<div class="ov-row${early?' early':''}" data-st="${b.state}" tabindex="0">
-      <div class="ov-st"><b>${b.state}</b> <span class="nm">${esc(b.state_name)}</span><small>${fmt(b.ev.total)} early votes${early?' · too early':''}</small></div>
+      <div class="ov-st"><b>${b.state}</b> <span class="nm">${esc(b.state_name)}</span><small>${fmt(b.ev.total)} early votes${early?' · too early':''}${bgIP(b)?` · in person <b style="color:${scol(bgIP(b).now)}">${sgn(bgIP(b).now)}</b> (2024 final ${sgn(bgIP(b).base)})`:''}</small></div>
       ${tr}
       <div class="ov-n"><b style="color:${scol(h?.value)}">${h?sgn(h.value):'–'}</b></div>
       <div class="small" style="white-space:nowrap">${pc?`<b>${pct(pc.pct,0)}</b> <span class="muted">of 2024 ${pc.same?'same day':'final'}</span>`:'–'}</div>

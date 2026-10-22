@@ -74,7 +74,10 @@ const Y=MODE==='2022'?'2022':'2024';
 const head=b=>(b.headlines||{})[Y];
 const kind=b=>head(b)?head(b).kind:'none';
 const early=b=>kind(b)!=='same'&&head(b)&&((b.shifts['2024']?.n_2026??1e9)<5000||(b.pct_of_final_2024??100)<5);
-function pace(b){if(b.pace[Y])return `${Math.round(b.pace[Y].pct)}% of ${Y} to date`;
+// vs-final states: the in-person mix so far against the final 2024 in-person mix replaces pace
+const ipTxt=b=>{const i=b.inperson,h=(b.headlines||{})['2024'];if(!i||!h||h.kind!=='final'||i.final['2024']==null)return '';
+  return `in person ${sgn(i['2026'])} (2024 final ${sgn(i.final['2024'])})`};
+function pace(b){if(ipTxt(b))return ipTxt(b);if(b.pace[Y])return `${Math.round(b.pace[Y].pct)}% of ${Y} to date`;
   const f=b['pct_of_final_'+Y];return f!=null?`${Math.round(f)}% of ${Y} total`:''}
 function render(){
   const B=DATA.battlegrounds.filter(head).map(b=>({...b,headline:head(b)}));
@@ -102,7 +105,7 @@ function render(){
     <div class="key"><span><i style="border:4px solid #8a8e96;background:#fff"></i>${Y}</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>Dashed = rougher comparison</span><span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
     ${G.map(([g,t,s])=>{const L=B.filter(b=>kind(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
-    <div class="foot"><b>Same day</b> is the most reliable read.${Y==='2024'?' <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count.':''}
+    <div class="foot"><b>Same day</b> is the most reliable read.${Y==='2024'?' <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count. Their in-person figure is also against 2024\'s final, and in-person voting usually gets more Republican as it goes.':''}
       <b>County lean</b> is the 2024 presidential margin of the counties early votes come from, this year vs the ${Y} early vote by county (at the same point where the state reports daily, as Texas does; otherwise its final total).${missing.length?` ${esc(missing.join(', '))}: no ${Y} party or county data.`:''} Ohio's party is the last primary ballot a voter took, not registration. Party registration is not vote choice.
       Sources: UF Election Lab; NC, PA, IA, OH and TX election offices; EAC; VoteHub.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
@@ -192,7 +195,7 @@ function renderBoth(){
       <span class="ax"><b>&larr; R</b> &nbsp;&nbsp; <em>D &rarr;</em></span></div>
     <div class="row b3 hd"><span></span><span></span><span class="sh2">vs 2024</span><span class="sh2">vs 2022</span></div>
     ${G.map(([g,t,s])=>{const L=B.filter(b=>kindOf(b)===g).sort(by);return L.length?`<div class="grp"><b>${t}</b><span>${s}</span></div>${L.map(row).join('')}`:''}).join('')}
-    <div class="foot"><b>Same day</b> is the most reliable read (Ohio's party is the last primary ballot taken, not registration). <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count. <b>County lean</b> uses the same day where the state reports daily (Texas, Ohio vs 2024), otherwise that year's final early vote by county.${starred.length?` <b>*</b> No 2022 party data in ${esc(starred.join(', '))}, so their 2022 shift is county lean and isn't drawn.`:''}${missing.length?` ${esc(missing.join(', '))}: no data.`:''}
+    <div class="foot"><b>Same day</b> is the most reliable read (Ohio's party is the last primary ballot taken, not registration). <b>Mail vs final</b> overstates any D move, since early mail leans more Democratic than the final count; their in-person figure is against 2024's final too. <b>County lean</b> uses the same day where the state reports daily (Texas, Ohio vs 2024), otherwise that year's final early vote by county.${starred.length?` <b>*</b> No 2022 party data in ${esc(starred.join(', '))}, so their 2022 shift is county lean and isn't drawn.`:''}${missing.length?` ${esc(missing.join(', '))}: no data.`:''}
       Sources: UF Election Lab; NC, PA, IA, OH and TX election offices; EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }

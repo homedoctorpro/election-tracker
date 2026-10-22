@@ -337,6 +337,23 @@ def battlegrounds(con, day, hist, race_summary):
                     trend["final"]["2022"] = heads["2022"]["from"]
             else:
                 trend["final"] = {y: v["base"] for y, v in lean.items()}
+        # In-person early votes by party against each year's final in-person mix. Shown beside the
+        # mail headline in vs-final states: in-person voting starts later and runs more Republican
+        # as it goes, so this is a rough read until the in-person window is well along.
+        ip = None
+        v = dict(con.execute("""SELECT metric, value FROM ev_values WHERE level='state' AND state=?
+                                AND metric IN ('inperson_all','inperson_dem','inperson_rep','inperson_none')
+                                AND snapshot_date=(SELECT MAX(snapshot_date) FROM ev_values)""", (st,)).fetchall())
+        if (v.get("inperson_all") or 0) >= 5000 and (v.get("inperson_dem") or v.get("inperson_rep")):
+            ip = {"n": v["inperson_all"], "2026": _margin(v.get("inperson_dem"), v.get("inperson_rep"), v.get("inperson_none")),
+                  "final": {}}
+            for y, d_, r_, n_, tot in con.execute(
+                    "SELECT year, voted_dem-accept_dem, voted_rep-accept_rep, voted_none-accept_none, inperson_all "
+                    "FROM ref_uf_snapshots WHERE state=? AND days_out=-1 AND year IN (2022, 2024)", (st,)):
+                if tot and d_ is not None:
+                    ip["final"][str(y)] = _margin(d_, r_, n_)
+            if not ip["final"]:
+                ip = None
         races = []
         for r in race_summary:
             if r["state"] == st and not r["district"] and r["status"] == "ok" and r["office"] in ("Senate", "Governor"):
@@ -350,7 +367,7 @@ def battlegrounds(con, day, hist, race_summary):
             "has_senate": st in SENATE_2026, "has_governor": st in GOVERNOR_2026,
             "ev": {"total": c["ev_2026"], "dr": c["dr_margin_2026"], "mail_dr": c.get("mail_dr_margin_2026")},
             "pct_of_final_2022": c.get("pct_of_final_2022"), "pct_of_final_2024": c.get("pct_of_final_2024"),
-            "pace": pace, "shifts": shifts, "county_lean": lean,
+            "pace": pace, "shifts": shifts, "county_lean": lean, "inperson": ip,
             "curves": {str(y): v for y, v in curves.items()},
             "final_dr": {"2024": c.get("dr_margin_2024_final"), "2022": c.get("dr_margin_2022_final")},
         })
