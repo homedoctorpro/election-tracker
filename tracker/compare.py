@@ -125,7 +125,9 @@ def state_pace(con, st):
         "as_of_date": (EDAY[2026] - timedelta(days=as_of)).isoformat(),
         "same_day": {y: at(s, as_of) for y, s in years.items()},
         "final": {y: s[-1] for y, s in years.items() if y != 2026},
-        "chart": {y: [[s["days_out"], s["total"]] for s in ser if s["days_out"] <= 50] for y, ser in years.items()},
+        # D-R share of ballots so far; skip the first 1,000 ballots, which swing wildly
+        "chart": {y: [[s["days_out"], round(100 * (s.get("party:dem", 0) - s.get("party:rep", 0)) / s["total"], 2)]
+                      for s in ser if s["days_out"] <= 50 and s["total"] >= 1000] for y, ser in years.items()},
     }
 
 

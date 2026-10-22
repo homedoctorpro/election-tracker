@@ -397,21 +397,28 @@ function ratings(){
 const Y_COL={2022:'var(--oth)',2024:'#d97706',2026:'var(--accent)'};
 const paceZoom={nc:true,oh:true};
 const mg=v=>v==null||isNaN(v)?'–':(v>=0?'D +':'R +')+Math.abs(v).toFixed(1);
+// a y range over [lo,hi] split into 4 round steps (multiples of 5 points), for margin axes
+function niceRange(lo,hi){
+  const st=Math.max(5,Math.ceil((hi-lo)/4/5)*5);let a=Math.floor(lo/st)*st;
+  if(a+4*st<hi)a=Math.ceil(hi/st)*st-4*st;
+  return [a,a+4*st];
+}
 
 function paceChart(id,nc,label){
   const W=420,H=220,P={l:48,r:10,t:8,b:26},ys=Object.keys(nc.chart);
   const maxD=50,minD=paceZoom[id]?nc.as_of_days_out:0;
   const pts=yr=>nc.chart[yr].filter(p=>p[0]>=minD);
-  const maxV=Math.max(...ys.flatMap(y=>pts(y).map(p=>p[1])),1);
-  const x=d=>P.l+(maxD-d)/(maxD-minD)*(W-P.l-P.r),y=v=>H-P.b-v/maxV*(H-P.t-P.b);
-  const k=v=>v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1e3)+'K';
+  const vals=ys.flatMap(y=>pts(y).map(p=>p[1])),[yl,yh]=niceRange(Math.min(0,...vals),Math.max(0,...vals));
+  const x=d=>P.l+(maxD-d)/(maxD-minD)*(W-P.l-P.r),y=v=>H-P.b-(v-yl)/(yh-yl)*(H-P.t-P.b);
+  const k=v=>v===0?'0':(v>0?'D+':'R+')+Math.abs(v);
   let g='';
-  for(let i=0;i<=4;i++){const v=maxV*i/4;g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${P.l-6}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${k(v)}</text>`}
+  for(let i=0;i<=4;i++){const v=yl+(yh-yl)*i/4;g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${P.l-6}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${k(v)}</text>`}
+  if(yl<0&&yh>0)g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)"/>`;
   [50,40,30,20,10,0].filter(d=>d>=minD).forEach(d=>g+=`<text x="${x(d)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--muted)">${d}</text>`);
   g+=`<line x1="${x(nc.as_of_days_out)}" x2="${x(nc.as_of_days_out)}" y1="${P.t}" y2="${H-P.b}" stroke="var(--muted)" stroke-dasharray="3 3"/>`;
   const lines=ys.map(yr=>`<polyline fill="none" stroke="${Y_COL[yr]}" stroke-width="${yr==2026?2.5:1.5}" points="${pts(yr).map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`).join('');
   $(`#${id}-chart`).innerHTML=`<div class="lg">${ys.map(yr=>`<span><i style="background:${Y_COL[yr]}"></i>${yr}</span>`).join('')}<span>x-axis: days before Election Day</span><a href="#" id="${id}-zoom">${paceZoom[id]?'Show full window':'Zoom to today'}</a></div>
-    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Cumulative ${label} early votes by days before Election Day">${g}${lines}</svg>`;
+    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${label} early votes, D minus R party share, by days before Election Day">${g}${lines}</svg>`;
   $(`#${id}-zoom`).onclick=e=>{e.preventDefault();paceZoom[id]=!paceZoom[id];paceChart(id,nc,label)};
 }
 
@@ -564,15 +571,17 @@ function bgChart(series,{w=300,h=150,xmax=60,fmtY=v=>v,zero=false,marker=null,mi
   const P=mini?{l:2,r:2,t:3,b:3}:{l:40,r:8,t:8,b:22};
   const vals=ys.flatMap(y=>series[y].map(p=>p[1]));
   if(!vals.length)return '';
-  let lo=zero?Math.min(0,...vals):0,hi=Math.max(...vals,zero?0:1);
-  if(zero){const m=Math.max(Math.abs(lo),Math.abs(hi),5);lo=-m;hi=m}
+  let lo=zero?Math.min(...vals):0,hi=Math.max(...vals,zero?-1e9:1);
+  // margins: mini charts (~34px tall) fit the data, at least 6 points tall, so the trend shows;
+  // full charts keep the 0 line in view on round 5-point ticks
+  if(zero){if(mini){const pad=Math.max(0,6-(hi-lo))/2+(hi-lo)*.08;lo-=pad;hi+=pad}else[lo,hi]=niceRange(Math.min(lo,0),Math.max(hi,0))}
   const x=d=>P.l+(xmax-Math.min(d,xmax))/xmax*(w-P.l-P.r),y=v=>h-P.b-(v-lo)/(hi-lo||1)*(h-P.t-P.b);
   let g='';
   if(!mini){
     for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4;g+=`<line x1="${P.l}" x2="${w-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${P.l-5}" y="${y(v)+3}" text-anchor="end" font-size="9.5" fill="var(--muted)">${fmtY(v)}</text>`}
     for(let d=xmax;d>=0;d-=10)g+=`<text x="${x(d)}" y="${h-7}" text-anchor="middle" font-size="9.5" fill="var(--muted)">${d}</text>`;
   }
-  if(zero)g+=`<line x1="${P.l}" x2="${w-P.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)" stroke-width="${mini?.5:1}"/>`;
+  if(zero&&lo<0&&hi>0)g+=`<line x1="${P.l}" x2="${w-P.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)" stroke-width="${mini?.5:1}"/>`;
   if(marker!=null)g+=`<line x1="${x(marker)}" x2="${x(marker)}" y1="${P.t}" y2="${h-P.b}" stroke="var(--muted)" stroke-dasharray="3 3"/>`;
   const lines=ys.map(yr=>{const pts=series[yr].filter(p=>p[0]<=xmax);
     if(pts.length===1)return `<circle cx="${x(pts[0][0])}" cy="${y(pts[0][1])}" r="${yr==2026?3:2.5}" fill="${BG_YCOL[yr]}"/>`;
@@ -597,8 +606,8 @@ function bgCard(b,E){
   ['2022','2024'].forEach(y=>{const s=b.shifts[y];if(s&&kd==='same')minis.push(`<span title="Mail ballots only: 2026 ${sgn(s.mail_2026)} vs ${y} same day ${sgn(s.mail_base)}${s.reg_adjusted?', adjusted for party registration':''}">mail vs ${y} <b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></span>`)});
   const cl=b.county_lean&&b.county_lean['2024'];
   if(cl&&kd!=='county')minis.push(`<span title="2024 margin of the counties this year's early vote comes from: ${sgn(cl.early_2026)}, vs ${sgn(cl.base)} for the 2024 ${esc(cl.basis)}">county lean <b style="color:${scol(cl.shift)}">${sgn(cl.shift)}</b></span>`);
-  // mini chart: each cycle's cumulative ballots up to this point in the calendar only
-  const sp={};Object.entries(b.curves).forEach(([y,c])=>{if(+y>=2022){const s=c.filter(q=>q[0]>=b.days_out&&q[0]<=45).map(q=>[q[0],q[1]]);if(s.length)sp[y]=s}});
+  // mini chart: each cycle's D-R party mix up to this point in the calendar only
+  const sp={};Object.entries(bgMargin(b)).forEach(([y,c])=>{if(+y>=2022){const s=c.filter(q=>q[0]>=b.days_out&&q[0]<=45);if(s.length)sp[y]=s}});
   return `<div class="card${bgSolid(b)?'':' soft'}" style="--tint:${tint}${early?';opacity:.55':''}" tabindex="0" data-st="${b.state}">
     <h3><span>${esc(b.state_name)}</span><span>${early?'<span class="chip" title="Under 5,000 mail ballots, or under 5% of the 2024 early vote, so far">too early</span> ':''}<span class="chip" title="${esc(TIER_T[bgLabel(b)])}">${TIER[bgLabel(b)]}</span></span></h3>
     <div class="races">${race||'no recent statewide polls'}</div>
@@ -609,20 +618,24 @@ function bgCard(b,E){
     ${ip?`<div class="line"><span>D&minus;R, in person</span><span><span class="muted">2024 final ${sgn(ip.base)} →</span> <b style="color:${scol(ip.now)}">${sgn(ip.now)}</b></span></div>`:''}
     ${p?`<div class="line"><span>Party mix, all early votes</span><b style="color:${scol(b.ev.dr)}">${sgn(b.ev.dr)}</b></div>${bar}`:'<div class="line"><span>Party mix</span><span class="muted">no party registration</span></div>'}
     <div class="mini">${minis.join('')}</div>
-    ${Object.keys(sp).length?`<div class="basis" style="margin-top:6px">${Object.keys(sp).some(y=>y!='2026')?`Ballots so far vs ${Object.keys(sp).filter(y=>y!='2026').join(', ')} at this point`:'2026 ballots so far (no earlier cycle at this point)'}</div>${bgChart(sp,{w:220,h:34,xmax:45,mini:true})}`:''}
+    ${Object.keys(sp).length?`<div class="basis" style="margin-top:6px">${Object.keys(sp).some(y=>y!='2026')?`D&minus;R trend vs ${Object.keys(sp).filter(y=>y!='2026').join(', ')} at this point`:'2026 D&minus;R trend so far (no earlier cycle at this point)'}</div>${bgChart(sp,{w:220,h:34,xmax:45,zero:true,mini:true})}`:''}
   </div>`;
 }
 // too early to read a party shift: same-day comparisons are matched on timing, so only the
 // ballot count matters; anything else also needs 5% of the 2024 early vote to be in
 const bgEarly=b=>b.tier!=='same_day'&&b.headline&&((b.shifts['2024']?.n_2026??1e9)<5000||(b.pct_of_final_2024??100)<5);
 
-function bgDetail(b,E){
-  const tot={},mar={};
-  // party mix only once a cycle has 1,000 ballots (or 1% of its last count) in: the first few
-  // dozen ballots swing wildly and would stretch the axis
-  Object.entries(b.curves).forEach(([y,c])=>{tot[y]=c.map(q=>[q[0],q[1]]);const top=Math.max(...c.map(q=>q[1]));
+// D-R party mix by days out for each cycle, only once a cycle has 1,000 ballots (or 1% of its
+// last count) in: the first few dozen ballots swing wildly and would stretch the axis
+function bgMargin(b){
+  const mar={};
+  Object.entries(b.curves).forEach(([y,c])=>{const top=Math.max(...c.map(q=>q[1]));
     const m=c.filter(q=>q[2]!=null&&q[1]>=Math.min(1000,top)&&q[1]>=.01*top).map(q=>[q[0],q[2]]);if(m.length)mar[y]=m});
-  const ys=Object.keys(tot),k=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?Math.round(v/1e3)+'K':Math.round(v);
+  return mar;
+}
+
+function bgDetail(b,E){
+  const mar=bgMargin(b);
   const rows=Object.entries(b.pace).map(([y,p])=>`<tr><td class="l">${y}, ${p.days_out} days out</td><td>${fmt(p.base)}</td><td><b>${pct(p.pct,0)}</b></td><td>${sgn(p.dr_base)}</td></tr>`).join('');
   const sh=Object.entries(b.shifts).map(([y,s])=>`<tr><td class="l">vs ${y} ${s.basis==='same day'?`(same day, ${s.days_out} out)`:'(final)'}</td><td>${sgn(s.mail_2026)}</td><td>${sgn(s.mail_base)}</td><td><b style="color:${scol(s.shift)}">${sgn(s.shift)}</b></td><td class="muted">${sgn(s.result)} ${esc(s.race||'')}</td><td><b>${sgn(s.projected)}</b></td></tr>`).join('');
   const CL=Object.entries(b.county_lean||{});
@@ -632,10 +645,7 @@ function bgDetail(b,E){
     <div class="small muted">Data through ${esc(b.data_through)} · ${b.days_out} days before Election Day. ${esc(TIER_T[bgLabel(b)])}</div>
     ${b.headline?`<div style="margin-top:6px">Headline: <b style="color:${scol(b.headline.value)}">${sgn(b.headline.value)}</b> <span class="small muted">(${esc(b.headline.basis)}: ${b.headline.year} ${sgn(b.headline.from)} → 2026 ${sgn(b.headline.to)})</span></div>`:''}
     <div class="small" style="margin-top:6px">${b.races.map(r=>`<div>${r.office}: ${cand(r.candidate_a,r.party_a)} ${r.a_avg} · ${cand(r.candidate_b,r.party_b)} ${r.b_avg} <span class="muted">(${r.polls_averaged} polls, latest ${esc(r.latest_poll_end)})</span>${r.kalshi&&r.kalshi.price!=null?` · Kalshi: ${esc(r.kalshi.candidate)} <b>${Math.round(100*r.kalshi.price)}%</b> to win <span class="muted">($${fmt(r.kalshi.volume)} traded)</span>`:''}</div>`).join('')||'<span class="muted">No recent statewide polls.</span>'}</div>
-    <div class="two">
-      <div><h4>Early votes, cumulative</h4>${bgLegend(ys)}${bgChart(tot,{fmtY:k,marker:b.days_out})}</div>
-      <div><h4>Party mix (D&minus;R, all early votes)</h4>${Object.keys(mar).length?bgLegend(Object.keys(mar))+bgChart(mar,{fmtY:v=>(v>=0?'D':'R')+Math.abs(Math.round(v)),zero:true,marker:b.days_out}):'<p class="small muted">No party data for this state.</p>'}</div>
-    </div>
+    <h4>Party mix trend (D&minus;R, all early votes)</h4>${Object.keys(mar).length?bgLegend(Object.keys(mar))+bgChart(mar,{w:600,h:180,fmtY:v=>(v>=0?'D':'R')+Math.abs(Math.round(v)),zero:true,marker:b.days_out}):'<p class="small muted">No party data for this state.</p>'}
     ${bgIP(b)?(ip=>`<h4>In-person early votes</h4><div class="small">${fmt(ip.n)} in-person early votes so far, <b>${sgn(ip.now)}</b>. The whole 2024 in-person early vote finished at ${sgn(ip.base)}${ip.base22!=null?`, and 2022's at ${sgn(ip.base22)}`:''}: a gap of <b style="color:${scol(ip.shift)}">${sgn(ip.shift)}</b> against 2024. In-person voting started later than mail and usually gets more Republican as it goes, so read this as rough until more of the in-person window is in; there's no 2024 in-person count at this same point to compare with.</div>`)(bgIP(b)):''}
     <h4>2026 so far</h4>
     <div class="small">${fmt(b.ev.total)} early votes: ${fmt(E2.mail_returned)} by mail, ${fmt(E2.in_person)} in person.${b.ev.dr!=null?` Party mix ${sgn(b.ev.dr)}, mail ballots ${sgn(b.ev.mail_dr)}.`:''}
