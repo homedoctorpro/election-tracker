@@ -20,7 +20,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-22,MA,Massachusetts,2026-10-21,1038091.0,386480.0,89573.0,476053.0,0.0,0.0,0.0,2511461,18.96,Massachusetts Secretary of the Commonwealth
 2026-10-22,MD,Maryland,2026-10-22,635280.0,242744.0,0.0,242744.0,167311.0,39319.0,36114.0,2031635,11.95,https://elections.maryland.gov/press_room/index.html
 2026-10-22,ME,Maine,2026-10-20,201482.0,135484.0,0.0,135484.0,70569.0,27157.0,37758.0,680909,19.9,https://www.maine.gov/sos/cec/elec/data/index.html
-2026-10-22,MI,Michigan,2026-10-21,2135078.0,861072.0,0.0,861072.0,0.0,0.0,0.0,4500400,19.13,Data provided by Michigan Secretary of State
+2026-10-22,MI,Michigan,2026-10-22,2141828.0,920773.0,0.0,920773.0,0.0,0.0,0.0,4500400,20.46,Data provided by Michigan Secretary of State
 2026-10-22,MN,Minnesota,2026-10-16,438943.0,121382.0,80870.0,202252.0,0.0,0.0,0.0,2526646,8.0,https://www.sos.mn.gov/election-administration-campaigns/data-maps/absentee-data/
 2026-10-22,MO,Missouri,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2304250,0.0,TBD
 2026-10-22,MS,Mississippi,2026-10-19,37101.0,29647.0,0.0,29647.0,0.0,0.0,0.0,709100,4.18,Mississippi Secretary of State - Statewide Election Management System
@@ -45,6 +45,6 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-22,VA,Virginia,2026-10-22,459621.0,242684.0,627529.0,870213.0,0.0,0.0,0.0,3021956,28.8,https://www.vpap.org/elections/early-voting/
 2026-10-22,VT,Vermont,2026-10-22,457964.0,88111.0,0.0,88111.0,0.0,0.0,0.0,291955,30.18,Data provided Vermont Secretary of State
 2026-10-22,WA,Washington,2026-10-21,5131622.0,461559.0,0.0,461559.0,0.0,0.0,0.0,3067686,15.05,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
-2026-10-22,WI,Wisconsin,2026-10-21,435060.0,257777.0,55659.0,313436.0,0.0,0.0,0.0,2673154,11.73,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
+2026-10-22,WI,Wisconsin,2026-10-22,485352.0,317077.0,103210.0,420287.0,0.0,0.0,0.0,2673154,15.72,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-22,WV,West Virginia,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,494753,0.0,West Virginia Secretary of State
 2026-10-22,WY,Wyoming,2026-10-21,39909.0,25918.0,0.0,25918.0,4920.0,19090.0,1908.0,198198,13.08,Wyoming Secretary of State
