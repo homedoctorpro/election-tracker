@@ -529,6 +529,36 @@ function cmp(){
   pacePanels();
 }
 
+// Nevada: Democratic minus Republican ballots (a count, not a share) after each day of early
+// in-person voting, which opens the same 17 days before Election Day in both years
+function nvPanel(nv){
+  const ys=Object.keys(nv.days),W=760,H=260,P={l:52,r:24,t:16,b:30};
+  const maxDay=Math.max(16,...ys.flatMap(y=>nv.days[y].map(p=>p[0]))),vals=ys.flatMap(y=>nv.days[y].map(p=>p[1]));
+  const lo=Math.min(0,...vals),hi=Math.max(0,...vals),st=[1e3,2e3,2500,5e3,1e4,2e4,25e3,5e4].find(s=>s*4>=hi-lo)||1e5;
+  let yl=Math.floor(lo/st)*st;if(yl+4*st<hi)yl=Math.ceil(hi/st)*st-4*st;const yh=yl+4*st;
+  const x=d=>P.l+(d-1)/(maxDay-1)*(W-P.l-P.r),y=v=>H-P.b-(v-yl)/(yh-yl)*(H-P.t-P.b);
+  const k=v=>v===0?'0':(v>0?'D+':'R+')+(Math.abs(v)>=1e3?(Math.abs(v)/1e3).toFixed(Math.abs(v)%1e3?1:0)+'K':Math.abs(v));
+  let g='';
+  for(let i=0;i<=4;i++){const v=yl+st*i;g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${P.l-6}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${k(v)}</text>`}
+  g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--muted)"/>`;
+  for(let d=1;d<=maxDay;d++)g+=`<text x="${x(d)}" y="${H-10}" text-anchor="middle" font-size="10" fill="var(--muted)">${d}</text>`;
+  // every point labelled with its lead; the 2026 labels sit above the line, earlier years below
+  const lines=ys.map(yr=>{const s=nv.days[yr],up=yr==='2026';
+    return `<polyline fill="none" stroke="${Y_COL[yr]}" stroke-width="${up?2.5:1.8}" points="${s.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`+
+      s.map(p=>`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="${up?3.5:2.8}" fill="${Y_COL[yr]}"/><text x="${x(p[0])}" y="${y(p[1])+(up?-7:13)}" text-anchor="middle" font-size="8.5" fill="${Y_COL[yr]}">${k(p[1])}</text>`).join('')}).join('');
+  const dt=(yr,d)=>{const t=new Date(nv.start[yr]+'T12:00:00');t.setDate(t.getDate()+d-1);return t.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})};
+  const at=(yr,d)=>(nv.days[yr]||[]).find(p=>p[0]===d)?.[1];
+  const last=Math.max(...(nv.days['2026']||[[0]]).map(p=>p[0]));
+  const rows=[];for(let d=1;d<=maxDay;d++){const a=at('2024',d),b=at('2026',d);
+    rows.push(`<tr${d===last?' style="background:var(--hl)"':''}><td class="l">Day ${d}</td><td class="muted">${dt('2024',d)}</td><td>${a==null?'–':mg0(a)}</td><td class="muted">${dt('2026',d)}</td><td>${b==null?'–':`<b>${mg0(b)}</b>`}</td><td>${a==null||b==null?'–':`<b style="color:${b-a>=0?'var(--dem)':'var(--rep)'}">${mg0(b-a)}</b>`}</td></tr>`)}
+  return `<h2 style="font-size:17px;margin:0 0 4px">Nevada: Democratic ballot lead by day of early voting, 2026 vs 2024</h2>
+    <div class="small muted">Statewide Democratic minus Republican ballots cast, mail and early in-person combined, after each day of early in-person voting (it opens the third Saturday before Election Day: Oct 19 in 2024, Oct 17 in 2026). 2024 and 2026 days 1&ndash;5 come from a published chart of the Nevada Secretary of State's daily reports (@umichvoter on X); later 2026 days come from this tracker's daily pull, skipping updates where some ballots had no party. Registration isn't vote choice: this is the "firewall" Democrats bank before Election Day.</div>
+    <div style="margin-top:10px;max-width:900px"><div class="small" style="font-weight:600;margin-bottom:2px">D&minus;R ballots, cumulative</div><div class="lg">${ys.map(yr=>`<span><i style="background:${Y_COL[yr]}"></i>${yr}</span>`).join('')}<span>x-axis: day of early voting</span></div>
+      <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Nevada Democratic minus Republican ballots by day of early voting, 2024 and 2026">${g}${lines}</svg></div>
+    <div class="scroll" style="margin-top:8px;max-width:900px"><table><thead><tr><th class="l">Day</th><th>2024</th><th>Lead</th><th>2026</th><th>Lead</th><th>2026 vs 2024</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+}
+const mg0=v=>(v>=0?'D +':'R +')+fmt(Math.abs(v));
+
 // one same-day panel per state with daily data in every cycle, in the order site.py lists them
 const PACE={
   NC:{name:'North Carolina',note:p=>`Accepted ballots from the NC State Board of Elections voter files, counted through ${through(p)}, compared with the same number of days before Election Day in 2022 and 2024.`},
@@ -546,6 +576,9 @@ function pacePanels(){
       <h2 style="font-size:17px;margin:0 0 4px">${PACE[st].name}: exact same-day comparison with ${ys.join(', ').replace(/, ([^,]*)$/,' and $1')}</h2>
       <div class="small muted">${esc(PACE[st].note(P[st]))}</div>
       <div class="ncgrid"><div id="${id}-chart"></div><div class="scroll"><table id="${id}-t"></table></div></div>${PACE[st].extra||''}</div>`}).join('');
+  // Nevada's raw ballot lead goes right after North Carolina
+  if(D.nv_firewall){const nv=document.createElement('div');nv.className='panel';nv.style.cssText='padding:14px 16px;margin-bottom:14px';nv.innerHTML=nvPanel(D.nv_firewall);
+    const first=$('#pace-panels').firstElementChild;first?first.after(nv):$('#pace-panels').append(nv)}
   Object.entries(P).filter(([st])=>PACE[st]).forEach(([st,p])=>{const id=st.toLowerCase();
     if(PACE[st].lean){
       // no party data: chart and table use the battleground county-lean series instead

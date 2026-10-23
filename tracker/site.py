@@ -98,6 +98,7 @@ def build(con):
                                      ("IA", compare.iowa_pace(con, hist_rows)), ("OH", compare.state_pace(con, "OH")),
                                      ("TX", compare.state_pace(con, "TX"))) if p},
         "oh_counties": compare.county_same_day(con, "OH"),
+        "nv_firewall": compare.nv_firewall(hist_rows),
         "projection": compare.party_projection(con, today_et()),
         "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }

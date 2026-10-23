@@ -66,11 +66,19 @@ def _snapshot_curves(con, st, hist):
     for r in hist.get(st, []):
         if r["total_voted"] and r["last_update"]:
             d = days_out(r["last_update"])
+            coded = sum(r[k] or 0 for k in ("voted_dem", "voted_rep", "voted_other"))
             pts[d] = [d, r["total_voted"], _margin(r["voted_dem"], r["voted_rep"], r["voted_other"])
-                      if (r["voted_dem"] or r["voted_rep"]) else None]
+                      if (r["voted_dem"] or r["voted_rep"]) and _coded(coded, r["total_voted"]) else None]
     if pts:
         out[2026] = [pts[d] for d in sorted(pts, reverse=True)]
     return out
+
+
+def _coded(coded, total):
+    """True when nearly every ballot has a party. UF's feed sometimes drops a county's party
+    split for a day (Nevada in-person, 10/20-21/2026), and the party-coded remainder then reads
+    far more Democratic or Republican than the whole vote."""
+    return bool(coded) and (not total or coded >= .95 * total)
 
 
 def _at(curve, d, exact):
@@ -212,7 +220,9 @@ def _daily_2026(con, days, st):
         v = [_f(r.get(k)) for k in ("voted_dem", "voted_rep", "voted_none", "accept_dem", "accept_rep", "accept_none")]
         tot, mail = sum(x or 0 for x in v[:3]), sum(x or 0 for x in v[3:])
         lean = _county_lean(con, st, counties[st], 2024, ref) if st in counties and ref else None
-        by[d] = {"all": _margin(*v[:3]), "mail": _margin(*v[3:]), "county": lean and lean["early_2026"],
+        by[d] = {"all": _margin(*v[:3]) if _coded(tot, _f(r.get("voted_all"))) else None,
+                 "mail": _margin(*v[3:]) if _coded(mail, _f(r.get("accept_all"))) else None,
+                 "county": lean and lean["early_2026"],
                  "n_all": tot, "n_mail": mail, "n_county": lean["ballots"] if lean else 0}
     # skip days with too few ballots to read: under 1,000, or under 5% of the latest count (the
     # first days often hold only a few counties' returns)

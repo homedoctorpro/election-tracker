@@ -11,9 +11,12 @@ Two kinds of comparison, kept apart because they answer different questions:
 
 Days-out is measured from the date each source's data runs through, not from today.
 """
+import csv
 from datetime import date, timedelta
 
-from .common import ELECTION_DAYS as EDAY, GOVERNOR_2026, SENATE_2026
+from .common import ELECTION_DAYS as EDAY, GOVERNOR_2026, ROOT, SENATE_2026
+
+NV_EV_DAYS_OUT = 17  # Nevada's early in-person voting opens the third Saturday before Election Day
 
 
 def days_out(d: str) -> int:
@@ -129,6 +132,38 @@ def iowa_pace(con, hist):
     if pts:
         years[2026] = [pts[d] for d in sorted(pts, reverse=True)]
     return _pace_summary(years)
+
+
+def nv_firewall(hist):
+    """Nevada's statewide Democratic minus Republican ballots (mail plus early in person) after
+    each day of early in-person voting, 2024 against 2026. The SOS daily reports aren't reachable
+    from here (nvsos.gov blocks scripts), so data/reference/nv_firewall.csv seeds 2024 and the
+    first 2026 days from a published chart of those reports; later 2026 days come from this
+    tracker's own daily history. A report dated D covers early-voting days through D minus the
+    first day. Updates where some ballots lack a party are skipped: UF's feed sometimes drops a
+    county's party split, which would show up as a fake swing in a raw count."""
+    years = {}
+    with open(ROOT / "data" / "reference" / "nv_firewall.csv", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            years.setdefault(int(r["year"]), {})[int(r["day"])] = int(r["lead"])
+    start = {y: EDAY[y] - timedelta(days=NV_EV_DAYS_OUT) for y in (2024, 2026)}
+    best = {}
+    for r in hist.get("NV", []):
+        tot = r["total_voted"]
+        coded = sum(r[k] or 0 for k in ("voted_dem", "voted_rep", "voted_other"))
+        # (in-person well under a fifth of the count means UF hadn't loaded that day's in-person
+        # file yet, as on 10/18-19/2026, so the report doesn't cover the day its date implies)
+        if not tot or not r["last_update"] or coded < .99 * tot or (r["in_person"] or 0) < .2 * tot:
+            continue
+        day = (date.fromisoformat(r["last_update"]) - start[2026]).days
+        if day >= 1 and (day not in best or tot > best[day][0]):
+            best[day] = (tot, round(r["voted_dem"] - r["voted_rep"]))
+    for d, (_, lead) in best.items():
+        years.setdefault(2026, {}).setdefault(d, lead)  # seeded days stay as published
+    if 2026 not in years:
+        return None
+    return {"days": {y: sorted(v.items()) for y, v in years.items()},
+            "start": {y: s.isoformat() for y, s in start.items()}}
 
 
 def _snap_point(d, tot, dem, rep, other, mail):
