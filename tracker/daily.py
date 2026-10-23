@@ -143,7 +143,38 @@ def build(con, hist, nv_firewall, day=None):
             r["date"] = (EDAY[2026] - timedelta(days=r["days_out"])).isoformat()
         else:
             r["date"] = (EDAY[2026] - timedelta(days=compare.NV_EV_DAYS_OUT - r["ev_day"] + 1)).isoformat()
-    return {"rows": rows, "post": post(rows, day)}
+    return {"rows": rows, "post": post(rows, day), "verdicts": verdicts(rows, day)}
+
+
+# Cut-offs for the verdict words: (good, very good). Points of D-R share, or Nevada ballots.
+CUTS = {"points": (1, 5), "nv_overall": (2500, 10000), "nv_day": (500, 2000)}
+
+
+def verdict(v, cuts):
+    """'very good D' / 'good D' / 'neutral' / 'good R' / 'very good R' for a shift vs 2024."""
+    if v is None:
+        return "n/a"
+    good, very = cuts
+    if abs(v) < good:
+        return "neutral"
+    return ("very good " if abs(v) >= very else "good ") + ("D" if v > 0 else "R")
+
+
+def verdicts(rows, day=None):
+    """The second post: each state's overall and latest-day comparison with 2024 in words."""
+    d = date.fromisoformat(day) if day else date.today()
+    lines = [f"Early vote vs 2024 same day, {d.strftime('%b')} {d.day}", "(overall | latest day)"]
+    for r in rows:
+        nv = r.get("ballots", False)
+        o = verdict(r["overall"], CUTS["nv_overall"] if nv else CUTS["points"])
+        dd = verdict(r.get("day"), CUTS["nv_day"] if nv else CUTS["points"])
+        lines.append(f"{r['state']}: {o} | {dd}")
+    foot = ["Neutral: under 1 pt. Very good: 5+ pts.", "Party reg., not votes."]
+    text = "\n".join(lines + foot + [URL])
+    while _xlen(text) > 280 and foot:
+        foot.pop(0)
+        text = "\n".join(lines + foot + [URL])
+    return text
 
 
 def post(rows, day=None):

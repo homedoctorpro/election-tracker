@@ -61,6 +61,7 @@ tr.click{cursor:pointer}
 .rc{display:inline-block;margin-right:14px}.rc i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
 #lpt .pq{white-space:normal;color:var(--muted);font-size:13px}
 #lpt .rs{white-space:normal;min-width:250px}#lpt .rc{white-space:nowrap}
+.dp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,330px));gap:14px}
 .pty{display:inline-block;min-width:16px;padding:0 4px;border-radius:3px;color:#fff;font-size:11px;font-weight:700;text-align:center;line-height:16px;vertical-align:1px}
 .ncgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;margin-top:10px;align-items:start}
 @media (max-width:820px){.ncgrid{grid-template-columns:1fr}}
@@ -723,11 +724,13 @@ function dailyPost(dp){
       <td>${v(r.now,b)}</td><td class="muted">${v(r.then,b)}</td><td><b style="color:${r.overall>=0?'var(--dem)':'var(--rep)'}">${v(r.overall,b)}</b></td>
       <td>${v(r.day_now,b)}</td><td class="muted">${v(r.day_then,b)}</td><td>${r.day==null?'–':`<b style="color:${r.day>=0?'var(--dem)':'var(--rep)'}">${v(r.day,b)}</b>`}</td></tr>`}).join('');
   $('#daily').hidden=false;
-  $('#daily').innerHTML=`<h2 style="font-size:17px;margin:0 0 4px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Today's post <span><button class="seg" id="daily-copy">Copy</button> <a class="small" href="daily.txt" target="_blank" rel="noopener">daily.txt</a></span></h2>
-    <div class="small muted">States with a same-day 2024 count. <b>Overall</b>: 2026's D&minus;R share of ballots so far minus 2024's at the same point. <b>Latest day</b>: the same for only the ballots added on 2026's latest reported day, against the ballots 2024 added over the same days. Nevada is the statewide ballot lead, in ballots; Texas is county lean. A report that adds under 1% of the count is folded into the day before.</div>
-    <div class="ncgrid" style="grid-template-columns:minmax(0,300px) minmax(0,1fr)"><pre id="daily-text" style="white-space:pre-wrap;font:14px/1.5 system-ui,sans-serif;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:10px 0 0">${esc(dp.post)}</pre>
-    <div class="scroll" style="margin-top:10px"><table><thead><tr><th class="l"></th><th>2026</th><th>2024</th><th>Overall</th><th>2026 day</th><th>2024 day</th><th>Latest day</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
-  $('#daily-copy').onclick=async()=>{try{await navigator.clipboard.writeText(dp.post);$('#daily-copy').textContent='Copied'}catch(e){$('#daily-copy').textContent='Select the text to copy'}};
+  const box=(id,title,text,file)=>`<div><div class="small" style="display:flex;justify-content:space-between;align-items:center;margin:10px 0 4px"><b>${title}</b><span><button class="seg" id="${id}-copy">Copy</button> <a href="${file}" target="_blank" rel="noopener">${file}</a></span></div>
+    <pre style="white-space:pre-wrap;font:14px/1.5 system-ui,sans-serif;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0">${esc(text)}</pre></div>`;
+  $('#daily').innerHTML=`<h2 style="font-size:17px;margin:0 0 4px">Today's posts</h2>
+    <div class="small muted">States with a same-day 2024 count. <b>Overall</b>: 2026's D&minus;R share of ballots so far minus 2024's at the same point. <b>Latest day</b>: the same for only the ballots added on 2026's latest reported day, against the ballots 2024 added over the same days. Nevada is the statewide ballot lead, in ballots; Texas is county lean. A report that adds under 1% of the count is folded into the day before. In the second post, <b>neutral</b> is a gap under 1 point, <b>good</b> 1 to 5, <b>very good</b> 5 or more (Nevada: 2,500 / 10,000 ballots overall, 500 / 2,000 on the latest day).</div>
+    <div class="dp-grid">${box('daily','1. Numbers',dp.post,'daily.txt')}${dp.verdicts?box('verdicts','2. By state, in words',dp.verdicts,'daily-verdicts.txt'):''}</div>
+    <div class="scroll" style="margin-top:12px"><table><thead><tr><th class="l"></th><th>2026</th><th>2024</th><th>Overall</th><th>2026 day</th><th>2024 day</th><th>Latest day</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  [['daily',dp.post],['verdicts',dp.verdicts]].forEach(([id,text])=>{const b=$(`#${id}-copy`);if(b)b.onclick=async()=>{try{await navigator.clipboard.writeText(text);b.textContent='Copied'}catch(e){b.textContent='Select the text to copy'}}});
 }
 
 function bgOverview(B){

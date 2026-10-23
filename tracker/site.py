@@ -105,6 +105,7 @@ def build(con):
     data["daily"] = daily.build(con, hist_rows, data["nv_firewall"], today_et())
     SITE.mkdir(exist_ok=True)
     (SITE / "daily.txt").write_text(data["daily"]["post"] + "\n", encoding="utf-8")
+    (SITE / "daily-verdicts.txt").write_text(data["daily"]["verdicts"] + "\n", encoding="utf-8")
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     shutil.copy(TEMPLATE, SITE / "index.html")
     try:
