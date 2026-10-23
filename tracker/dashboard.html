@@ -57,6 +57,10 @@ tr.click{cursor:pointer}
 .rating{display:inline-block;min-width:64px;padding:2px 6px;border-radius:4px;font-size:12px;text-align:center}
 .rD{background:color-mix(in srgb,var(--dem) 25%,transparent)}.rR{background:color-mix(in srgb,var(--rep) 25%,transparent)}
 .rT{background:#fde68a;color:#713f12}
+.mpill{display:inline-block;min-width:52px;padding:1px 7px;border-radius:5px;background:var(--oth);color:#fff;font-size:13px;font-weight:700;text-align:center}
+.rc{display:inline-block;margin-right:14px}.rc i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+#lpt .pq{white-space:normal;color:var(--muted);font-size:13px}
+#lpt .rs{white-space:normal;min-width:250px}#lpt .rc{white-space:nowrap}
 .pty{display:inline-block;min-width:16px;padding:0 4px;border-radius:3px;color:#fff;font-size:11px;font-weight:700;text-align:center;line-height:16px;vertical-align:1px}
 .ncgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;margin-top:10px;align-items:start}
 @media (max-width:820px){.ncgrid{grid-template-columns:1fr}}
@@ -371,13 +375,20 @@ function races(office){
 
 function latest(){
   const T={'us-senator':'Senate','governor':'Governor','us-representative':'House','generic-ballot':'Generic'};
+  // last name for the compact result line ("Benson 50"), skipping suffixes like Jr. or III
+  const last=n=>{const w=String(n).split(' ').filter(x=>!/^(jr|sr|ii|iii|iv)\.?,?$/i.test(x));return w[w.length-1]||n};
   const draw=()=>{const t=$('#lt').value,q=$('#lq').value.toLowerCase(),cur=$('#lcur').checked;
     const ps=D.polls.filter(p=>(!t||p.poll_type===t)&&(!q||(p.race+' '+p.pollster).toLowerCase().includes(q))&&(!cur||p.matchup==='current')).slice(0,400);
-    $('#lpt').innerHTML='<thead><tr><th class="l">Ended</th><th class="l">Race</th><th class="l">Pollster</th><th class="l">Result</th><th class="hide-sm">Sample</th><th></th></tr></thead><tbody>'+ps.map(p=>`<tr><td class="l small muted">${esc(p.end_date)}</td>
-      <td class="l"><b>${esc(p.race)}</b> <span class="chip">${T[p.poll_type]}</span>${p.matchup==='primary/hypothetical'?' <span class="chip" title="Not the current two-candidate matchup">primary/hypo</span>':''}</td>
-      <td class="l">${esc(p.pollster)}${p.internal?' <span class="chip">internal</span>':''}${p.partisan?` <span class="chip">${esc(p.partisan)}</span>`:''}</td>
-      <td class="l">${answers(p,3)}</td><td class="hide-sm small muted">${p.sample_size?fmt(p.sample_size)+' '+esc((p.population||'').toUpperCase()):''}</td>
-      <td>${p.quality_flag?`<span class="flag small" title="${esc(p.quality_flag)}">⚠</span> `:''}<a href="${esc(p.url)}" target="_blank" rel="noopener">source</a></td></tr>`).join('')+'</tbody>';};
+    $('#lpt').innerHTML='<thead><tr><th class="l">Ended</th><th class="l">Race</th><th>Margin</th><th class="l">Result</th><th class="l">Pollster</th><th class="hide-sm">Sample</th><th></th></tr></thead><tbody>'+ps.map(p=>{
+      const a=p.answers,m=a.length>1&&a[0][1]!=null&&a[1][1]!=null?a[0][1]-a[1][1]:null;
+      const lead=m==null?'':m===0?'<span class="mpill">Tie</span>':`<span class="mpill" style="background:${pcol(a[0][2])}">${a[0][2]||'?'} +${+m.toFixed(1)}</span>`;
+      const res=a.slice(0,3).map(x=>`<span class="rc" title="${esc(x[0])}"><i style="background:${pcol(x[2])}"></i>${esc(last(x[0]))} <b>${x[1]??'–'}</b></span>`).join('');
+      return `<tr><td class="l small muted">${esc(p.end_date)}${p.quality_flag?` <span class="flag" title="${esc(p.quality_flag)}">⚠</span>`:''}</td>
+      <td class="l"><b>${esc(p.race)}</b>${p.poll_type==='generic-ballot'?` <span class="chip">${T[p.poll_type]}</span>`:''}${p.matchup==='primary/hypothetical'?' <span class="chip" title="Not the current two-candidate matchup">primary/hypo</span>':''}</td>
+      <td>${lead}</td><td class="l rs">${res}</td>
+      <td class="l pq">${esc(p.pollster)}${p.partisan?` <span class="chip">${esc(p.partisan)}</span>`:''}${p.internal?' <span class="chip">internal</span>':''}</td>
+      <td class="hide-sm small muted">${p.sample_size?fmt(p.sample_size)+' '+esc((p.population||'').toUpperCase()):''}</td>
+      <td><a href="${esc(p.url)}" target="_blank" rel="noopener" title="Source">↗</a></td></tr>`}).join('')+'</tbody>';};
   ['#lt','#lq','#lcur'].forEach(s=>$(s).oninput=draw);draw();
 }
 
