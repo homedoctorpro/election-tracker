@@ -18,7 +18,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,KY,Kentucky,2026-10-22,67469.0,25404.0,2975.0,28379.0,15422.0,10673.0,2284.0,1502550,1.89,https://elect.ky.gov/Pages/default.aspx
 2026-10-23,LA,Louisiana,2026-10-22,56477.0,56477.0,119236.0,175713.0,75598.0,71389.0,28726.0,1410466,12.46,https://www.sos.la.gov/elections-voting/early-voting-statistics-statewide
 2026-10-23,MA,Massachusetts,2026-10-22,1043183.0,432427.0,108919.0,541346.0,0.0,0.0,0.0,2511461,21.56,Massachusetts Secretary of the Commonwealth
-2026-10-23,MD,Maryland,2026-10-22,635280.0,242744.0,0.0,242744.0,167311.0,39319.0,36114.0,2031635,11.95,https://elections.maryland.gov/press_room/index.html
+2026-10-23,MD,Maryland,2026-10-23,636082.0,256997.0,0.0,256997.0,177411.0,41401.0,38185.0,2031635,12.65,https://elections.maryland.gov/press_room/index.html
 2026-10-23,ME,Maine,2026-10-20,201482.0,135484.0,0.0,135484.0,70569.0,27157.0,37758.0,680909,19.9,https://www.maine.gov/sos/cec/elec/data/index.html
 2026-10-23,MI,Michigan,2026-10-22,2141828.0,920773.0,0.0,920773.0,0.0,0.0,0.0,4500400,20.46,Data provided by Michigan Secretary of State
 2026-10-23,MN,Minnesota,2026-10-16,438943.0,121382.0,80870.0,202252.0,0.0,0.0,0.0,2526646,8.0,https://www.sos.mn.gov/election-administration-campaigns/data-maps/absentee-data/
@@ -27,7 +27,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,MT,Montana,2026-10-23,522834.0,155677.0,0.0,155677.0,0.0,0.0,0.0,468326,33.24,https://sosmt.gov/elections/absentee-ballot-count/
 2026-10-23,NC,North Carolina,2026-10-23,162901.0,54888.0,1215032.0,1269920.0,535973.0,296478.0,437469.0,3790202,33.51,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
 2026-10-23,ND,North Dakota,2026-10-22,53405.0,30199.0,692.0,30891.0,0.0,0.0,0.0,242566,12.74,https://vip.sos.nd.gov/abev.aspx?eid=348
-2026-10-23,NE,Nebraska,2026-10-22,233336.0,108116.0,17838.0,125954.0,52829.0,52129.0,20996.0,682716,18.45,Data file provided by Nebraska Secretary of State
+2026-10-23,NE,Nebraska,2026-10-23,236945.0,116058.0,20375.0,136433.0,56456.0,57253.0,22724.0,682716,19.98,Data file provided by Nebraska Secretary of State
 2026-10-23,NJ,New Jersey,2026-10-23,920191.0,435358.0,0.0,435358.0,285229.0,82380.0,67749.0,2645539,16.46,New Jersey Secretary of State
 2026-10-23,NM,New Mexico,2026-10-22,89097.0,40076.0,147804.0,187880.0,106798.0,51720.0,29362.0,714754,26.29,New Mexico Secretary of State
 2026-10-23,NV,Nevada,2026-10-22,2081400.0,178222.0,106629.0,284851.0,112888.0,101237.0,70726.0,1023617,27.83,https://www.nvsos.gov/elections/election-information/vivid-project
@@ -40,7 +40,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,SC,South Carolina,2026-10-22,0.0,0.0,280114.0,280114.0,0.0,0.0,0.0,1718626,16.3,https://scvotes.gov/elections-statistics/voter-participation/
 2026-10-23,SD,South Dakota,2026-10-22,51101.0,41057.0,0.0,41057.0,12684.0,21597.0,6776.0,354670,11.58,South Dakota Secretary of State
 2026-10-23,TN,Tennessee,2026-10-22,0.0,0.0,577423.0,577423.0,0.0,0.0,0.0,1756397,32.88,https://sos.tn.gov/govotetn
-2026-10-23,TX,Texas,2026-10-22,110767.0,110767.0,2159850.0,2270617.0,0.0,0.0,0.0,8151590,27.85,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
+2026-10-23,TX,Texas,2026-10-23,112102.0,112102.0,2162933.0,2275035.0,0.0,0.0,0.0,8151590,27.91,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-23,UT,Utah,2026-10-23,1787566.0,147453.0,856.0,148309.0,33388.0,76483.0,38438.0,1084634,13.67,Utah Lt. Governor
 2026-10-23,VA,Virginia,2026-10-23,461385.0,250720.0,679154.0,929874.0,0.0,0.0,0.0,3021956,30.77,https://www.vpap.org/elections/early-voting/
 2026-10-23,VT,Vermont,2026-10-23,457909.0,95513.0,0.0,95513.0,0.0,0.0,0.0,291955,32.71,Data provided Vermont Secretary of State
