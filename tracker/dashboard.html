@@ -204,25 +204,7 @@ svg.spark{vertical-align:middle}
   <div class="panel scroll"><table id="evt"></table></div>
 </section>
 <section id="s-cmp">
-  <div class="panel" style="padding:14px 16px;margin-bottom:14px">
-    <h2 style="font-size:17px;margin:0 0 4px">North Carolina: exact same-day comparison</h2>
-    <div class="small muted" id="nc-note"></div>
-    <div class="ncgrid">
-      <div id="nc-chart"></div>
-      <div class="scroll"><table id="nc-t"></table></div>
-    </div>
-  </div>
-  <div class="panel" style="padding:14px 16px;margin-bottom:14px" id="oh-panel" hidden>
-    <h2 style="font-size:17px;margin:0 0 4px">Ohio: exact same-day comparison with 2024</h2>
-    <div class="small muted" id="oh-note"></div>
-    <div class="ncgrid">
-      <div id="oh-chart"></div>
-      <div class="scroll"><table id="oh-t"></table></div>
-    </div>
-    <h3 style="font-size:15px;margin:16px 0 4px">By county</h3>
-    <div class="tools"><input id="ohq" placeholder="Filter counties" aria-label="Filter Ohio counties"></div>
-    <div class="scroll" style="max-height:420px"><table id="oh-ct"></table></div>
-  </div>
+  <div id="pace-panels"></div>
   <div class="panel" style="padding:14px 16px;margin-bottom:14px">
     <h2 style="font-size:17px;margin:0 0 4px">If the mail-ballot shift carried over to the whole vote</h2>
     <div class="small muted">States that register voters by party. The hollow dot is the state's actual result in the baseline year. The solid dot adds the change in the mail-ballot party mix since then (2026 mail D&minus;R minus baseline mail D&minus;R). In North Carolina and Pennsylvania that change is also adjusted for shifts in party registration. This is arithmetic, not a forecast: party registration isn't vote choice, and mail voters aren't the whole electorate.</div>
@@ -405,8 +387,8 @@ function ratings(){
   $('#rt').insertAdjacentHTML('afterend','<div class="small muted" style="padding:8px 10px">* = rated to flip from the party that currently holds the seat.</div>');
 }
 
-const Y_COL={2022:'var(--oth)',2024:'#d97706',2026:'var(--accent)'};
-const paceZoom={nc:true,oh:true};
+const Y_COL={2018:'#a78bfa',2022:'var(--oth)',2024:'#d97706',2026:'var(--accent)'};
+const paceZoom={nc:true,pa:true,ia:true,oh:true,tx:true};
 const mg=v=>v==null||isNaN(v)?'–':(v>=0?'D +':'R +')+Math.abs(v).toFixed(1);
 // a y range over [lo,hi] split into 4 round steps (multiples of 5 points), for margin axes
 function niceRange(lo,hi){
@@ -428,18 +410,22 @@ function paceChart(id,nc,label){
   [50,40,30,20,10,0].filter(d=>d>=minD).forEach(d=>g+=`<text x="${x(d)}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--muted)">${d}</text>`);
   g+=`<line x1="${x(nc.as_of_days_out)}" x2="${x(nc.as_of_days_out)}" y1="${P.t}" y2="${H-P.b}" stroke="var(--muted)" stroke-dasharray="3 3"/>`;
   const lines=ys.map(yr=>`<polyline fill="none" stroke="${Y_COL[yr]}" stroke-width="${yr==2026?2.5:1.5}" points="${pts(yr).map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`).join('');
-  $(`#${id}-chart`).innerHTML=`<div class="lg">${ys.map(yr=>`<span><i style="background:${Y_COL[yr]}"></i>${yr}</span>`).join('')}<span>x-axis: days before Election Day</span><a href="#" id="${id}-zoom">${paceZoom[id]?'Show full window':'Zoom to today'}</a></div>
-    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${label} early votes, D minus R party share, by days before Election Day">${g}${lines}</svg>`;
+  const what=nc.lean?'County lean of early votes (2024 president)':'D&minus;R party share of early votes';
+  $(`#${id}-chart`).innerHTML=`<div class="small" style="font-weight:600;margin-bottom:2px">${what}</div><div class="lg">${ys.map(yr=>`<span><i style="background:${Y_COL[yr]}"></i>${yr}</span>`).join('')}<span>x-axis: days before Election Day</span><a href="#" id="${id}-zoom">${paceZoom[id]?'Show full window':'Zoom to today'}</a></div>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${label}: ${what.replace('&minus;','minus')}, by days before Election Day">${g}${lines}</svg>`;
   $(`#${id}-zoom`).onclick=e=>{e.preventDefault();paceZoom[id]=!paceZoom[id];paceChart(id,nc,label)};
 }
 
 function paceTable(id,nc){
   const sd=nc.same_day,fi=nc.final;
-  const cols=[['2022',sd[2022]],['2024',sd[2024]],['2026',sd[2026]],['2022 final',fi[2022]],['2024 final',fi[2024]]].filter(c=>c[1]);
+  const cols=[...Object.keys(sd).sort().map(y=>[y,sd[y]]),...Object.keys(fi).sort().map(y=>[y+' final',fi[y]])].filter(c=>c[1]);
   const sh=(o,k)=>o&&o.total?100*(o[k]||0)/o.total:null;
-  const rows=[['Ballots accepted',o=>fmt(o.total)],['by mail',o=>fmt(o['method:mail']||0),1],['in person',o=>fmt(o['method:in_person']||0),1],
-    ['Democrats',o=>pct(sh(o,'party:dem'))],['Republicans',o=>pct(sh(o,'party:rep'))],['Unaffiliated',o=>pct(sh(o,'party:una'))],
-    ['D minus R',o=>o.total?mg(sh(o,'party:dem')-sh(o,'party:rep')):'–'],
+  // party rows only where the state has party data; "by mail"/"in person" only where it splits them
+  const rows=[['Ballots',o=>fmt(o.total)],['by mail',o=>o['method:in_person']==null?'–':fmt(o['method:mail']||0),1,'method:in_person'],['in person',o=>o['method:in_person']==null?'–':fmt(o['method:in_person']),1,'method:in_person'],
+    ['Democrats',o=>pct(sh(o,'party:dem')),0,'party:dem'],['Republicans',o=>pct(sh(o,'party:rep')),0,'party:dem'],
+    ['Unaffiliated / other',o=>o.total?pct(100-sh(o,'party:dem')-sh(o,'party:rep')):'–',0,'party:dem'],
+    ['D minus R',o=>o.total?mg(sh(o,'party:dem')-sh(o,'party:rep')):'–',0,'party:dem'],
+    ['County lean',o=>o.lean==null?'–':mg(o.lean),0,'lean'],
     ['Black',o=>pct(sh(o,'race:black')),0,'race:black'],['Hispanic',o=>pct(sh(o,'race:hispanic')),0,'race:hispanic'],['Age 65+',o=>pct(sh(o,'age:65+')),0,'age:65+'],
     ['Age 18–29',o=>pct(sh(o,'age:18-29')),0,'age:18-29'],['Age 18–24',o=>pct(sh(o,'age:18-24')),0,'age:18-24']]
     .filter(r=>!r[3]||cols.some(c=>c[1][r[3]]!=null));
@@ -540,11 +526,35 @@ function cmp(){
     <td>${r.shift==null?'–':r.smallN?`<span class="muted" title="Too few mail ballots so far to read much into this">${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}*</span>`:`<b>${r.shift>=0?'D':'R'} +${Math.abs(r.shift).toFixed(1)}</b>`}</td></tr>`);
   $('#cq').oninput=draw;
   partyMix();
-  if(D.nc_pace){paceChart('nc',D.nc_pace,'NC');paceTable('nc',D.nc_pace);
-    $('#nc-note').textContent=`Accepted ballots from the NC State Board of Elections voter files, counted through ${D.nc_pace.as_of_date} (${D.nc_pace.as_of_days_out} days before Election Day), compared with the same number of days before Election Day in 2022 and 2024.`}
-  if(D.oh_pace){$('#oh-panel').hidden=false;paceChart('oh',D.oh_pace,'Ohio');paceTable('oh',D.oh_pace);
-    $('#oh-note').textContent=`Ballots received, from the Ohio Secretary of State's daily county reports, counted through ${D.oh_pace.as_of_date} (${D.oh_pace.as_of_days_out} days before Election Day), compared with the same point in 2024. The state has no party data before Nov 2024. Ohio doesn't register voters by party: "party" is the ballot a voter took in a recent primary, and anyone who hasn't voted in one counts as unaffiliated.`;
-    if(D.oh_counties)ohCounties(D.oh_counties)}
+  pacePanels();
+}
+
+// one same-day panel per state with daily data in every cycle, in the order site.py lists them
+const PACE={
+  NC:{name:'North Carolina',note:p=>`Accepted ballots from the NC State Board of Elections voter files, counted through ${through(p)}, compared with the same number of days before Election Day in 2022 and 2024.`},
+  PA:{name:'Pennsylvania',note:p=>`Mail ballots returned, from the Pennsylvania Department of State's mail-ballot files, counted through ${through(p)}, compared with the same point in 2022 and 2024. Pennsylvania has no in-person early voting, so mail ballots are the whole early vote.`},
+  IA:{name:'Iowa',note:p=>`Absentee ballots, by mail and in person, from the Iowa Secretary of State's daily reports, counted through ${through(p)}, compared with the same point in 2018, 2022 and 2024. Since 2021 Iowa's early voting runs 20 days, down from 29 in 2018.`},
+  OH:{name:'Ohio',note:p=>`Ballots received, from the Ohio Secretary of State's daily county reports, counted through ${through(p)}, compared with the same point in 2024. The state has no party data before Nov 2024. Ohio doesn't register voters by party: "party" is the ballot a voter took in a recent primary, and anyone who hasn't voted in one counts as unaffiliated.`,
+    extra:`<h3 style="font-size:15px;margin:16px 0 4px">By county</h3><div class="tools"><input id="ohq" placeholder="Filter counties" aria-label="Filter Ohio counties"></div><div class="scroll" style="max-height:420px"><table id="oh-ct"></table></div>`},
+  TX:{name:'Texas',lean:true,note:p=>`Early voters, in person and by mail, from the Texas Secretary of State's daily county turnout, counted through ${through(p)}, compared with the same point in 2022 and 2024. Texas has no party registration, so the chart and the county-lean row count each early vote at its county's 2024 presidential margin: where the votes come from, not how they were cast.`},
+};
+const through=p=>`${p.as_of_date} (${p.as_of_days_out} days before Election Day)`;
+function pacePanels(){
+  const P=D.pace||{};
+  $('#pace-panels').innerHTML=Object.keys(P).filter(st=>PACE[st]).map(st=>{const id=st.toLowerCase(),ys=Object.keys(P[st].same_day).filter(y=>y!='2026');
+    return `<div class="panel" style="padding:14px 16px;margin-bottom:14px">
+      <h2 style="font-size:17px;margin:0 0 4px">${PACE[st].name}: exact same-day comparison with ${ys.join(', ').replace(/, ([^,]*)$/,' and $1')}</h2>
+      <div class="small muted">${esc(PACE[st].note(P[st]))}</div>
+      <div class="ncgrid"><div id="${id}-chart"></div><div class="scroll"><table id="${id}-t"></table></div></div>${PACE[st].extra||''}</div>`}).join('');
+  Object.entries(P).filter(([st])=>PACE[st]).forEach(([st,p])=>{const id=st.toLowerCase();
+    if(PACE[st].lean){
+      // no party data: chart and table use the battleground county-lean series instead
+      const tr=(D.battlegrounds||[]).find(b=>b.state===st)?.trend;
+      if(tr&&tr.measure==='county'){p={...p,chart:tr.series,lean:true};const at=(s,d)=>(s.find(q=>q[0]===d)||[])[1];
+        Object.entries(p.same_day).forEach(([y,o])=>o.lean=at(tr.series[y]||[],p.as_of_days_out));
+        Object.entries(p.final).forEach(([y,o])=>{const s=tr.series[y]||[];o.lean=s.length?s[s.length-1][1]:null})}}
+    paceChart(id,p,PACE[st].name);paceTable(id,p)});
+  if(P.OH&&D.oh_counties)ohCounties(D.oh_counties);
 }
 
 // ---- Battlegrounds ----

@@ -84,6 +84,7 @@ def build(con):
         SELECT race, state, district, outlet, rating FROM race_ratings
         WHERE snapshot_date = (SELECT MAX(snapshot_date) FROM race_ratings)""")
 
+    hist_rows = load_history_rows()
     data = {
         "generated": now_et(),
         "ev_states": _dicts(con, "SELECT * FROM v_ev_state_latest ORDER BY total_voted DESC"),
@@ -92,11 +93,13 @@ def build(con):
         "polls": recent_polls,
         "ratings": ratings,
         "compare": compare.state_comparison(con, today_et()),
-        "nc_pace": compare.nc_pace(con),
-        "oh_pace": compare.state_pace(con, "OH"),
+        # same-day panels on the "vs 2022 / 2024" tab, in display order
+        "pace": {st: p for st, p in (("NC", compare.nc_pace(con)), ("PA", compare.state_pace(con, "PA")),
+                                     ("IA", compare.iowa_pace(con, hist_rows)), ("OH", compare.state_pace(con, "OH")),
+                                     ("TX", compare.state_pace(con, "TX"))) if p},
         "oh_counties": compare.county_same_day(con, "OH"),
         "projection": compare.party_projection(con, today_et()),
-        "battlegrounds": battleground.battlegrounds(con, today_et(), load_history_rows(), summary),
+        "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }
     SITE.mkdir(exist_ok=True)
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")

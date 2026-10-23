@@ -5,8 +5,9 @@ Two kinds of comparison, kept apart because they answer different questions:
   whole early vote last time. Early in the window this mostly reflects how fast a state mails
   ballots, so read it against the median state rather than on its own.
 - SAME number of days before Election Day (exact): NC and PA from voter files for all three
-  cycles, OH from the Secretary of State's daily county reports for 2024 and 2026, and any
-  state where an archived 2024 UF snapshot exists within a day of the state's days-out.
+  cycles, OH from the Secretary of State's daily county reports for 2024 and 2026, TX from the
+  SOS daily county turnout (2022/2024/2026, no party), IA from the SOS daily absentee reports,
+  and any state where an archived 2024 UF snapshot exists within a day of the state's days-out.
 
 Days-out is measured from the date each source's data runs through, not from today.
 """
@@ -107,6 +108,40 @@ def state_pace(con, st):
                     cum[k] = cum.get(k, 0) + n
             series.append({"days_out": d, **cum})
         years[year] = series
+    return _pace_summary(years)
+
+
+def iowa_pace(con, hist):
+    """Iowa's absentee ballots by days-out: the SOS daily reports for 2018/2022/2024
+    (ref_uf_snapshots rows) and this tracker's own daily history for 2026. 2018 has no party
+    split. "By mail" is ballots returned by mail; the rest were cast in person."""
+    years = {}
+    for year, d, tot, dem, rep, none, mail in con.execute(
+            "SELECT year, days_out, voted_all, voted_dem, voted_rep, voted_none, accept_all FROM ref_uf_snapshots "
+            "WHERE state='IA' AND days_out >= 0 ORDER BY year, days_out DESC"):
+        if tot:
+            years.setdefault(year, []).append(_snap_point(d, tot, dem, rep, none, mail))
+    pts = {}
+    for r in hist.get("IA", []):
+        if r["total_voted"] and r["last_update"]:
+            d = days_out(r["last_update"])
+            pts[d] = _snap_point(d, r["total_voted"], r["voted_dem"], r["voted_rep"], r["voted_other"], r["mail_returned"])
+    if pts:
+        years[2026] = [pts[d] for d in sorted(pts, reverse=True)]
+    return _pace_summary(years)
+
+
+def _snap_point(d, tot, dem, rep, other, mail):
+    s = {"days_out": d, "total": tot}
+    if dem or rep:
+        s.update({"party:dem": dem or 0, "party:rep": rep or 0, "party:other": other or 0})
+    if mail is not None:
+        s.update({"method:mail": mail, "method:in_person": tot - mail})
+    return s
+
+
+def _pace_summary(years):
+    """Same-day, final and chart views of {year: [cumulative points by days-out]}."""
     if 2026 not in years:
         return None
 
@@ -125,9 +160,12 @@ def state_pace(con, st):
         "as_of_date": (EDAY[2026] - timedelta(days=as_of)).isoformat(),
         "same_day": {y: at(s, as_of) for y, s in years.items()},
         "final": {y: s[-1] for y, s in years.items() if y != 2026},
-        # D-R share of ballots so far; skip the first 1,000 ballots, which swing wildly
-        "chart": {y: [[s["days_out"], round(100 * (s.get("party:dem", 0) - s.get("party:rep", 0)) / s["total"], 2)]
-                      for s in ser if s["days_out"] <= 50 and s["total"] >= 1000] for y, ser in years.items()},
+        # D-R share of ballots so far, for years with party data (not Texas, or Iowa 2018);
+        # skip the first 1,000 ballots, which swing wildly
+        "chart": {y: pts for y, pts in (
+            (y, [[s["days_out"], round(100 * (s["party:dem"] - s["party:rep"]) / s["total"], 2)]
+                 for s in ser if s["days_out"] <= 50 and s["total"] >= 1000 and "party:dem" in s and "party:rep" in s])
+            for y, ser in years.items()) if pts},
     }
 
 
