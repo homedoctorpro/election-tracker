@@ -99,6 +99,7 @@ def build(con):
                                      ("TX", compare.state_pace(con, "TX"))) if p},
         "oh_counties": compare.county_same_day(con, "OH"),
         "nv_firewall": compare.nv_firewall(hist_rows),
+        "fl_lead": compare.fl_lead(hist_rows),
         "projection": compare.party_projection(con, today_et()),
         "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }

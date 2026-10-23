@@ -17,6 +17,7 @@ from datetime import date, timedelta
 from .common import ELECTION_DAYS as EDAY, GOVERNOR_2026, ROOT, SENATE_2026
 
 NV_EV_DAYS_OUT = 17  # Nevada's early in-person voting opens the third Saturday before Election Day
+FL_EV_DAYS_OUT = 15  # Florida counties may open early voting on the 15th day before Election Day
 
 
 def days_out(d: str) -> int:
@@ -169,6 +170,36 @@ def nv_firewall(hist):
             best[day] = (tot, round(r["voted_dem"] - r["voted_rep"]))
     for d, (_, lead) in best.items():
         years.setdefault(2026, {}).setdefault(d, lead)  # seeded days stay as published
+    if 2026 not in years:
+        return None
+    return {"days": {y: sorted(v.items()) for y, v in years.items()},
+            "start": {y: s.isoformat() for y, s in start.items()}}
+
+
+def fl_lead(hist):
+    """Florida's statewide Democratic minus Republican share of early votes (mail plus early in
+    person, in points) after each day of early in-person voting, 2024 against 2026. 2024 comes
+    from data/reference/fl_ev_lead.csv, read off a published chart in whole points (the archive
+    has only its last few days, which agree within a point); 2026 is this tracker's own daily
+    history. A UF Florida report dated D already includes that day's in-person voting, so it
+    counts as day D minus the first day plus one (unlike Nevada's, which lags a day). Updates
+    where some ballots lack a party, or before in-person voting starts, are skipped."""
+    years = {}
+    with open(ROOT / "data" / "reference" / "fl_ev_lead.csv", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            years.setdefault(int(r["year"]), {})[int(r["day"])] = float(r["lead"])
+    start = {y: EDAY[y] - timedelta(days=FL_EV_DAYS_OUT) for y in (2024, 2026)}
+    best = {}
+    for r in hist.get("FL", []):
+        tot = r["total_voted"]
+        coded = sum(r[k] or 0 for k in ("voted_dem", "voted_rep", "voted_other"))
+        if not tot or not r["last_update"] or coded < .99 * tot or not r["in_person"]:
+            continue
+        day = (date.fromisoformat(r["last_update"]) - start[2026]).days + 1
+        if day >= 1 and (day not in best or tot > best[day][0]):
+            best[day] = (tot, round(100 * (r["voted_dem"] - r["voted_rep"]) / tot, 2))
+    if best:
+        years[2026] = {d: v for d, (_, v) in best.items()}
     if 2026 not in years:
         return None
     return {"days": {y: sorted(v.items()) for y, v in years.items()},
