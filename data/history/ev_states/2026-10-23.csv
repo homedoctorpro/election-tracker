@@ -10,7 +10,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,FL,Florida,2026-10-23,2471583.0,1223286.0,766837.0,1990123.0,808926.0,773322.0,407875.0,7796916,25.52,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-23,GA,Georgia,2026-10-23,152390.0,71081.0,1396699.0,1467780.0,0.0,0.0,0.0,3964926,37.02,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-23,HI,Hawaii,2026-10-22,725443.0,78844.0,504.0,79348.0,0.0,0.0,0.0,423443,18.74,https://elections.hawaii.gov/resources/absentee-voting-report/
-2026-10-23,IA,Iowa,2026-10-22,160515.0,51288.0,115907.0,167195.0,86418.0,52424.0,28353.0,1230417,13.59,Iowa Secretary of State
+2026-10-23,IA,Iowa,2026-10-23,160734.0,71145.0,136629.0,207774.0,105744.0,66522.0,35508.0,1230417,16.89,Iowa Secretary of State
 2026-10-23,ID,Idaho,2026-10-22,158124.0,70695.0,44336.0,115031.0,14608.0,42379.0,13708.0,595350,19.32,Idaho Secretary of State
 2026-10-23,IL,Illinois,2026-10-21,1125529.0,369861.0,231290.0,601151.0,0.0,0.0,0.0,4144125,14.51,https://www.elections.il.gov/VotingAndRegistrationSystems/PreElectionCounts.aspx
 2026-10-23,IN,Indiana,2026-10-22,317503.0,261094.0,0.0,261094.0,0.0,0.0,0.0,1880755,13.88,Indiana Secretary of State
@@ -45,6 +45,6 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,VA,Virginia,2026-10-23,461385.0,250720.0,679154.0,929874.0,0.0,0.0,0.0,3021956,30.77,https://www.vpap.org/elections/early-voting/
 2026-10-23,VT,Vermont,2026-10-23,457909.0,95513.0,0.0,95513.0,0.0,0.0,0.0,291955,32.71,Data provided Vermont Secretary of State
 2026-10-23,WA,Washington,2026-10-22,5131622.0,616612.0,0.0,616612.0,0.0,0.0,0.0,3067686,20.1,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
-2026-10-23,WI,Wisconsin,2026-10-22,485352.0,317077.0,103210.0,420287.0,0.0,0.0,0.0,2673154,15.72,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
+2026-10-23,WI,Wisconsin,2026-10-23,533560.0,377058.0,148896.0,525954.0,0.0,0.0,0.0,2673154,19.68,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-23,WV,West Virginia,2026-10-22,16922.0,0.0,16922.0,16922.0,7258.0,6380.0,3284.0,494753,3.42,West Virginia Secretary of State
 2026-10-23,WY,Wyoming,2026-10-22,42472.0,29348.0,0.0,29348.0,5529.0,21676.0,2143.0,198198,14.81,Wyoming Secretary of State
