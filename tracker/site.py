@@ -8,7 +8,7 @@ import json
 import shutil
 from pathlib import Path
 
-from . import battleground, compare, share
+from . import battleground, compare, daily, share
 from .common import ROOT, now_et, today_et
 
 HISTORY = ROOT / "data" / "history" / "ev_states"
@@ -102,11 +102,13 @@ def build(con):
         "projection": compare.party_projection(con, today_et()),
         "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }
+    data["daily"] = daily.build(con, hist_rows, data["nv_firewall"], today_et())
     SITE.mkdir(exist_ok=True)
+    (SITE / "daily.txt").write_text(data["daily"]["post"] + "\n", encoding="utf-8")
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     shutil.copy(TEMPLATE, SITE / "index.html")
     try:
-        card = share.build(SITE, data["battlegrounds"], data["generated"])
+        card = share.build(SITE, data["battlegrounds"], data["generated"], data["nv_firewall"])
     except Exception as e:  # the share image must never block the site build
         card = f"share card failed: {e}"
     return {"share": card,"polls": len(recent_polls), "states": len(data["ev_states"]), "history_days": len(list(HISTORY.glob("*.csv")))}

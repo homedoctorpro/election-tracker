@@ -19,8 +19,9 @@ TEMPLATE = Path(__file__).parent / "share.html"
 CARDS = {"share": "2024", "share-2022": "2022", "share-both": "both", "share-trend": "trend"}
 
 
-def build(site: Path, battlegrounds: list, generated: str) -> str:
-    data = json.dumps({"generated": generated, "battlegrounds": battlegrounds}, separators=(",", ":"))
+def build(site: Path, battlegrounds: list, generated: str, nv_firewall: dict | None = None) -> str:
+    data = json.dumps({"generated": generated, "battlegrounds": battlegrounds, "nv_firewall": nv_firewall},
+                      separators=(",", ":"))
     tpl = TEMPLATE.read_text(encoding="utf-8").replace("/*DATA*/null", data.replace("</", "<\\/"))
     exe = find_chrome()
     for name, mode in CARDS.items():

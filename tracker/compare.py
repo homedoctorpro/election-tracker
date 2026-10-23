@@ -95,6 +95,11 @@ def nc_pace(con):
 def state_pace(con, st):
     """Cumulative early vote by days-out for each cycle a state has (NC: 2022/2024/2026, OH:
     2024/2026), with party/method/race/age mixes."""
+    return _pace_summary(pace_years(con, st))
+
+
+def pace_years(con, st):
+    """{year: [cumulative counts by days-out]} from a state's voter-file / SOS pace rows."""
     years = {}
     for year in (2022, 2024, 2026):
         rows = con.execute("SELECT days_out, method, party, race, age_group, n FROM pace "
@@ -111,13 +116,17 @@ def state_pace(con, st):
                     cum[k] = cum.get(k, 0) + n
             series.append({"days_out": d, **cum})
         years[year] = series
-    return _pace_summary(years)
+    return years
 
 
 def iowa_pace(con, hist):
     """Iowa's absentee ballots by days-out: the SOS daily reports for 2018/2022/2024
     (ref_uf_snapshots rows) and this tracker's own daily history for 2026. 2018 has no party
     split. "By mail" is ballots returned by mail; the rest were cast in person."""
+    return _pace_summary(iowa_years(con, hist))
+
+
+def iowa_years(con, hist):
     years = {}
     for year, d, tot, dem, rep, none, mail in con.execute(
             "SELECT year, days_out, voted_all, voted_dem, voted_rep, voted_none, accept_all FROM ref_uf_snapshots "
@@ -131,7 +140,7 @@ def iowa_pace(con, hist):
             pts[d] = _snap_point(d, r["total_voted"], r["voted_dem"], r["voted_rep"], r["voted_other"], r["mail_returned"])
     if pts:
         years[2026] = [pts[d] for d in sorted(pts, reverse=True)]
-    return _pace_summary(years)
+    return years
 
 
 def nv_firewall(hist):

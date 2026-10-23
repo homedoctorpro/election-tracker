@@ -52,7 +52,7 @@ h1{font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .sh2 sup{font-size:16px}
 .row.b3.hd .sh2{font-size:15px;font-weight:600}
 /* trend: small multiples */
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 20px;margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 20px;margin-top:4px}
 .pn{border-top:2px solid var(--ink);padding-top:5px}
 .pn h3{display:flex;justify-content:space-between;align-items:baseline;font-size:20px;font-weight:700;white-space:nowrap}
 .pn h3 span{font-size:20px;font-weight:800}
@@ -118,7 +118,7 @@ function render(){
 // trend: the headline measure by days before Election Day, one small chart per state
 const TC={2022:'#9aa0a8',2024:'#e08a1e',2026:'var(--dem)'};
 function chart(t,dout){
-  const W=240,H=150,P={l:40,r:6,t:6,b:22},X0=30;
+  const W=240,H=138,P={l:40,r:6,t:6,b:22},X0=30;
   const S=Object.entries(t.series).map(([y,s])=>[y,s.filter(p=>p[0]<=X0)]).filter(([y,s])=>s.length);
   const vals=S.flatMap(([y,s])=>s.map(p=>p[1])).concat(Object.values(t.final));
   if(!vals.length)return '';
@@ -139,25 +139,49 @@ function chart(t,dout){
     const e=s[s.length-1];g+=`<circle cx="${x(e[0])}" cy="${y(e[1])}" r="${yr==='2026'?5.5:3.5}" fill="${TC[yr]}"/>`});
   return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg>`;
 }
+// Nevada: Democratic minus Republican ballots (a count) after each day of early in-person voting
+function nvTile(nv,span){
+  const a=nv&&nv.days['2026'];if(!a||!a.length)return '';
+  const b=nv.days['2024']||[],W=240*span+20*(span-1),H=150,P={l:52,r:56,t:8,b:22};
+  const maxDay=Math.max(16,...a.map(p=>p[0]),...b.map(p=>p[0])),vals=[...a,...b].map(p=>p[1]);
+  const lo=Math.min(0,...vals),hi=Math.max(0,...vals),step=[5e3,1e4,2e4,25e3,5e4].find(s=>(hi-lo)/s<=5)||1e5;
+  const yl=Math.floor(lo/step)*step,yh=Math.ceil(hi/step)*step;
+  const x=d=>P.l+(d-1)/(maxDay-1)*(W-P.l-P.r),y=v=>H-P.b-(v-yl)/(yh-yl)*(H-P.t-P.b);
+  const kk=v=>v===0?'0':(v>0?'D':'R')+Math.round(Math.abs(v)/1e3)+'K',n=v=>(v>=0?'D+':'R+')+Math.abs(v).toLocaleString('en-US');
+  let g='';
+  for(let v=yl;v<=yh;v+=step)g+=`<line x1="${P.l}" x2="${W-P.r}" y1="${y(v)}" y2="${y(v)}" stroke="${v===0?'#9a968d':'#e6e2d9'}" stroke-width="${v===0?1.5:1}"/><text x="${P.l-6}" y="${y(v)+5}" text-anchor="end" font-size="14" fill="#6b6f78">${kk(v)}</text>`;
+  [1,4,8,12,16].forEach(d=>g+=`<text x="${x(d)}" y="${H-5}" text-anchor="middle" font-size="14" fill="#6b6f78">${d}</text>`);
+  const now=a[a.length-1],then=b.find(p=>p[0]===now[0]);
+  g+=`<line x1="${x(now[0])}" x2="${x(now[0])}" y1="${P.t}" y2="${H-P.b}" stroke="#b9b5ac" stroke-dasharray="3 4"/>`;
+  [['2024',b],['2026',a]].forEach(([yr,s])=>{if(!s.length)return;const e=s[s.length-1];
+    g+=`<polyline fill="none" stroke="${TC[yr]}" stroke-width="${yr==='2026'?4:2.5}" stroke-linejoin="round" points="${s.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`+
+      `<circle cx="${x(e[0])}" cy="${y(e[1])}" r="${yr==='2026'?5.5:3.5}" fill="${TC[yr]}"/><text x="${x(e[0])+8}" y="${y(e[1])+5}" font-size="14" font-weight="700" fill="${TC[yr]}">${kk(e[1])}</text>`});
+  const gap=then?now[1]-then[1]:null;
+  return `<div class="pn" style="grid-column:span ${span}"><h3>Nevada ballot lead${gap==null?'':`<span style="color:${col(gap)}">${n(gap)}</span>`}</h3>
+    <div class="m">D&minus;R ballots cast, by day of early voting<br>2026 <b style="color:${col(now[1])}">${n(now[1])}</b>${then?` vs 2024 <b style="color:${col(then[1])}">${n(then[1])}</b> at Day ${now[0]}`:''}</div>
+    <svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg></div>`;
+}
 function renderTrend(){
   const ord={same:0,final:1,county:2},M={all:'All early votes',mail:'Mail ballots',county:'County lean'};
   const B=DATA.battlegrounds.filter(b=>b.trend&&b.trend.series['2026']).sort((a,b)=>(ord[a.headline.kind]-ord[b.headline.kind])||b.headline.value-a.headline.value);
   const thru=DATA.battlegrounds.map(b=>b.data_through).sort().pop();
   const d=new Date(thru+'T12:00:00'),left=Math.round((new Date('2026-11-03T12:00:00')-d)/864e5);
   const date=d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  const pn=b=>{const t=b.trend,s=t.series['2026'],now=s[s.length-1][1];
-    const h=b.headline;
-    return `<div class="pn${h.kind==='same'?'':' sec'}"><h3>${esc(b.state_name)}<span style="color:${col(now)}">${sgn(now)}</span></h3>
-      <div class="m">${h.votes==='primary'?'Primary-ballot party':M[t.measure]} · <b style="color:${col(h.value)}">${sgn(h.value)}</b> vs 2024</div>${chart(t,b.days_out)}</div>`};
+  // big number: the change since 2024; the line under it gives the 2026 and 2024 levels behind it
+  const pn=b=>{const t=b.trend,h=b.headline,base=h.kind==='same'||h.same_day?'2024':'2024 final';
+    return `<div class="pn${h.kind==='same'?'':' sec'}"><h3>${esc(b.state_name)}<span style="color:${col(h.value)}">${sgn(h.value)}</span></h3>
+      <div class="m">${h.votes==='primary'?'Primary-ballot party':M[t.measure]}<br>2026 <b style="color:${col(h.to)}">${sgn(h.to)}</b> vs ${base} <b style="color:${col(h.from)}">${sgn(h.from)}</b></div>${chart(t,b.days_out)}</div>`};
   const missing=DATA.battlegrounds.filter(b=>!B.includes(b)).map(b=>b.state_name);
+  // Nevada's raw ballot lead fills the empty end of the last row, when two or more tiles are free
+  const free=(4-B.length%4)%4,nv=free>=2?nvTile(DATA.nv_firewall,free):'';
   document.getElementById('stage').innerHTML=`
     <div class="kicker">2026 early vote · battlegrounds</div>
     <h1>The early vote, day by day</h1>
-    <div class="sub">D&minus;R margin by days before Election Day. Through ${date}, ${left} days to go.</div>
+    <div class="sub">Big number: change in the D&minus;R margin since 2024. Through ${date}, ${left} days to go.</div>
     <div class="key"><span><i style="background:${TC[2026]}"></i>2026</span><span><i style="background:${TC[2024]}"></i>2024</span><span><i style="background:${TC[2022]}"></i>2022</span>
       <span>Dashed line = that year's final</span></div>
-    <div class="grid">${B.map(pn).join('')}</div>
-    <div class="foot"><b>All early votes</b>: every day of all three cycles. <b>Mail ballots</b>: 2024 dots are the few days on file. <b>County lean</b>: the 2024 presidential margin of the counties early votes come from, where party data isn't usable; daily for every cycle in Texas and Ohio, elsewhere against the whole 2024 and 2022 early vote (dashed).${missing.length?` ${esc(missing.join(', '))}: no daily data.`:''}
+    <div class="grid">${B.map(pn).join('')}${nv}</div>
+    <div class="foot"><b>All early votes</b>: every day of all three cycles. <b>Mail ballots</b>: 2024 dots are the few days on file. <b>County lean</b>: the 2024 presidential margin of the counties early votes come from, where party data isn't usable; daily for every cycle in Texas and Ohio, elsewhere against the whole 2024 and 2022 early vote (dashed).${missing.length?` ${esc(missing.join(', '))}: no daily data.`:''}${nv?' <b>Nevada ballot lead</b>: 2024 and early 2026 days from @umichvoter\'s chart of the NV Secretary of State\'s daily reports.':''}
       Sources: UF Election Lab, state election offices, EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }

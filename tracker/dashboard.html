@@ -179,6 +179,7 @@ svg.spark{vertical-align:middle}
 
 <section id="s-bg" class="on">
   <div class="panel ov" id="ov"></div>
+  <div class="panel" id="daily" style="padding:12px 14px;margin-bottom:14px" hidden></div>
   <h2 style="font-size:17px;margin:4px 0 6px">State detail</h2>
   <div class="pm-tools" style="margin-top:0">
     <span class="small muted">Sort:</span>
@@ -713,6 +714,22 @@ function bgDetail(b,E){
 
 // one row per state: 2024 margin (hollow) to 2026 margin (solid) on a shared R-D axis,
 // grouped by how solid the comparison is
+// today's post for X (built in daily.py), with the numbers behind each line
+function dailyPost(dp){
+  if(!dp||!dp.rows.length)return;
+  const v=(x,b)=>x==null?'–':b?mg0(Math.round(x)):mg(x);
+  const rows=dp.rows.map(r=>{const b=!!r.ballots,u=b?' ballots':'';
+    return `<tr><td class="l"><b>${esc(r.name)}</b>${r.lean?' <span class="chip">county lean</span>':''}${b?' <span class="chip">ballot lead</span>':''}<div class="small muted">${b?`Day ${r.ev_day} of early voting`:`${r.days_out} days out`} (${esc(r.date)})</div></td>
+      <td>${v(r.now,b)}</td><td class="muted">${v(r.then,b)}</td><td><b style="color:${r.overall>=0?'var(--dem)':'var(--rep)'}">${v(r.overall,b)}</b></td>
+      <td>${v(r.day_now,b)}</td><td class="muted">${v(r.day_then,b)}</td><td>${r.day==null?'–':`<b style="color:${r.day>=0?'var(--dem)':'var(--rep)'}">${v(r.day,b)}</b>`}</td></tr>`}).join('');
+  $('#daily').hidden=false;
+  $('#daily').innerHTML=`<h2 style="font-size:17px;margin:0 0 4px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">Today's post <span><button class="seg" id="daily-copy">Copy</button> <a class="small" href="daily.txt" target="_blank" rel="noopener">daily.txt</a></span></h2>
+    <div class="small muted">States with a same-day 2024 count. <b>Overall</b>: 2026's D&minus;R share of ballots so far minus 2024's at the same point. <b>Latest day</b>: the same for only the ballots added on 2026's latest reported day, against the ballots 2024 added over the same days. Nevada is the statewide ballot lead, in ballots; Texas is county lean. A report that adds under 1% of the count is folded into the day before.</div>
+    <div class="ncgrid" style="grid-template-columns:minmax(0,300px) minmax(0,1fr)"><pre id="daily-text" style="white-space:pre-wrap;font:14px/1.5 system-ui,sans-serif;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:10px 0 0">${esc(dp.post)}</pre>
+    <div class="scroll" style="margin-top:10px"><table><thead><tr><th class="l"></th><th>2026</th><th>2024</th><th>Overall</th><th>2026 day</th><th>2024 day</th><th>Latest day</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  $('#daily-copy').onclick=async()=>{try{await navigator.clipboard.writeText(dp.post);$('#daily-copy').textContent='Copied'}catch(e){$('#daily-copy').textContent='Select the text to copy'}};
+}
+
 function bgOverview(B){
   const vals=B.filter(b=>b.headline).flatMap(b=>[b.headline.from,b.headline.to]).map(Math.abs);
   const lim=Math.max(20,Math.ceil(Math.max(...vals,0)/10)*10),pos=v=>50+50*Math.max(-lim,Math.min(lim,v))/lim;
@@ -750,6 +767,7 @@ function battlegrounds(){
   const B=D.battlegrounds||[];if(!B.length){$('#bg-grid').innerHTML='<p class="muted">No battleground data yet.</p>';return}
   const E={};D.ev_states.forEach(r=>E[r.state]=r);
   bgOverview(B);
+  dailyPost(D.daily);
   let sort='shift';
   const hs=b=>b.headline&&!bgEarly(b)?b.headline.value:-1e9; // too-early states sort last
   const by={shift:(a,b)=>hs(b)-hs(a),
