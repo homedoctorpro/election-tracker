@@ -22,6 +22,7 @@ import json
 import re
 import sys
 import time
+from collections import Counter
 from datetime import date, datetime
 
 from ..common import ELECTION_DAYS, ROOT, chrome_get, save_raw
@@ -93,13 +94,38 @@ def _drop_partial(cum):
     before."""
     tot = {d: (sum(v[0] for v in c.values()), sum(v[1] for v in c.values())) for d, c in cum.items()}
     ds = sorted(cum)
+    # a day's votes by county: the change in each county's cumulative count
+    day = lambda i: {c: sum(v) - sum(cum[ds[i - 1]].get(c, (0, 0))) for c, v in cum[ds[i]].items()}
     while len(ds) >= 3:
         inc = lambda i: sum(tot[ds[i]]) - sum(tot[ds[i - 1]])
-        if tot[ds[-2]][0] - tot[ds[-3]][0] > 0 and inc(-1) < 0.25 * inc(-2):
+        # ...or that big counties haven't posted yet (Saturday 10/24/2026 was half in, with
+        # Harris at 10% and Bexar at 2% of Friday), by the same test as the precinct rosters
+        if tot[ds[-2]][0] - tot[ds[-3]][0] > 0 and (inc(-1) < 0.25 * inc(-2) or partial(day(-1), day(-2))):
             cum.pop(ds.pop())
         else:
             break
     return cum
+
+
+def partial(day_counts: dict, prev_counts: dict) -> bool:
+    """True when a day's votes are still coming in: under 90% of the counties with votes the day
+    before have any on it, or one of the ten biggest counties shows under 15% of its previous
+    day (10/24/2026 at 1 p.m.: Harris 10%, Bexar 2%, Hidalgo 0% of Friday). Takes {county: n}
+    or {(county, ...): n}."""
+    cur, prev = _by_county(day_counts), _by_county(prev_counts)
+    prev = Counter({c: n for c, n in prev.items() if n > 0})
+    if not prev:
+        return False
+    if sum(1 for c in prev if cur.get(c, 0) > 0) < .9 * len(prev):
+        return True
+    return any(cur.get(c, 0) < .15 * n for c, n in prev.most_common(10))
+
+
+def _by_county(counts) -> Counter:
+    c = Counter()
+    for k, n in counts.items():
+        c[k[0] if isinstance(k, tuple) else k] += n
+    return c
 
 
 def fetch_old(year):

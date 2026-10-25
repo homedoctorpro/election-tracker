@@ -255,6 +255,27 @@ def build_oh():
     _write("oh_county_pace.csv", ["state", "year", "county", "days_out", "method", "party", "n"], county)
 
 
+TLC_24G = ("https://data.capitol.texas.gov/dataset/35b16aee-0bb0-4866-b1ec-859f1f044241/resource/"
+           "e1cd6332-6a7a-4c78-ad2a-852268f6c7a2/download/2024-general-vtds-election-data.zip")
+
+
+def build_tx_vtd():
+    """2024 presidential vote by Texas VTD (the Legislative Council's approximation of voting
+    precincts), from its Comprehensive Election Datasets on data.capitol.texas.gov (CC BY)."""
+    z = zipfile.ZipFile(io.BytesIO(fetch(TLC_24G, timeout=600)))
+    tot = {}
+    with z.open("2024_General_Election_Returns.csv") as f:
+        for r in csv.DictReader(io.TextIOWrapper(f, encoding="latin-1")):
+            if r["Office"] != "President":
+                continue
+            k = (r["County"].upper(), r["VTD"])
+            t = tot.setdefault(k, [0, 0, 0])
+            v = int(r["Votes"] or 0)
+            t[0 if r["Party"] == "D" else 1 if r["Party"] == "R" else 2] += v
+    _write("tx_vtd_pres24.csv", ["county", "vtd", "dem", "rep", "total"],
+           [[c, v, d, rp, d + rp + o] for (c, v), (d, rp, o) in sorted(tot.items())])
+
+
 IA_EDAY = {2018: date(2018, 11, 6), **ELECTION_DAYS}
 
 
@@ -333,7 +354,7 @@ def load(con):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--build", choices=["all", "eavs", "uf2024", "nc", "pa", "oh", "results", "registration",
-                                        "county_results", "eavs_county"])
+                                        "county_results", "eavs_county", "tx_vtd"])
     ap.add_argument("--from-archive", type=int, metavar="CYCLE",
                     help="build uf<CYCLE>_snapshots.csv from this tracker's own daily archive")
     a = ap.parse_args()
@@ -357,3 +378,5 @@ if __name__ == "__main__":
         build_county_results()
     if a.build in ("all", "eavs_county"):
         build_eavs_county()
+    if a.build in ("all", "tx_vtd"):
+        build_tx_vtd()

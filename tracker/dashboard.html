@@ -569,6 +569,23 @@ function dayPanel(nv,c){
 }
 const mgBallots=v=>(v>=0?'D +':'R +')+fmt(Math.abs(v)),mg0=mgBallots;
 
+// Texas precinct lean: where in each county early voters come from, from the SOS daily rosters
+function txPrecinctPanel(tp){
+  const day=s=>new Date(s+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'numeric',day:'numeric'});
+  const days=tp.days.map(d=>`<tr${d.partial||d.mail_only?' class="muted"':''}><td class="l">${day(d.date)}${d.mail_only?' <span class="chip">mail only</span>':d.partial?' <span class="chip" title="Big counties haven\'t posted this day yet">still coming in</span>':''}</td>
+    <td>${fmt(d.n)}</td><td><b>${mg(d.lean)}</b></td><td>${mg(d.county_lean)}</td><td>${mg(d.lean-d.county_lean)}</td></tr>`).join('');
+  const cty=tp.counties.map(c=>{const isBlue=c.latest&&c.bluest&&c.latest.date===c.bluest.date;
+    return `<tr><td class="l">${esc(c.county.replace(/\b\w+/g,w=>w[0]+w.slice(1).toLowerCase()))}${c.match<80?` <span class="chip" title="Only ${c.match}% of voters are in precincts that match a 2024 precinct; the rest count at the county's 2024 margin">${c.match}% matched</span>`:''}</td>
+      <td>${fmt(c.n)}</td><td class="muted">${mg(c.result_2024)}</td><td><b>${mg(c.lean)}</b></td>
+      <td>${c.latest?`${mg(c.latest.lean)} <span class="muted small">${day(c.latest.date)}</span>`:'–'}</td>
+      <td>${c.bluest?`${isBlue?'<b>':''}${mg(c.bluest.lean)}${isBlue?'</b>':''} <span class="muted small">${day(c.bluest.date)}</span>`:'–'}</td></tr>`}).join('');
+  return `<h2 style="font-size:17px;margin:0 0 4px">Texas: precinct lean of the early vote</h2>
+    <div class="small muted">The 2024 presidential margin of the precincts 2026 early voters live in, weighted by voters, from the Secretary of State's daily rosters (counted by precinct only) and the Texas Legislative Council's 2024 precinct returns. <b>County lean</b> weighs the same voters by their county's 2024 margin, so <b>within county</b> (precinct minus county) shows whether voters are coming from the bluer or redder parts of their counties. Voters in precincts renumbered since 2024 (${(100-tp.match).toFixed(0)}% statewide) count at their county's margin. There's no 2024 roster, so the benchmark is the actual 2024 result, not 2024's early vote.</div>
+    <div style="margin:10px 0 4px">So far: <b>${fmt(tp.n)}</b> early voters from precincts that voted <b>${mg(tp.lean)}</b> in 2024 (county lean ${mg(tp.county_lean)}). Texas as a whole voted <b>${mg(tp.result_2024)}</b>.</div>
+    <div class="ncgrid"><div class="scroll"><table><thead><tr><th class="l">Day voted</th><th>Voters</th><th>Precinct lean</th><th>County lean</th><th>Within county</th></tr></thead><tbody>${days}</tbody></table></div>
+    <div class="scroll" style="max-height:420px"><table><thead><tr><th class="l">County</th><th>Voters</th><th>2024 result</th><th>Early vote so far</th><th>Latest day</th><th>Bluest day</th></tr></thead><tbody>${cty}</tbody></table></div></div>`;
+}
+
 // one same-day panel per state with daily data in every cycle, in the order site.py lists them
 const PACE={
   NC:{name:'North Carolina',note:p=>`Accepted ballots from the NC State Board of Elections voter files, counted through ${through(p)}, compared with the same number of days before Election Day in 2022 and 2024.`},
@@ -599,6 +616,8 @@ function pacePanels(){
         Object.entries(p.final).forEach(([y,o])=>{const s=tr.series[y]||[];o.lean=s.length?s[s.length-1][1]:null})}}
     paceChart(id,p,PACE[st].name);paceTable(id,p)});
   if(P.OH&&D.oh_counties)ohCounties(D.oh_counties);
+  if(D.tx_precincts){const el=document.createElement('div');el.className='panel';el.style.cssText='padding:14px 16px;margin-bottom:14px';
+    el.innerHTML=txPrecinctPanel(D.tx_precincts);$('#pace-panels').append(el)}
 }
 
 // ---- Battlegrounds ----

@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import battleground, compare, daily, share
 from .common import ROOT, now_et, today_et
+from .sources import tx_rosters
 
 HISTORY = ROOT / "data" / "history" / "ev_states"
 # the fullest row seen for each (state, last_update) across every run, so a later run on the
@@ -139,6 +140,7 @@ def build(con):
         "oh_counties": compare.county_same_day(con, "OH"),
         "nv_firewall": compare.nv_firewall(by_update, today_et()),
         "fl_lead": compare.fl_lead(by_update, today_et()),
+        "tx_precincts": compare.tx_precinct_lean(tx_rosters.load()),
         "projection": compare.party_projection(con, today_et()),
         "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }

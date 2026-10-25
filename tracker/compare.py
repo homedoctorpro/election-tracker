@@ -12,6 +12,7 @@ Two kinds of comparison, kept apart because they answer different questions:
 Days-out is measured from the date each source's data runs through, not from today.
 """
 import csv
+import re
 from datetime import date, timedelta
 
 from .common import ELECTION_DAYS as EDAY, GOVERNOR_2026, ROOT, SENATE_2026
@@ -203,6 +204,82 @@ def _by_ev_day(updates, st, ref, ev_days_out, offset, today, keep_seed, value, o
         partial = None
     return {"days": {y: sorted(v.items()) for y, v in years.items()},
             "start": {y: s.isoformat() for y, s in start.items()}, "partial": partial}
+
+
+def _vtd_key(p):
+    """Roster precinct / TLC VTD code in one form: no spaces or dashes, no leading zeros."""
+    return re.sub(r"^0+(?=.)", "", re.sub(r"[\s.\-]", "", str(p).upper()))
+
+
+def tx_precinct_lean(days):
+    """Texas precinct lean: the 2024 presidential margin of the precincts 2026 early voters live
+    in, weighted by voters, statewide and by county, for each early-voting day and so far.
+
+    `days` is tx_rosters.load(). Precincts are matched to the Legislative Council's 2024 VTDs by
+    county and number; voters in precincts renumbered since 2024 (about 8% statewide, nearly all
+    of Smith, Gregg and Aransas) count at their county's 2024 margin. Next to it, county lean
+    (the same voters at their county's margin) shows how much is within-county: precinct lean
+    bluer than county lean means voters are coming from the bluer parts of their counties.
+    There's no 2024 roster to compare with, so the 2024 benchmark is the actual result."""
+    from .sources.tx_sos import partial
+    ref, cty = {}, {}
+    with open(ROOT / "data" / "reference" / "tx_vtd_pres24.csv", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            d, rp, t = int(r["dem"]), int(r["rep"]), int(r["total"])
+            c = cty.setdefault(r["county"], [0, 0, 0])
+            c[0] += d; c[1] += rp; c[2] += t
+            if t:
+                ref[(r["county"], _vtd_key(r["vtd"]))] = 100 * (d - rp) / t
+    cm = {c: 100 * (d - r) / t for c, (d, r, t) in cty.items() if t}
+    if not days or not cm:
+        return None
+
+    def agg(counts):
+        """{county: [voters, precinct-lean sum, county-lean sum, matched voters]}"""
+        out = {}
+        for (c, p, _m), n in counts.items():
+            if c not in cm:
+                continue
+            m = ref.get((c, _vtd_key(p)))
+            a = out.setdefault(c, [0, 0.0, 0.0, 0])
+            a[0] += n; a[1] += n * (cm[c] if m is None else m); a[2] += n * cm[c]; a[3] += 0 if m is None else n
+        return out
+
+    ds = sorted(days)
+    per = {d: agg(days[d]) for d in ds}
+    part = {d: i > 0 and partial(days[d], days[ds[i - 1]]) for i, d in enumerate(ds)}
+    lean = lambda a, i: a[i] / a[0] if a[0] else None
+    tot = lambda by: [sum(a[k] for a in by.values()) for k in range(4)]
+    out_days = []
+    for d in ds:
+        t = tot(per[d])
+        if t[0] >= 1000:
+            out_days.append({"date": d.isoformat(), "n": t[0], "lean": round(lean(t, 1), 2),
+                             "county_lean": round(lean(t, 2), 2), "partial": part[d], "mail_only": t[0] < 100000})
+    cum = {}
+    for d in ds:
+        for c, a in per[d].items():
+            s = cum.setdefault(c, [0, 0.0, 0.0, 0])
+            for k in range(4):
+                s[k] += a[k]
+    t = tot(cum)
+    # days a county's "latest" and "bluest" can come from: finished, and with in-person voting
+    # under way statewide (the mail-only days before it opens are a few thousand ballots)
+    done = [d for d in ds if not part[d] and tot(per[d])[0] >= 100000]
+    counties = []
+    for c, a in sorted(cum.items(), key=lambda kv: -kv[1][0])[:40]:
+        by_day = [(d, lean(per[d][c], 1)) for d in done if c in per[d] and per[d][c][0] >= 200]
+        last = by_day[-1] if by_day else None
+        blue = max(by_day, key=lambda x: x[1]) if by_day else None
+        counties.append({"county": c, "n": a[0], "lean": round(lean(a, 1), 2), "result_2024": round(cm[c], 2),
+                         "match": round(100 * a[3] / a[0], 1),
+                         "latest": last and {"date": last[0].isoformat(), "lean": round(last[1], 2)},
+                         "bluest": blue and {"date": blue[0].isoformat(), "lean": round(blue[1], 2)}})
+    st = cty.values()
+    return {"days": out_days, "n": t[0], "lean": round(lean(t, 1), 2), "county_lean": round(lean(t, 2), 2),
+            "match": round(100 * t[3] / t[0], 1),
+            "result_2024": round(100 * (sum(c[0] for c in st) - sum(c[1] for c in st)) / sum(c[2] for c in st), 2),
+            "counties": counties}
 
 
 def _snap_point(d, tot, dem, rep, other, mail):
