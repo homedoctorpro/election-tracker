@@ -52,6 +52,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,CT,Connecticut,2026-10-22,59198.0,27839.0,112976.0,140815.0,76991.0,23999.0,39825.0,1297811,10.85,Connecticut Secretary of the State
 2026-10-24,CT,Connecticut,2026-10-23,61144.0,30343.0,141990.0,172333.0,92814.0,29759.0,49760.0,1297811,13.28,Connecticut Secretary of the State
 2026-10-25,CT,Connecticut,2026-10-24,62624.0,32404.0,172316.0,204720.0,108483.0,36132.0,60105.0,1297811,15.77,Connecticut Secretary of the State
+2026-10-25,CT,Connecticut,2026-10-25,62674.0,32581.0,188256.0,220837.0,116908.0,38792.0,65137.0,1297811,17.02,Connecticut Secretary of the State
 2026-10-15,DC,District of Columbia,2026-10-14,492023.0,12343.0,0.0,12343.0,0.0,0.0,0.0,205774,6.0,https://dcboe.org/
 2026-10-19,DC,District of Columbia,2026-10-15,492023.0,15472.0,0.0,15472.0,0.0,0.0,0.0,205774,7.52,https://dcboe.org/
 2026-10-20,DC,District of Columbia,2026-10-19,492023.0,23696.0,0.0,23696.0,0.0,0.0,0.0,205774,11.52,https://dcboe.org/
@@ -74,7 +75,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,FL,Florida,2026-10-22,2445586.0,1217809.0,763666.0,1981475.0,804988.0,770639.0,405848.0,7796916,25.41,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-24,FL,Florida,2026-10-23,2470828.0,1311189.0,998235.0,2309424.0,923366.0,912119.0,473939.0,7796916,29.62,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-25,FL,Florida,2026-10-24,2479348.0,1377195.0,1220521.0,2597716.0,1032847.0,1030487.0,534382.0,7796916,33.32,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
-2026-10-25,FL,Florida,2026-10-25,2479638.0,1386780.0,1232899.0,2619679.0,1042380.0,1038004.0,539295.0,7796916,33.6,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
+2026-10-25,FL,Florida,2026-10-25,2479330.0,1399564.0,1319115.0,2718679.0,1081429.0,1077260.0,559990.0,7796916,34.87,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-15,GA,Georgia,2026-10-15,136052.0,19120.0,438306.0,457426.0,0.0,0.0,0.0,3964926,11.54,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-16,GA,Georgia,2026-10-16,136367.0,23268.0,528828.0,552096.0,0.0,0.0,0.0,3964926,13.92,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-17,GA,Georgia,2026-10-17,140952.0,31668.0,709696.0,741364.0,0.0,0.0,0.0,3964926,18.7,https://mvp.sos.ga.gov/s/voter-absentee-files
@@ -312,13 +313,14 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,TN,Tennessee,2026-10-22,0.0,0.0,577423.0,577423.0,0.0,0.0,0.0,1756397,32.88,https://sos.tn.gov/govotetn
 2026-10-24,TN,Tennessee,2026-10-23,0.0,0.0,665602.0,665602.0,0.0,0.0,0.0,1756397,37.9,https://sos.tn.gov/govotetn
 2026-10-25,TN,Tennessee,2026-10-24,0.0,0.0,760069.0,760069.0,0.0,0.0,0.0,1756397,43.27,https://sos.tn.gov/govotetn
+2026-10-25,TN,Tennessee,2026-10-25,0.0,0.0,815354.0,815354.0,0.0,0.0,0.0,1756397,46.42,https://sos.tn.gov/govotetn
 2026-10-19,TX,Texas,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,8151590,0.0,https://www.sos.state.tx.us/elections/historical/index.shtml
 2026-10-21,TX,Texas,2026-10-20,76626.0,76626.0,419376.0,496002.0,0.0,0.0,0.0,8151590,6.08,https://www.sos.state.tx.us/elections/historical/index.shtml
 2026-10-22,TX,Texas,2026-10-21,84754.0,84754.0,647071.0,731825.0,0.0,0.0,0.0,8151590,8.98,https://www.sos.state.tx.us/elections/historical/index.shtml
 2026-10-23,TX,Texas,2026-10-22,110767.0,110767.0,2159850.0,2270617.0,0.0,0.0,0.0,8151590,27.85,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-24,TX,Texas,2026-10-23,123946.0,123946.0,2776701.0,2900647.0,0.0,0.0,0.0,8151590,35.58,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-25,TX,Texas,2026-10-24,189659.0,189659.0,3498565.0,3688224.0,0.0,0.0,0.0,8151590,45.25,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
-2026-10-25,TX,Texas,2026-10-25,192606.0,192606.0,3504892.0,3697498.0,0.0,0.0,0.0,8151590,45.36,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
+2026-10-25,TX,Texas,2026-10-25,198210.0,198210.0,3904406.0,4102616.0,0.0,0.0,0.0,8151590,50.33,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-16,UT,Utah,2026-10-15,1782448.0,91.0,0.0,91.0,32.0,22.0,37.0,1084634,0.01,Utah Lt. Governor
 2026-10-19,UT,Utah,2026-10-17,1787786.0,2857.0,0.0,2857.0,440.0,1753.0,664.0,1084634,0.26,Utah Lt. Governor
 2026-10-21,UT,Utah,2026-10-20,1787786.0,26278.0,0.0,26278.0,5669.0,14244.0,6365.0,1084634,2.42,Utah Lt. Governor
