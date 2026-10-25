@@ -560,7 +560,7 @@ function dayPanel(nv,c){
   const at=(yr,d)=>(nv.days[yr]||[]).find(p=>p[0]===d)?.[1];
   const last=Math.max(...(nv.days['2026']||[[0]]).map(p=>p[0]));
   const rows=[];for(let d=1;d<=maxDay;d++){const a=at('2024',d),b=at('2026',d);
-    rows.push(`<tr${d===last?' style="background:var(--hl)"':''}><td class="l">Day ${d}</td><td class="muted">${dt('2024',d)}</td><td>${a==null?'–':mg0(a)}</td><td class="muted">${dt('2026',d)}</td><td>${b==null?'–':`<b>${mg0(b)}</b>`}</td><td>${a==null||b==null?'–':`<b style="color:${b-a>=0?'var(--dem)':'var(--rep)'}">${mg0(b-a)}</b>`}</td></tr>`)}
+    rows.push(`<tr${d===last?' style="background:var(--hl)"':''}><td class="l">Day ${d}${nv.partial===d?' <span class="chip" title="This day\'s votes are still being counted">so far</span>':''}</td><td class="muted">${dt('2024',d)}</td><td>${a==null?'–':mg0(a)}</td><td class="muted">${dt('2026',d)}</td><td>${b==null?'–':`<b>${mg0(b)}</b>`}</td><td>${a==null||b==null?'–':`<b style="color:${b-a>=0?'var(--dem)':'var(--rep)'}">${mg0(b-a)}</b>`}</td></tr>`)}
   return `<h2 style="font-size:17px;margin:0 0 4px">${c.title}</h2>
     <div class="small muted">${c.note}</div>
     <div style="margin-top:10px;max-width:900px"><div class="small" style="font-weight:600;margin-bottom:2px">${c.axis}</div><div class="lg">${ys.map(yr=>`<span><i style="background:${Y_COL[yr]}"></i>${yr}</span>`).join('')}<span>x-axis: day of early voting</span></div>
@@ -729,7 +729,7 @@ function dailyPost(dp){
   if(!dp||!dp.rows.length)return;
   const v=(x,b)=>x==null?'–':b?mg0(Math.round(x)):mg(x);
   const rows=dp.rows.map(r=>{const b=!!r.ballots,u=b?' ballots':'';
-    return `<tr><td class="l"><b>${esc(r.name)}</b>${r.lean?' <span class="chip">county lean</span>':''}${b?' <span class="chip">ballot lead</span>':''}<div class="small muted">${b?`Day ${r.ev_day} of early voting`:`${r.days_out} days out`} (${esc(r.date)})</div></td>
+    return `<tr><td class="l"><b>${esc(r.name)}</b>${r.lean?' <span class="chip">county lean</span>':''}${b?' <span class="chip">ballot lead</span>':''}${r.stale?' <span class="chip" title="Same latest day as the previous day\'s post">no new day</span>':''}<div class="small muted">${b?`Day ${r.ev_day} of early voting`:`${r.days_out} days out`} (${esc(r.date)})</div></td>
       <td>${v(r.now,b)}</td><td class="muted">${v(r.then,b)}</td><td><b style="color:${r.overall>=0?'var(--dem)':'var(--rep)'}">${v(r.overall,b)}</b></td>
       <td>${v(r.day_now,b)}</td><td class="muted">${v(r.day_then,b)}</td><td>${r.day==null?'–':`<b style="color:${r.day>=0?'var(--dem)':'var(--rep)'}">${v(r.day,b)}</b>`}</td></tr>`}).join('');
   $('#daily').hidden=false;

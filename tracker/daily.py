@@ -14,13 +14,16 @@ Democratic than the final count, so those would read too blue.
 Nevada is in ballots, not points: its lead now against 2024's lead on the same day of early
 voting, and the day's change in the lead against 2024's change that day.
 """
+import json
 from datetime import date, timedelta
+from pathlib import Path
 
 from . import compare
 from .battleground import _county_ref, _lean_of, _pace_county_counts
 from .common import ELECTION_DAYS as EDAY
 
 URL = "homedoctorpro.github.io/election-tracker"
+NO_NEW = "no new day"  # in place of a latest-day number the previous day's post already had
 NAMES = {"NC": "North Carolina", "PA": "Pennsylvania", "IA": "Iowa", "OH": "Ohio", "TX": "Texas", "NV": "Nevada"}
 
 
@@ -97,6 +100,10 @@ def _nevada(nv):
     if not nv or len(nv["days"].get(2026, [])) < 2:
         return None
     a = nv["days"][2026]
+    if nv.get("partial") == a[-1][0]:
+        a = a[:-1]  # today's day is still being counted; post the last finished one
+    if len(a) < 2:
+        return None
     b = dict(nv["days"].get(2024, []))
     day, lead = a[-1]
     if day not in b:
@@ -127,8 +134,11 @@ def _dot(v, ballots=False):
     return "🔵" if v > 0 else "🔴"
 
 
-def build(con, hist, nv_firewall, day=None):
-    """{"rows": [...], "post": text}. Rows hold each state's overall and latest-day comparison."""
+def build(con, hist, nv_firewall, day=None, history=None):
+    """{"rows": [...], "post": text, "verdicts": text}. Rows hold each state's overall and
+    latest-day comparison. With `history` (a folder), each day's latest-day dates are saved
+    there, and a state whose latest day is no newer than in the last earlier day's post is
+    marked stale: its latest-day slot reads "no new day" instead of repeating old numbers."""
     rows = [r for r in (
         _party_state("NC", compare.pace_years(con, "NC")),
         _nevada(nv_firewall),
@@ -143,7 +153,21 @@ def build(con, hist, nv_firewall, day=None):
             r["date"] = (EDAY[2026] - timedelta(days=r["days_out"])).isoformat()
         else:
             r["date"] = (EDAY[2026] - timedelta(days=compare.NV_EV_DAYS_OUT - r["ev_day"] + 1)).isoformat()
+    if history and day:
+        _mark_stale(rows, Path(history), day)
     return {"rows": rows, "post": post(rows, day), "verdicts": verdicts(rows, day)}
+
+
+def _mark_stale(rows, folder, day):
+    """Compare each state's latest-day date with the most recent earlier day's post, then save
+    today's dates (one small JSON per day, rewritten by each run that day)."""
+    prev = sorted(p for p in folder.glob("*.json") if p.stem < day)
+    seen = json.loads(prev[-1].read_text(encoding="utf-8")) if prev else {}
+    for r in rows:
+        r["stale"] = r["state"] in seen and r["date"] <= seen[r["state"]]
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f"{day}.json").write_text(json.dumps({r["state"]: r["date"] for r in rows}, indent=0) + "\n",
+                                        encoding="utf-8")
 
 
 # Cut-offs for the verdict words: (good, very good). Points of D-R share, or Nevada ballots.
@@ -167,7 +191,7 @@ def verdicts(rows, day=None):
     for r in rows:
         nv = r.get("ballots", False)
         o = verdict(r["overall"], CUTS["nv_overall"] if nv else CUTS["points"])
-        dd = verdict(r.get("day"), CUTS["nv_day"] if nv else CUTS["points"])
+        dd = NO_NEW if r.get("stale") else verdict(r.get("day"), CUTS["nv_day"] if nv else CUTS["points"])
         lines.append(f"{r['state']}: {o} | {dd}")
     foot = ["Neutral: under 1 pt. Very good: 5+ pts.", "Party reg., not votes."]
     text = "\n".join(lines + foot + [URL])
@@ -179,14 +203,18 @@ def verdicts(rows, day=None):
 
 def post(rows, day=None):
     d = date.fromisoformat(day) if day else date.today()
-    better = lambda k: sum(1 for r in rows if r.get(k) is not None and r[k] > 0)
-    has = lambda k: sum(1 for r in rows if r.get(k) is not None)
+    # a stale state's latest day was already posted, so it's left out of the latest-day tally
+    fresh = lambda r, k: k == "overall" or not r.get("stale")
+    better = lambda k: sum(1 for r in rows if fresh(r, k) and r.get(k) is not None and r[k] > 0)
+    has = lambda k: sum(1 for r in rows if fresh(r, k) and r.get(k) is not None)
     lines = [f"Early vote vs 2024 same day, {d.strftime('%b')} {d.day}", "(overall | latest day)"]
     for r in rows:
         b = r.get("ballots", False)
         day_dot = _day_dot(r.get("day")) if b else _dot(r.get("day"))
-        lines.append(f"{r['state']} {_dot(r['overall'], b)}{_fmt(r['overall'], b)} | {day_dot}{_fmt(r.get('day'), b)}")
-    lines.append(f"Ds better: {better('overall')}/{has('overall')} overall, {better('day')}/{has('day')} latest")
+        latest = NO_NEW if r.get("stale") else f"{day_dot}{_fmt(r.get('day'), b)}"
+        lines.append(f"{r['state']} {_dot(r['overall'], b)}{_fmt(r['overall'], b)} | {latest}")
+    latest = f"{better('day')}/{has('day')} latest" if has("day") else "no new days yet"
+    lines.append(f"Ds better: {better('overall')}/{has('overall')} overall, {latest}")
     foot = [n for n in ("Party reg., not votes.",
                         "NV in ballots, TX county lean." if any(r["state"] in ("NV", "TX") for r in rows) else "") if n]
     text = "\n".join(lines + foot + [URL])

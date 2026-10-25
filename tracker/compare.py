@@ -144,66 +144,65 @@ def iowa_years(con, hist):
     return years
 
 
-def nv_firewall(hist):
+def nv_firewall(updates, today=None):
     """Nevada's statewide Democratic minus Republican ballots (mail plus early in person) after
     each day of early in-person voting, 2024 against 2026. The SOS daily reports aren't reachable
     from here (nvsos.gov blocks scripts), so data/reference/nv_firewall.csv seeds 2024 and the
-    first 2026 days from a published chart of those reports; later 2026 days come from this
-    tracker's own daily history. A report dated D covers early-voting days through D minus the
-    first day. Updates where some ballots lack a party are skipped: UF's feed sometimes drops a
-    county's party split, which would show up as a fake swing in a raw count."""
-    years = {}
-    with open(ROOT / "data" / "reference" / "nv_firewall.csv", encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            years.setdefault(int(r["year"]), {})[int(r["day"])] = int(r["lead"])
-    start = {y: EDAY[y] - timedelta(days=NV_EV_DAYS_OUT) for y in (2024, 2026)}
-    best = {}
-    for r in hist.get("NV", []):
-        tot = r["total_voted"]
-        coded = sum(r[k] or 0 for k in ("voted_dem", "voted_rep", "voted_other"))
-        # (in-person well under a fifth of the count means UF hadn't loaded that day's in-person
-        # file yet, as on 10/18-19/2026, so the report doesn't cover the day its date implies)
-        if not tot or not r["last_update"] or coded < .99 * tot or (r["in_person"] or 0) < .2 * tot:
-            continue
-        day = (date.fromisoformat(r["last_update"]) - start[2026]).days
-        if day >= 1 and (day not in best or tot > best[day][0]):
-            best[day] = (tot, round(r["voted_dem"] - r["voted_rep"]))
-    for d, (_, lead) in best.items():
-        years.setdefault(2026, {}).setdefault(d, lead)  # seeded days stay as published
-    if 2026 not in years:
-        return None
-    return {"days": {y: sorted(v.items()) for y, v in years.items()},
-            "start": {y: s.isoformat() for y, s in start.items()}}
+    first 2026 days from a published chart of those reports; later 2026 days come from UF's feed.
+    Nevada's counties post a day's in-person votes the next day, so the last update dated D
+    closes early-voting day D minus the first day (10/22/2026's matched the chart's Day 5).
+    In-person well under a fifth of the count means UF hadn't loaded in-person yet (10/18-19)."""
+    return _by_ev_day(updates, "NV", "nv_firewall.csv", NV_EV_DAYS_OUT, 0, today, keep_seed=True,
+                      value=lambda r: round(r["voted_dem"] - r["voted_rep"]),
+                      ok=lambda r: (r["in_person"] or 0) >= .2 * r["total_voted"])
 
 
-def fl_lead(hist):
+def fl_lead(updates, today=None):
     """Florida's statewide Democratic minus Republican share of early votes (mail plus early in
     person, in points) after each day of early in-person voting, 2024 against 2026. 2024 comes
     from data/reference/fl_ev_lead.csv, read off a published chart in whole points (the archive
-    has only its last few days, which agree within a point); 2026 is this tracker's own daily
-    history. A UF Florida report dated D already includes that day's in-person voting, so it
-    counts as day D minus the first day plus one (unlike Nevada's, which lags a day). Updates
-    where some ballots lack a party, or before in-person voting starts, are skipped."""
+    has only its last few days, which agree within a point); 2026 is UF's feed. A Florida update
+    dated D already carries that day's in-person votes, so the last one closes day D minus the
+    first day plus one."""
+    return _by_ev_day(updates, "FL", "fl_ev_lead.csv", FL_EV_DAYS_OUT, 1, today, keep_seed=False,
+                      value=lambda r: round(100 * (r["voted_dem"] - r["voted_rep"]) / r["total_voted"], 2),
+                      ok=lambda r: bool(r["in_person"]))
+
+
+def _by_ev_day(updates, st, ref, ev_days_out, offset, today, keep_seed, value, ok):
+    """{"days": {year: [[day, value], ...]}, "start": {...}, "partial": day or None}.
+
+    2024 (and any seeded 2026 days) come from data/reference/`ref`. 2026 days come from
+    `updates`, the fullest row per source update date (site.load_by_update), so a later run on
+    the same date can't replace a source's end-of-day count. Updates where some ballots lack a
+    party are skipped: UF's feed sometimes drops a county's party split, a fake swing in a raw
+    count. A day whose update is dated `today` is still being counted; it's flagged as partial."""
     years = {}
-    with open(ROOT / "data" / "reference" / "fl_ev_lead.csv", encoding="utf-8") as f:
+    with open(ROOT / "data" / "reference" / ref, encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            years.setdefault(int(r["year"]), {})[int(r["day"])] = float(r["lead"])
-    start = {y: EDAY[y] - timedelta(days=FL_EV_DAYS_OUT) for y in (2024, 2026)}
-    best = {}
-    for r in hist.get("FL", []):
+            years.setdefault(int(r["year"]), {})[int(r["day"])] = float(r["lead"]) if "." in r["lead"] else int(r["lead"])
+    start = {y: EDAY[y] - timedelta(days=ev_days_out) for y in (2024, 2026)}
+    best, partial = {}, None
+    for r in updates.get(st, []):
         tot = r["total_voted"]
         coded = sum(r[k] or 0 for k in ("voted_dem", "voted_rep", "voted_other"))
-        if not tot or not r["last_update"] or coded < .99 * tot or not r["in_person"]:
+        if not tot or not r["last_update"] or coded < .99 * tot or not ok(r):
             continue
-        day = (date.fromisoformat(r["last_update"]) - start[2026]).days + 1
+        day = (date.fromisoformat(r["last_update"]) - start[2026]).days + offset
         if day >= 1 and (day not in best or tot > best[day][0]):
-            best[day] = (tot, round(100 * (r["voted_dem"] - r["voted_rep"]) / tot, 2))
-    if best:
-        years[2026] = {d: v for d, (_, v) in best.items()}
-    if 2026 not in years:
+            best[day] = (tot, value(r))
+            if today and r["last_update"] >= today:
+                partial = day
+    seeded = years.setdefault(2026, {})
+    for d, (_, v) in best.items():
+        if not (keep_seed and d in seeded):  # Nevada's seeded days stay as published
+            seeded[d] = v
+    if not years[2026]:
         return None
+    if partial is not None and partial != max(years[2026]):
+        partial = None
     return {"days": {y: sorted(v.items()) for y, v in years.items()},
-            "start": {y: s.isoformat() for y, s in start.items()}}
+            "start": {y: s.isoformat() for y, s in start.items()}, "partial": partial}
 
 
 def _snap_point(d, tot, dem, rep, other, mail):
