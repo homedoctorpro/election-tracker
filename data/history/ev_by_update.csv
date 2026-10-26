@@ -88,6 +88,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,GA,Georgia,2026-10-23,152390.0,77845.0,1555009.0,1632854.0,0.0,0.0,0.0,3964926,41.18,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-25,GA,Georgia,2026-10-24,156103.0,81300.0,1620150.0,1701450.0,0.0,0.0,0.0,3964926,42.91,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-26,GA,Georgia,2026-10-25,157545.0,82623.0,1696736.0,1775359.0,0.0,0.0,0.0,3964926,44.78,https://mvp.sos.ga.gov/s/voter-absentee-files
+2026-10-26,GA,Georgia,2026-10-26,157598.0,82620.0,1697619.0,1780239.0,0.0,0.0,0.0,3964926,44.9,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-15,HI,Hawaii,2026-10-14,720287.0,487.0,0.0,487.0,0.0,0.0,0.0,423443,0.12,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-16,HI,Hawaii,2026-10-15,722688.0,510.0,0.0,510.0,0.0,0.0,0.0,423443,0.12,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-19,HI,Hawaii,2026-10-16,722974.0,829.0,0.0,829.0,0.0,0.0,0.0,423443,0.2,https://elections.hawaii.gov/resources/absentee-voting-report/
@@ -196,6 +197,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,MT,Montana,2026-10-23,522834.0,155677.0,0.0,155677.0,0.0,0.0,0.0,468326,33.24,https://sosmt.gov/elections/absentee-ballot-count/
 2026-10-24,MT,Montana,2026-10-24,523454.0,171981.0,0.0,171981.0,0.0,0.0,0.0,468326,36.72,https://sosmt.gov/elections/absentee-ballot-count/
 2026-10-25,MT,Montana,2026-10-25,523735.0,179973.0,0.0,179973.0,0.0,0.0,0.0,468326,38.43,https://sosmt.gov/elections/absentee-ballot-count/
+2026-10-26,MT,Montana,2026-10-26,523737.0,180137.0,0.0,180137.0,0.0,0.0,0.0,468326,38.46,https://sosmt.gov/elections/absentee-ballot-count/
 2026-10-15,NC,North Carolina,2026-10-15,139667.0,33448.0,0.0,33448.0,14778.0,5702.0,12968.0,3790202,0.88,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
 2026-10-16,NC,North Carolina,2026-10-16,143091.0,35932.0,201546.0,237478.0,111458.0,46329.0,79691.0,3790202,6.27,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
 2026-10-17,NC,North Carolina,2026-10-17,146431.0,38636.0,398453.0,437089.0,198493.0,90051.0,148545.0,3790202,11.53,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
@@ -207,6 +209,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,NC,North Carolina,2026-10-23,162901.0,54888.0,1215032.0,1269920.0,535973.0,296478.0,437469.0,3790202,33.51,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
 2026-10-24,NC,North Carolina,2026-10-24,163565.0,58392.0,1395125.0,1453517.0,602460.0,348445.0,502612.0,3790202,38.35,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
 2026-10-25,NC,North Carolina,2026-10-25,163737.0,59845.0,1484829.0,1544674.0,640474.0,367908.0,536292.0,3790202,40.75,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
+2026-10-26,NC,North Carolina,2026-10-26,163809.0,60046.0,1523136.0,1583182.0,658507.0,373431.0,551244.0,3790202,41.77,https://dl.ncsbe.gov/?prefix=ENRS/2026_11_03/
 2026-10-15,ND,North Dakota,2026-10-14,48757.0,17680.0,0.0,17680.0,0.0,0.0,0.0,242566,7.29,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-16,ND,North Dakota,2026-10-15,49631.0,19975.0,0.0,19975.0,0.0,0.0,0.0,242566,8.23,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-17,ND,North Dakota,2026-10-16,50356.0,21878.0,0.0,21878.0,0.0,0.0,0.0,242566,9.02,https://vip.sos.nd.gov/abev.aspx?eid=348
@@ -249,6 +252,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,NV,Nevada,2026-10-23,2087871.0,206041.0,119346.0,325387.0,127908.0,116216.0,81263.0,1023617,31.79,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-25,NV,Nevada,2026-10-24,2087988.0,225362.0,145723.0,371085.0,146969.0,131421.0,92695.0,1023617,36.25,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-26,NV,Nevada,2026-10-25,2088026.0,233327.0,154472.0,387799.0,154537.0,136358.0,96904.0,1023617,37.89,https://www.nvsos.gov/elections/election-information/vivid-project
+2026-10-26,NV,Nevada,2026-10-26,2088030.0,238124.0,157207.0,395331.0,158400.0,137952.0,98979.0,1023617,38.62,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-24,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
 2026-10-15,OH,Ohio,2026-10-14,667474.0,73197.0,236163.0,309360.0,0.0,0.0,0.0,4201368,7.36,https://data.ohiosos.gov/portal/election-dashboards
 2026-10-16,OH,Ohio,2026-10-15,672149.0,103749.0,274055.0,377804.0,0.0,0.0,0.0,4201368,8.99,https://data.ohiosos.gov/portal/election-dashboards
@@ -324,6 +328,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,TX,Texas,2026-10-23,123946.0,123946.0,2776701.0,2900647.0,0.0,0.0,0.0,8151590,35.58,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-25,TX,Texas,2026-10-24,189659.0,189659.0,3498565.0,3688224.0,0.0,0.0,0.0,8151590,45.25,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-26,TX,Texas,2026-10-25,198692.0,198692.0,3934187.0,4132879.0,0.0,0.0,0.0,8151590,50.7,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
+2026-10-26,TX,Texas,2026-10-26,198922.0,198922.0,3972915.0,4171837.0,0.0,0.0,0.0,8151590,51.18,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-16,UT,Utah,2026-10-15,1782448.0,91.0,0.0,91.0,32.0,22.0,37.0,1084634,0.01,Utah Lt. Governor
 2026-10-19,UT,Utah,2026-10-17,1787786.0,2857.0,0.0,2857.0,440.0,1753.0,664.0,1084634,0.26,Utah Lt. Governor
 2026-10-21,UT,Utah,2026-10-20,1787786.0,26278.0,0.0,26278.0,5669.0,14244.0,6365.0,1084634,2.42,Utah Lt. Governor
@@ -331,6 +336,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,UT,Utah,2026-10-22,1787566.0,114416.0,583.0,114999.0,26212.0,59051.0,29736.0,1084634,10.6,Utah Lt. Governor
 2026-10-24,UT,Utah,2026-10-23,1787566.0,147453.0,856.0,148309.0,33388.0,76483.0,38438.0,1084634,13.67,Utah Lt. Governor
 2026-10-24,UT,Utah,2026-10-24,1787566.0,191989.0,1248.0,193237.0,42837.0,100113.0,50287.0,1084634,17.82,Utah Lt. Governor
+2026-10-26,UT,Utah,2026-10-26,1787566.0,193151.0,1248.0,194399.0,43179.0,100589.0,50631.0,1084634,17.92,Utah Lt. Governor
 2026-10-15,VA,Virginia,2026-10-14,448097.0,189413.0,379003.0,568416.0,0.0,0.0,0.0,3021956,18.81,https://www.vpap.org/elections/early-voting/
 2026-10-15,VA,Virginia,2026-10-15,449594.0,199772.0,404538.0,604310.0,0.0,0.0,0.0,3021956,20.0,https://www.vpap.org/elections/early-voting/
 2026-10-16,VA,Virginia,2026-10-16,451185.0,205507.0,429775.0,635282.0,0.0,0.0,0.0,3021956,21.02,https://www.vpap.org/elections/early-voting/
@@ -343,6 +349,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,VA,Virginia,2026-10-23,461385.0,250720.0,679154.0,929874.0,0.0,0.0,0.0,3021956,30.77,https://www.vpap.org/elections/early-voting/
 2026-10-24,VA,Virginia,2026-10-24,464046.0,258328.0,741131.0,999459.0,0.0,0.0,0.0,3021956,33.07,https://www.vpap.org/elections/early-voting/
 2026-10-25,VA,Virginia,2026-10-25,463830.0,261777.0,810492.0,1072269.0,0.0,0.0,0.0,3021956,35.48,https://www.vpap.org/elections/early-voting/
+2026-10-26,VA,Virginia,2026-10-26,463681.0,262676.0,844234.0,1106910.0,0.0,0.0,0.0,3021956,36.63,https://www.vpap.org/elections/early-voting/
 2026-10-19,VT,Vermont,2026-10-12,457789.0,22973.0,0.0,22973.0,0.0,0.0,0.0,291955,7.87,Data provided Vermont Secretary of State
 2026-10-21,VT,Vermont,2026-10-20,457838.0,70966.0,0.0,70966.0,0.0,0.0,0.0,291955,24.31,Data provided Vermont Secretary of State
 2026-10-22,VT,Vermont,2026-10-21,457880.0,79651.0,0.0,79651.0,0.0,0.0,0.0,291955,27.28,Data provided Vermont Secretary of State
