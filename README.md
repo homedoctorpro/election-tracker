@@ -98,6 +98,15 @@ $env:KALSHI_KEY_FILE = "C:\path\to\kalshi-private-key.pem"
 python scripts\kalshi_portfolio.py
 ```
 
+## Morning poll email
+
+`python -m tracker.poll_digest` writes `data/latest/poll_digest.html` and `.txt`: every Senate poll and every battleground House poll (the races in UF's toss-up file) added since the last digest, grouped by race with the tracker's poll average and, for House races, the most common of the 10 outlet ratings. Primary and hypothetical matchups are left out. Each poll carries:
+- its pollster's grade from the Silver Bulletin pollster ratings, read from the ratings table's [Datawrapper data](https://datawrapper.dwcdn.net/GiFps/) ( the newest version is found and cached in `data/raw/` on each run, never committed). A joint poll with no grade of its own takes its best-graded partner's. Pollsters not in the table show as unrated. Names that differ between VoteHub and the table are mapped in `ALIASES`.
+- PARTISAN (D/R) when VoteHub flags the poll as run or paid for by a party-aligned group, with the sponsor.
+- the pollster's historical lean when Silver Bulletin puts it at 1.5 points or more.
+
+"Since the last digest" is the `last_sent` date in `data/raw/poll_digest_state.json`; `--mark-sent` records today after the email goes out, and `--since YYYY-MM-DD` overrides it. A Claude desktop scheduled task (*Morning poll email*) runs `python -m tracker.run --only polls`, builds the digest and sends it through Speemail from phil@homedoctor.pro.
+
 ## Daily archive (for future cycles)
 
 The cloud job runs at 7:15 AM and again at 10 PM ET (UF posts updates through the day, so the evening run catches them). Each run saves that day's full snapshot, the evening one replacing the morning's, to `data/archive/2026/YYYY-MM-DD/` and commits it to GitHub. That's about 0.5 MB a day:
