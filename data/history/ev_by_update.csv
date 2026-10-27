@@ -25,7 +25,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,AZ,Arizona,2026-10-23,3267813.0,759605.0,0.0,759605.0,293947.0,292244.0,173414.0,2592313,29.3,https://www.stealth-analytics.com/early-ballots
 2026-10-24,AZ,Arizona,2026-10-24,3272387.0,861138.0,0.0,861138.0,330565.0,332929.0,197644.0,2592313,33.22,https://www.stealth-analytics.com/early-ballots
 2026-10-25,AZ,Arizona,2026-10-25,3273543.0,884474.0,0.0,884474.0,342175.0,339414.0,202885.0,2592313,34.12,https://www.stealth-analytics.com/early-ballots
-2026-10-26,AZ,Arizona,2026-10-26,3277171.0,937650.0,0.0,937650.0,360335.0,361264.0,216051.0,2592313,36.17,https://www.stealth-analytics.com/early-ballots
+2026-10-26,AZ,Arizona,2026-10-26,3278043.0,956224.0,0.0,956224.0,365685.0,369635.0,220904.0,2592313,36.89,https://www.stealth-analytics.com/early-ballots
 2026-10-15,CA,California,2026-10-14,23370046.0,633759.0,0.0,633759.0,288838.0,177394.0,127775.0,11146610,5.69,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-16,CA,California,2026-10-15,23380444.0,903615.0,0.0,903615.0,415478.0,261063.0,183241.0,11146610,8.11,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-17,CA,California,2026-10-16,23390609.0,1201759.0,0.0,1201759.0,573500.0,354142.0,248112.0,11146610,10.78,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
@@ -48,6 +48,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,CO,Colorado,2026-10-22,4048644.0,722284.0,3929.0,726213.0,238030.0,178502.0,309681.0,2540666,28.58,Colorado Secretary of State
 2026-10-24,CO,Colorado,2026-10-23,4115819.0,789459.0,5038.0,794497.0,258951.0,196028.0,339518.0,2540666,31.27,Colorado Secretary of State
 2026-10-25,CO,Colorado,2026-10-24,4045838.0,819524.0,5230.0,824754.0,269463.0,202286.0,353005.0,2540666,32.46,Colorado Secretary of State
+2026-10-26,CO,Colorado,2026-10-26,4050945.0,975374.0,7148.0,982522.0,317344.0,240043.0,425135.0,2540666,38.67,Colorado Secretary of State
 2026-10-15,CT,Connecticut,2026-10-15,43979.0,14762.0,0.0,14762.0,7713.0,2773.0,4276.0,1297811,1.14,Connecticut Secretary of the State
 2026-10-19,CT,Connecticut,2026-10-16,46726.0,17138.0,0.0,17138.0,8895.0,3272.0,4971.0,1297811,1.32,Connecticut Secretary of the State
 2026-10-20,CT,Connecticut,2026-10-19,49452.0,19217.0,0.0,19217.0,9964.0,3666.0,5587.0,1297811,1.48,Connecticut Secretary of the State
@@ -239,6 +240,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-23,ND,North Dakota,2026-10-22,53405.0,30199.0,692.0,30891.0,0.0,0.0,0.0,242566,12.74,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-24,ND,North Dakota,2026-10-23,54010.0,31806.0,1628.0,33434.0,0.0,0.0,0.0,242566,13.78,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-26,ND,North Dakota,2026-10-25,54029.0,32039.0,1973.0,34012.0,0.0,0.0,0.0,242566,14.02,https://vip.sos.nd.gov/abev.aspx?eid=348
+2026-10-26,ND,North Dakota,2026-10-26,54942.0,35111.0,4289.0,39400.0,0.0,0.0,0.0,242566,16.24,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-15,NE,Nebraska,2026-10-15,217321.0,61648.0,8003.0,69651.0,31636.0,26158.0,11857.0,682716,10.2,Data file provided by Nebraska Secretary of State
 2026-10-19,NE,Nebraska,2026-10-16,220086.0,68013.0,9278.0,77291.0,34620.0,29580.0,13091.0,682716,11.32,Data file provided by Nebraska Secretary of State
 2026-10-21,NE,Nebraska,2026-10-20,227351.0,91658.0,13179.0,104837.0,45201.0,42040.0,17596.0,682716,15.36,Data file provided by Nebraska Secretary of State
@@ -274,7 +276,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,NV,Nevada,2026-10-23,2087871.0,206041.0,119346.0,325387.0,127908.0,116216.0,81263.0,1023617,31.79,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-25,NV,Nevada,2026-10-24,2087988.0,225362.0,145723.0,371085.0,146969.0,131421.0,92695.0,1023617,36.25,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-26,NV,Nevada,2026-10-25,2088026.0,233327.0,154472.0,387799.0,154537.0,136358.0,96904.0,1023617,37.89,https://www.nvsos.gov/elections/election-information/vivid-project
-2026-10-26,NV,Nevada,2026-10-26,2088030.0,238124.0,157207.0,395331.0,158400.0,137952.0,98979.0,1023617,38.62,https://www.nvsos.gov/elections/election-information/vivid-project
+2026-10-26,NV,Nevada,2026-10-26,2088247.0,252842.0,157207.0,410049.0,164249.0,142688.0,103112.0,1023617,40.06,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-24,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
 2026-10-26,NY,New York,2026-10-26,0.0,0.0,485205.0,485205.0,0.0,0.0,0.0,5962278,8.14,Data provided by the New York State Board of Elections
 2026-10-15,OH,Ohio,2026-10-14,667474.0,73197.0,236163.0,309360.0,0.0,0.0,0.0,4201368,7.36,https://data.ohiosos.gov/portal/election-dashboards
@@ -392,6 +394,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-22,WA,Washington,2026-10-21,5131622.0,461559.0,0.0,461559.0,0.0,0.0,0.0,3067686,15.05,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-23,WA,Washington,2026-10-22,5131622.0,616612.0,0.0,616612.0,0.0,0.0,0.0,3067686,20.1,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-24,WA,Washington,2026-10-23,5131622.0,744812.0,0.0,744812.0,0.0,0.0,0.0,3067686,24.28,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
+2026-10-26,WA,Washington,2026-10-26,5131622.0,955270.0,0.0,955270.0,0.0,0.0,0.0,3067686,31.14,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-15,WI,Wisconsin,2026-10-15,363330.0,151231.0,0.0,151231.0,0.0,0.0,0.0,2673154,5.66,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-18,WI,Wisconsin,2026-10-16,366361.0,161023.0,0.0,161023.0,0.0,0.0,0.0,2673154,6.02,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-19,WI,Wisconsin,2026-10-19,371014.0,173164.0,0.0,173164.0,0.0,0.0,0.0,2673154,6.48,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
