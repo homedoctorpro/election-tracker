@@ -378,6 +378,23 @@ def battlegrounds(con, day, hist, race_summary):
             for y, base in ip["final"].items():
                 ip_heads[y] = {"value": round(ip["2026"] - base, 1), "from": base, "to": ip["2026"], "year": y,
                                "votes": "inperson", "kind": "final", "basis": f"in-person early votes vs {y} final"}
+        # Mail and in person combined, against each year's final early vote. 2026 is weighted to
+        # that year's final mail/in-person split: in-person voting is only partway through, so the
+        # raw 2026 mix holds more mail than the final will and would overstate a move toward D.
+        all_heads = {}
+        if ip_heads and c.get("mail_dr_margin_2026") is not None:
+            for y, mt, it, d_, r_, n_ in con.execute(
+                    "SELECT year, accept_all, inperson_all, voted_dem, voted_rep, voted_none FROM ref_uf_snapshots "
+                    "WHERE state=? AND days_out=-1 AND year IN (2022, 2024)", (st,)):
+                if str(y) not in ip_heads or not mt or not it or d_ is None:
+                    continue
+                w = mt / (mt + it)
+                now = round(w * c["mail_dr_margin_2026"] + (1 - w) * ip["2026"], 1)
+                base = _margin(d_, r_, n_)
+                all_heads[str(y)] = {"value": round(now - base, 1), "from": base, "to": now, "year": str(y),
+                                     "votes": "combined", "kind": "final", "mail_share": round(w, 3),
+                                     "raw_2026": c["dr_margin_2026"],
+                                     "basis": f"mail and in person vs {y} final, weighted to {y}'s mail share"}
         races = []
         for r in race_summary:
             if r["state"] == st and not r["district"] and r["status"] == "ok" and r["office"] in ("Senate", "Governor"):
@@ -396,6 +413,7 @@ def battlegrounds(con, day, hist, race_summary):
             "ev": {"total": c["ev_2026"], "dr": c["dr_margin_2026"], "mail_dr": c.get("mail_dr_margin_2026")},
             "pct_of_final_2022": c.get("pct_of_final_2022"), "pct_of_final_2024": c.get("pct_of_final_2024"),
             "pace": pace, "shifts": shifts, "county_lean": lean, "inperson": ip, "headlines_ip": ip_heads,
+            "headlines_all": all_heads,
             "curves": {str(y): v for y, v in curves.items()},
             "final_dr": {"2024": c.get("dr_margin_2024_final"), "2022": c.get("dr_margin_2022_final")},
         })

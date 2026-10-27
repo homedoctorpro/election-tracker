@@ -120,7 +120,11 @@ const TC={2022:'#9aa0a8',2024:'#e08a1e',2026:'var(--dem)'};
 function chart(t,dout){
   const W=240,H=138,P={l:40,r:6,t:6,b:22},X0=30;
   const S=Object.entries(t.series).map(([y,s])=>[y,s.filter(p=>p[0]<=X0)]).filter(([y,s])=>s.length);
-  const vals=S.flatMap(([y,s])=>s.map(p=>p[1])).concat(Object.values(t.final));
+  // gap: 2026 minus each earlier cycle on the days both have (not mail, whose 2024 days are sparse)
+  const now=(S.find(([y])=>y==='2026')||[,[]])[1];
+  const D=t.measure==='mail'?[]:S.filter(([y])=>y!=='2026').map(([yr,s])=>{const m=new Map(s.map(p=>[p[0],p[1]]));
+    return [yr,now.filter(p=>m.has(p[0])).map(p=>[p[0],Math.round((p[1]-m.get(p[0]))*10)/10])]}).filter(([y,s])=>s.length);
+  const vals=S.concat(D).flatMap(([y,s])=>s.map(p=>p[1])).concat(Object.values(t.final));
   if(!vals.length)return '';
   let lo=Math.min(...vals),hi=Math.max(...vals);const pad=Math.max(3,(hi-lo)*.15);lo-=pad;hi+=pad;
   const x=d=>P.l+(X0-d)/X0*(W-P.l-P.r),y=v=>H-P.b-(v-lo)/(hi-lo)*(H-P.t-P.b);
@@ -137,6 +141,8 @@ function chart(t,dout){
     if(t.measure==='mail'&&yr!=='2026'){s.forEach(p=>g+=`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="4" fill="${TC[yr]}"/>`);return}
     g+=s.length>1?`<polyline fill="none" stroke="${TC[yr]}" stroke-width="${w}" stroke-linejoin="round" points="${s.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`:'';
     const e=s[s.length-1];g+=`<circle cx="${x(e[0])}" cy="${y(e[1])}" r="${yr==='2026'?5.5:3.5}" fill="${TC[yr]}"/>`});
+  D.forEach(([yr,s])=>{g+=s.length>1?`<polyline fill="none" stroke="${TC[yr]}" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0.1 5" points="${s.map(p=>x(p[0]).toFixed(1)+','+y(p[1]).toFixed(1)).join(' ')}"/>`
+    :`<circle cx="${x(s[0][0])}" cy="${y(s[0][1])}" r="2.5" fill="${TC[yr]}"/>`});
   return `<svg viewBox="0 0 ${W} ${H}" width="100%">${g}</svg>`;
 }
 // Nevada: Democratic minus Republican ballots (a count) after each day of early in-person voting
@@ -179,7 +185,7 @@ function renderTrend(){
     <h1>The early vote, day by day</h1>
     <div class="sub">Big number: change in the D&minus;R margin since 2024. Through ${date}, ${left} days to go.</div>
     <div class="key"><span><i style="background:${TC[2026]}"></i>2026</span><span><i style="background:${TC[2024]}"></i>2024</span><span><i style="background:${TC[2022]}"></i>2022</span>
-      <span>Dashed line = that year's final</span></div>
+      <span>Dashed = that year's final</span><span>Dotted = 2026 minus that year</span></div>
     <div class="grid">${B.map(pn).join('')}${nv}</div>
     <div class="foot"><b>All early votes</b>: every day of all three cycles. <b>Mail ballots</b>: 2024 dots are the few days on file. <b>County lean</b>: the 2024 presidential margin of the counties early votes come from, where party data isn't usable; daily for every cycle in Texas and Ohio, elsewhere against the whole 2024 and 2022 early vote (dashed).${missing.length?` ${esc(missing.join(', '))}: no daily data.`:''}${nv?' <b>Nevada ballot lead</b>: 2024 and early 2026 days from @umichvoter\'s chart of the NV Secretary of State\'s daily reports.':''}
       Sources: UF Election Lab, state election offices, EAC.
