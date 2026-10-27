@@ -7,7 +7,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,CT,Connecticut,2026-10-26,62660.0,32712.0,199812.0,232524.0,122757.0,40813.0,68954.0,1297811,17.92,Connecticut Secretary of the State
 2026-10-26,DC,District of Columbia,2026-10-26,492023.0,44714.0,0.0,44714.0,0.0,0.0,0.0,205774,21.73,https://dcboe.org/
 2026-10-26,DE,Delaware,2026-10-26,75978.0,75978.0,0.0,75978.0,42174.0,20100.0,13704.0,325632,23.33,Delaware Department of Elections
-2026-10-26,FL,Florida,2026-10-26,2478778.0,1488359.0,1654063.0,3142422.0,1240044.0,1253622.0,648756.0,7796916,40.3,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
+2026-10-26,FL,Florida,2026-10-26,2478778.0,1492246.0,1660564.0,3152810.0,1244521.0,1257291.0,650998.0,7796916,40.44,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-26,GA,Georgia,2026-10-26,157598.0,90357.0,1849662.0,1940019.0,0.0,0.0,0.0,3964926,48.93,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-26,HI,Hawaii,2026-10-26,726230.0,123874.0,1245.0,125119.0,0.0,0.0,0.0,423443,29.55,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-26,IA,Iowa,2026-10-26,160961.0,91467.0,174243.0,265710.0,134366.0,83845.0,47499.0,1230417,21.6,Iowa Secretary of State
