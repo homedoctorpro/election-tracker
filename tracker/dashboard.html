@@ -129,7 +129,7 @@ tr.click{cursor:pointer}
 /* overview: one row per state */
 .ov{padding:12px 14px 8px;margin-bottom:14px}
 .ov h2{font-size:17px;margin:0 0 2px}
-.ov-row,.ov-hd,.ov-ax{display:grid;grid-template-columns:118px minmax(0,1fr) 70px 138px 150px;gap:10px;align-items:center}
+.ov-row,.ov-hd,.ov-ax{display:grid;grid-template-columns:118px minmax(0,1fr) 78px 62px 138px 150px;gap:10px;align-items:center}
 .ov-hd{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:6px 0 4px;border-bottom:1px solid var(--line)}
 .ov-row{padding:5px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
 .ov-row:hover{background:var(--hl)}
@@ -148,8 +148,8 @@ tr.click{cursor:pointer}
 .ov-key{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted);margin:4px 0 2px;align-items:center}
 .ov-key i{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:4px}
 @media (max-width:700px){
-  .ov-row,.ov-hd,.ov-ax{grid-template-columns:44px minmax(0,1fr) 58px}
-  .ov-row>:nth-child(n+4),.ov-hd>:nth-child(n+4),.ov-ax>:nth-child(n+4){display:none}
+  .ov-row,.ov-hd,.ov-ax{grid-template-columns:44px minmax(0,1fr) 58px 50px}
+  .ov-row>:nth-child(n+5),.ov-hd>:nth-child(n+5),.ov-ax>:nth-child(n+5){display:none}
   .ov-st small,.ov-st .nm{display:none}
 }
 #bg-shade[hidden]{display:none}
@@ -781,6 +781,7 @@ function bgOverview(B){
     return `<div class="ov-row${early?' early':''}" data-st="${b.state}" tabindex="0">
       <div class="ov-st"><b>${b.state}</b> <span class="nm">${esc(b.state_name)}</span>${b._part?` <span class="chip">${b._part==='ip'?'in person':b._part==='all'?'combined':'mail'}</span>`:''}<small>${b._part==='ip'?fmt(b.inperson.n)+' in-person votes':b._part==='all'?fmt(b.ev.total)+' mail + in person':b._part==='mail'?fmt(b.ev.total-b.inperson.n)+' mail ballots':fmt(b.ev.total)+' early votes'}${early?' · too early':''}</small></div>
       ${tr}
+      <div class="ov-n">${h?`<b style="color:${scol(h.to)}">${sgn(h.to)}</b><br><small class="muted" style="white-space:nowrap">${h.kind==='same'||h.same_day?h.year:`'${h.year.slice(2)} final`} ${sgn(h.from)}</small>`:'–'}</div>
       <div class="ov-n"><b style="color:${scol(h?.value)}">${h?sgn(h.value):'–'}</b></div>
       <div class="small" style="white-space:nowrap">${pc?`<b>${pct(pc.pct,0)}</b> <span class="muted">of 2024 ${pc.same?'same day':'final'}</span>`:'–'}</div>
       <div class="small">${polls(b)}</div></div>`};
@@ -794,10 +795,10 @@ function bgOverview(B){
     <div class="small muted">${fmt(tot)} early votes across ${B.length} states, data through ${esc(B.map(b=>b.data_through).sort().pop())}. Each line runs from the 2024 D&minus;R margin to 2026's; the arrow's color shows which way it moved. Click a state for detail.</div>
     <div class="ov-key"><span><i style="border:2px solid var(--muted);background:var(--panel)"></i>2024</span><span><i style="background:var(--dem)"></i>2026</span>
       <span>solid line: same-day comparison</span><span>dashed: vs final or county lean (rough)</span><span>faded: too few votes in to read</span></div>
-    <div class="ov-hd"><span>State</span><span style="text-align:center">R ← D&minus;R margin → D</span><span class="ov-n">Shift</span><span>Turnout pace</span><span>Polls · Kalshi (D)</span></div>`
+    <div class="ov-hd"><span>State</span><span style="text-align:center">R ← D&minus;R margin → D</span><span class="ov-n">2026 margin</span><span class="ov-n">Shift</span><span>Turnout pace</span><span>Polls · Kalshi (D)</span></div>`
     +groups.map(([k,t,d])=>{const L=B.filter(b=>bgKind(b)===k).sort((a,b)=>(bgEarly(a)-bgEarly(b))||hs(b)-hs(a));
       return L.length?`<div class="ov-g"><b>${t}</b> <span>${d}</span></div>`+L.flatMap(b=>bgIP(b)&&b.headlines_ip&&b.headlines_ip['2024']?[{...b,_part:'mail'},{...b,_part:'ip',headline:b.headlines_ip['2024']},...(bgAll(b)?[{...b,_part:'all',headline:bgAll(b)}]:[])]:[b]).map(row).join(''):''}).join('')
-    +`<div class="ov-ax"><span></span><div>${[-lim,-lim/2,0,lim/2,lim].map(v=>`<span>${tick(v)}</span>`).join('')}</div><span></span><span></span><span></span></div>`;
+    +`<div class="ov-ax"><span></span><div>${[-lim,-lim/2,0,lim/2,lim].map(v=>`<span>${tick(v)}</span>`).join('')}</div><span></span><span></span><span></span><span></span></div>`;
 }
 
 function battlegrounds(){
