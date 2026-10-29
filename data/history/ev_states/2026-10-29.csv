@@ -11,7 +11,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-29,GA,Georgia,2026-10-29,157132.0,105248.0,2203531.0,2308779.0,0.0,0.0,0.0,3964926,58.23,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-29,HI,Hawaii,2026-10-28,727412.0,165921.0,2270.0,168191.0,0.0,0.0,0.0,423443,39.72,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-29,IA,Iowa,2026-10-29,161728.0,133704.0,239682.0,373386.0,178663.0,124738.0,69985.0,1230417,30.35,Iowa Secretary of State
-2026-10-29,ID,Idaho,2026-10-28,163323.0,98512.0,94297.0,192809.0,19403.0,59528.0,19581.0,595350,32.39,Idaho Secretary of State
+2026-10-29,ID,Idaho,2026-10-29,163608.0,104664.0,94297.0,198961.0,20348.0,63473.0,20843.0,595350,33.42,Idaho Secretary of State
 2026-10-29,IL,Illinois,2026-10-28,1168268.0,555827.0,608570.0,1164397.0,0.0,0.0,0.0,4144125,28.1,https://www.elections.il.gov/VotingAndRegistrationSystems/PreElectionCounts.aspx
 2026-10-29,IN,Indiana,2026-10-29,588569.0,552934.0,0.0,552934.0,0.0,0.0,0.0,1880755,29.4,Indiana Secretary of State
 2026-10-29,KS,Kansas,2026-10-28,106788.0,59857.0,222375.0,282232.0,125765.0,116368.0,40099.0,1008998,27.97,Kansas Secretary of State
@@ -47,4 +47,4 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-29,WA,Washington,2026-10-28,5131622.0,1356057.0,0.0,1356057.0,0.0,0.0,0.0,3067686,44.2,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-29,WI,Wisconsin,2026-10-29,737687.0,288891.0,344182.0,633073.0,0.0,0.0,0.0,2673154,23.68,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-29,WV,West Virginia,2026-10-26,8290.0,4489.0,62366.0,66855.0,27864.0,25632.0,13359.0,494753,13.51,West Virginia Secretary of State
-2026-10-29,WY,Wyoming,2026-10-28,56176.0,47553.0,0.0,47553.0,8338.0,35706.0,3509.0,198198,23.99,Wyoming Secretary of State
+2026-10-29,WY,Wyoming,2026-10-29,60275.0,52691.0,0.0,52691.0,9141.0,39638.0,3912.0,198198,26.59,Wyoming Secretary of State
