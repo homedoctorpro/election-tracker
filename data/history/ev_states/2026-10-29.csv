@@ -2,14 +2,14 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-29,AK,Alaska,2026-10-28,49248.0,20619.0,41030.0,61649.0,0.0,0.0,0.0,267047,23.09,https://www.elections.alaska.gov/research/statistics/#aeqstats
 2026-10-29,AR,Arkansas,2026-10-29,13119.0,7305.0,406500.0,413805.0,27140.0,36456.0,350209.0,914227,45.26,Arkansas Secretary of State
 2026-10-29,AZ,Arizona,2026-10-29,3298281.0,1295955.0,0.0,1295955.0,486459.0,500567.0,308929.0,2592313,49.99,https://www.stealth-analytics.com/early-ballots
-2026-10-29,CA,California,2026-10-28,23447524.0,4230291.0,77520.0,4307811.0,2167243.0,1220499.0,900753.0,11146610,38.65,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
+2026-10-29,CA,California,2026-10-29,23450456.0,4508669.0,97263.0,4605932.0,2167243.0,1220499.0,900753.0,11146610,41.32,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-29,CO,Colorado,2026-10-28,4064271.0,1209788.0,11054.0,1220842.0,388962.0,300147.0,531733.0,2540666,48.05,Colorado Secretary of State
 2026-10-29,CT,Connecticut,2026-10-29,67958.0,44488.0,305032.0,349520.0,174716.0,65924.0,108880.0,1297811,26.93,Connecticut Secretary of the State
-2026-10-29,DC,District of Columbia,2026-10-28,492023.0,60027.0,6526.0,60027.0,0.0,0.0,0.0,205774,29.17,https://dcboe.org/
-2026-10-29,DE,Delaware,2026-10-28,104746.0,104746.0,0.0,104746.0,56648.0,28838.0,19260.0,325632,32.17,Delaware Department of Elections
-2026-10-29,FL,Florida,2026-10-29,2480537.0,1723534.0,2290247.0,4013781.0,1555888.0,1616839.0,841054.0,7796916,51.48,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
-2026-10-29,GA,Georgia,2026-10-29,157132.0,105248.0,2203531.0,2308779.0,0.0,0.0,0.0,3964926,58.23,https://mvp.sos.ga.gov/s/voter-absentee-files
-2026-10-29,HI,Hawaii,2026-10-28,727412.0,165921.0,2270.0,168191.0,0.0,0.0,0.0,423443,39.72,https://elections.hawaii.gov/resources/absentee-voting-report/
+2026-10-29,DC,District of Columbia,2026-10-29,492023.0,68499.0,9424.0,68499.0,0.0,0.0,0.0,205774,33.29,https://dcboe.org/
+2026-10-29,DE,Delaware,2026-10-29,116273.0,116273.0,0.0,116273.0,62432.0,32264.0,21577.0,325632,35.71,Delaware Department of Elections
+2026-10-29,FL,Florida,2026-10-29,2480240.0,1756360.0,2403540.0,4159900.0,1605031.0,1680898.0,873971.0,7796916,53.35,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
+2026-10-29,GA,Georgia,2026-10-29,157132.0,108251.0,2294275.0,2402526.0,0.0,0.0,0.0,3964926,60.59,https://mvp.sos.ga.gov/s/voter-absentee-files
+2026-10-29,HI,Hawaii,2026-10-29,727772.0,187379.0,2824.0,190203.0,0.0,0.0,0.0,423443,44.92,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-29,IA,Iowa,2026-10-29,161728.0,133704.0,239682.0,373386.0,178663.0,124738.0,69985.0,1230417,30.35,Iowa Secretary of State
 2026-10-29,ID,Idaho,2026-10-29,163608.0,104664.0,94297.0,198961.0,20348.0,63473.0,20843.0,595350,33.42,Idaho Secretary of State
 2026-10-29,IL,Illinois,2026-10-29,1175326.0,583691.0,683628.0,1267319.0,0.0,0.0,0.0,4144125,30.58,https://www.elections.il.gov/VotingAndRegistrationSystems/PreElectionCounts.aspx
@@ -39,8 +39,8 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-29,RI,Rhode Island,2026-10-28,33040.0,20864.0,71489.0,92353.0,40769.0,8646.0,42938.0,361449,25.55,Rhode Island Secretary of State
 2026-10-29,SC,South Carolina,2026-10-29,56910.0,36132.0,753108.0,789240.0,0.0,0.0,0.0,1718626,45.92,https://scvotes.gov/elections-statistics/voter-participation/
 2026-10-29,SD,South Dakota,2026-10-28,70869.0,61052.0,0.0,61052.0,18358.0,32525.0,10169.0,354670,17.21,South Dakota Secretary of State
-2026-10-29,TN,Tennessee,2026-10-28,0.0,0.0,1018521.0,1018521.0,0.0,0.0,0.0,1756397,57.99,https://sos.tn.gov/govotetn
-2026-10-29,TX,Texas,2026-10-29,234108.0,234108.0,5612744.0,5846852.0,0.0,0.0,0.0,8151590,71.73,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
+2026-10-29,TN,Tennessee,2026-10-29,0.0,0.0,1130292.0,1130292.0,0.0,0.0,0.0,1756397,64.35,https://sos.tn.gov/govotetn
+2026-10-29,TX,Texas,2026-10-29,247638.0,247638.0,6011271.0,6258909.0,0.0,0.0,0.0,8151590,76.78,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-29,UT,Utah,2026-10-29,1786661.0,350893.0,6538.0,357431.0,75598.0,186083.0,95750.0,1084634,32.95,Utah Lt. Governor
 2026-10-29,VA,Virginia,2026-10-29,462844.0,292221.0,1037444.0,1329665.0,0.0,0.0,0.0,3021956,44.0,https://www.vpap.org/elections/early-voting/
 2026-10-29,VT,Vermont,2026-10-29,458003.0,131610.0,0.0,131610.0,0.0,0.0,0.0,291955,45.08,Data provided Vermont Secretary of State
