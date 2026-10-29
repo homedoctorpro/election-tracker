@@ -8,7 +8,7 @@ import json
 import shutil
 from pathlib import Path
 
-from . import battleground, compare, daily, share
+from . import battleground, compare, daily, race_map, share
 from .common import ROOT, now_et, today_et
 from .sources import tx_rosters
 
@@ -144,12 +144,17 @@ def build(con):
         "projection": compare.party_projection(con, today_et()),
         "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }
+    try:  # the map tab must never block the site build
+        data["race_map"] = race_map.build(summary, ratings)
+    except Exception as e:
+        print(f"  race map failed: {e}")
     data["daily"] = daily.build(con, hist_rows, data["nv_firewall"], today_et(), ROOT / "data" / "history" / "daily_posts")
     SITE.mkdir(exist_ok=True)
     (SITE / "daily.txt").write_text(data["daily"]["post"] + "\n", encoding="utf-8")
     (SITE / "daily-verdicts.txt").write_text(data["daily"]["verdicts"] + "\n", encoding="utf-8")
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     shutil.copy(TEMPLATE, SITE / "index.html")
+    race_map.write_paths(SITE)
     try:
         card = share.build(SITE, data["battlegrounds"], data["generated"], data["nv_firewall"])
     except Exception as e:  # the share image must never block the site build

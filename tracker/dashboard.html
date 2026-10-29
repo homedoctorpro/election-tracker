@@ -9,14 +9,14 @@
 <style>
 :root{
   --bg:#f7f7f5;--panel:#fff;--ink:#1a1a1a;--muted:#6b6b6b;--line:#e4e2dd;--accent:#1f4e8c;
-  --dem:#2563eb;--rep:#dc2626;--oth:#9ca3af;--chip:#efede8;--hl:#fff8e1;
+  --dem:#2563eb;--rep:#dc2626;--oth:#9ca3af;--chip:#efede8;--hl:#fff8e1;--mapbase:#f4f3ef;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#121212;--panel:#1c1c1c;--ink:#ececec;--muted:#9a9a9a;--line:#2e2e2e;--accent:#7aa7e6;
-  --dem:#5b8def;--rep:#ef5b5b;--oth:#6b7280;--chip:#262626;--hl:#2a2614;}}
+  --dem:#5b8def;--rep:#ef5b5b;--oth:#6b7280;--chip:#262626;--hl:#2a2614;--mapbase:#d9d9d9;}}
 :root[data-theme="dark"]{
   --bg:#121212;--panel:#1c1c1c;--ink:#ececec;--muted:#9a9a9a;--line:#2e2e2e;--accent:#7aa7e6;
-  --dem:#5b8def;--rep:#ef5b5b;--oth:#6b7280;--chip:#262626;--hl:#2a2614;}
+  --dem:#5b8def;--rep:#ef5b5b;--oth:#6b7280;--chip:#262626;--hl:#2a2614;--mapbase:#d9d9d9;}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
@@ -126,6 +126,26 @@ tr.click{cursor:pointer}
 #bg-pop table td,#bg-pop table th{padding:5px 6px;font-size:12.5px}
 #bg-pop h4{margin:12px 0 2px;font-size:13px}
 #bg-shade{position:fixed;inset:0;z-index:29;background:rgba(0,0,0,.35)}
+#s-map .pm-tools select{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.map-wrap{padding:8px;touch-action:manipulation}
+#msvg{display:block;width:100%;height:auto}
+#msvg path{vector-effect:non-scaling-stroke}
+#msvg .seat{stroke:var(--panel);stroke-width:.6;cursor:pointer}
+#msvg .seat:hover,#msvg .seat.on{stroke:var(--ink);stroke-width:2}
+#msvg .st{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:.9;pointer-events:none}
+#msvg .none{fill:var(--chip);stroke:var(--panel);stroke-width:.6}
+#msvg .pending{fill:url(#mhatch);stroke:var(--panel);stroke-width:.6;cursor:help}
+.mkey{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:8px 2px;font-size:12px;color:var(--muted)}
+.mkey i{display:inline-block;width:34px;height:10px}
+.mkey span{margin:0 8px 0 4px}
+#m-tip{position:fixed;z-index:30;width:min(380px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;background:var(--panel);border:1px solid var(--muted);border-radius:10px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.18);font-size:13px}
+#m-tip[hidden]{display:none}
+#m-tip h3{margin:0 18px 2px 0;font-size:16px}
+#m-tip h4{margin:9px 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+#m-tip .x{position:absolute;right:8px;top:4px;border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer}
+#m-tip .pb{display:flex;height:8px;border-radius:3px;overflow:hidden;background:var(--chip);margin:3px 0}
+#m-tip ul{margin:0;padding:0;list-style:none}#m-tip li{margin:2px 0}
+#m-tip .pl{border-top:1px solid var(--line);padding:4px 0}
 /* overview: one row per state */
 .ov{padding:12px 14px 8px;margin-bottom:14px}
 .ov h2{font-size:17px;margin:0 0 2px}
@@ -171,6 +191,7 @@ svg.spark{vertical-align:middle}
   <button data-t="bg" aria-selected="true">Battlegrounds</button>
   <button data-t="ev" aria-selected="false">Early vote</button>
   <button data-t="cmp">vs 2022 / 2024</button>
+  <button data-t="map">Map</button>
   <button data-t="Senate">Senate</button>
   <button data-t="Governor">Governor</button>
   <button data-t="House">House</button>
@@ -231,6 +252,21 @@ svg.spark{vertical-align:middle}
   </p>
 </section>
 
+<section id="s-map">
+  <div class="pm-tools" style="margin-top:0">
+    <button class="seg" data-mo="house" aria-pressed="true">House</button>
+    <button class="seg" data-mo="senate" aria-pressed="false">Senate</button>
+    <select id="mz" aria-label="Zoom to state"><option value="">Whole country</option></select>
+    <span class="small muted" id="mnote"></span>
+  </div>
+  <div class="panel map-wrap"><svg id="msvg" role="img" aria-label="Map of 2026 races"></svg></div>
+  <div class="mkey" id="mkey"></div>
+  <p class="small muted">
+    Colored by the 2024 presidential margin (Trump minus Harris) within each seat; House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Double-click a district or pick a state to zoom in.
+    Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
+  </p>
+</section>
+<div id="m-tip" hidden></div>
 <section id="s-Senate"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Senate"></table></div></section>
 <section id="s-Governor"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Governor"></table></div></section>
 <section id="s-House"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-House"></table></div></section>
@@ -250,6 +286,7 @@ svg.spark{vertical-align:middle}
 <footer>
   Early-vote statistics: <a href="https://election.lab.ufl.edu/early-vote/2026-early-voting/">UF Election Lab</a> (Michael McDonald), compiled from official state reports, used under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>. Race ratings compiled by the UF Election Lab.
   Polls: <a href="https://votehub.com/polls/">VoteHub</a>. Poll averages here are simple, unweighted means of up to 5 polls from the last 60 days; "current matchup" is inferred from which two candidates were polled most in that window.
+  Map: 2024 presidential results by 2026 district from <a href="https://www.the-downballot.com/p/the-downballots-calculations-of-presidential">The Downballot</a>; district and state outlines from the <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html">Census Bureau</a> and, for redrawn states, <a href="https://simplemaps.com/data/congress">SimpleMaps</a> (<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>); candidates from <a href="https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections">Wikipedia</a> (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>).
   Non-commercial, personal tracker.
 </footer>
 </div>
@@ -835,9 +872,106 @@ function battlegrounds(){
   shade.onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 }
 
+// ---- Map tab: House districts / Senate states, colored by the 2024 Trump-minus-Harris margin ----
+const AT_LARGE=new Set(['AK','DE','ND','SD','VT','WY']);
+const dkey=(st,d)=>{d=String(d??'').toUpperCase();return AT_LARGE.has(st)||!d||d==='AL'||+d===0?st+'-AL':st+'-'+d.padStart(2,'0')};
+// margin bins, R+ on the left; each step gets a stronger share of the party color
+const MBINS=[[30,'R+30'],[15,'R+15'],[5,'R+5'],[0,'R+0'],[-5,'D+0'],[-15,'D+5'],[-30,'D+15'],[-1e9,'D+30']];
+const MSHADE=[88,64,42,22,22,42,64,88];
+const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';const i=MBINS.findIndex(b=>m>=b[0]);return `color-mix(in srgb,${i<4?'var(--rep)':'var(--dem)'} ${MSHADE[i]}%,var(--mapbase))`};
+const mtxt=m=>{return m===0?'Even':m>0?`R+${m.toFixed(1)}`:`D+${(-m).toFixed(1)}`};
+let MAP=null,MMODE='house',MPIN=false;
+
+function mapInit(){
+  if(MAP||!D.race_map)return;
+  MAP='loading';
+  fetch('map.json',{cache:'no-store'}).then(r=>r.json()).then(g=>{MAP=g;mapSetup()}).catch(e=>{MAP=null;$('#mnote').textContent='Could not load map shapes: '+e});
+}
+
+function mapSetup(){
+  const svg=$('#msvg'),tip=$('#m-tip');
+  svg.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);
+  // key: one sample margin per bin, R on the left
+  $('#mkey').innerHTML='<span style="margin-left:0">R+30</span>'+[40,20,10,2,-2,-10,-20,-40].map(m=>`<i style="background:${mfill(m)}"></i>`).join('')+'<span>D+30</span><i style="background:var(--chip);margin-left:10px"></i><span>no race this year</span>';
+  const sts=Object.keys(MAP.states).sort();
+  $('#mz').innerHTML='<option value="">Whole country</option>'+sts.map(s=>`<option>${s}</option>`).join('');
+  const zoom=st=>{let vb=`0 0 ${MAP.w} ${MAP.h}`;if(st){const p=svg.querySelector(`.st[data-st="${st}"]`);if(p){const b=p.getBBox(),pad=Math.max(b.width,b.height)*.08;vb=`${b.x-pad} ${b.y-pad} ${b.width+2*pad} ${b.height+2*pad}`}}
+    svg.setAttribute('viewBox',vb);$('#mz').value=st||''};
+  const draw=()=>{
+    const R=D.race_map,pend=new Set(MAP.missing.map(k=>k.slice(0,2)));
+    let h='<defs><pattern id="mhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--chip)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-opacity=".5"/></pattern></defs>';
+    if(MMODE==='house'){
+      h+=Object.entries(MAP.house).map(([k,d])=>{const r=R.house[k];return `<path class="seat" data-k="${k}" d="${d}" fill="${r?mfill(r.margin):'var(--chip)'}"/>`}).join('');
+      h+=[...pend].map(s=>MAP.states[s]?`<path class="pending" data-pend="${s}" d="${MAP.states[s]}"/>`:'').join('');
+    }else{
+      const by={};Object.entries(R.senate).forEach(([k,r])=>by[k.split('-')[0]]=k);
+      h+=sts.map(s=>{const k=by[s],r=k&&R.senate[k];return r?`<path class="seat" data-k="${k}" d="${MAP.states[s]}" fill="${mfill(r.margin)}"/>`:`<path class="none" data-none="${s}" d="${MAP.states[s]}"/>`}).join('');
+    }
+    h+=sts.map(s=>`<path class="st" data-st="${s}" d="${MAP.states[s]}"/>`).join('');
+    svg.innerHTML=h;
+    const nh=Object.keys(R.house).length,drawn=Object.keys(MAP.house).length;
+    $('#mnote').textContent=MMODE==='house'?(MAP.missing.length?`${drawn} of ${nh} districts drawn; 2026 lines for ${[...pend].join(', ')} aren't loaded yet (hatched).`:`${nh} districts`):`${Object.keys(R.senate).length} Senate races`;
+  };
+  const show=(el,ev,pin)=>{
+    const k=el.dataset.k;
+    if(el.dataset.pend){tip.innerHTML=`<h3>${STATES_N[el.dataset.pend]||el.dataset.pend}</h3><div class="muted">This state redrew its House map for 2026, and the new district lines aren't loaded yet.</div>`}
+    else if(el.dataset.none){tip.innerHTML=`<h3>${STATES_N[el.dataset.none]||el.dataset.none}</h3><div class="muted">No Senate race in 2026.</div>`}
+    else tip.innerHTML=mapTip(MMODE,k);
+    if(pin)tip.insertAdjacentHTML('afterbegin','<button class="x" aria-label="Close">×</button>');
+    tip.hidden=false;
+    svg.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on'));el.classList.add('on');
+    const pw=tip.offsetWidth,ph=tip.offsetHeight,vw=innerWidth,vh=innerHeight;
+    let x=ev.clientX+16,y=ev.clientY+12;if(x+pw>vw-8)x=ev.clientX-pw-16;if(x<8)x=Math.max(8,(vw-pw)/2);if(y+ph>vh-8)y=Math.max(8,vh-ph-8);
+    tip.style.left=x+'px';tip.style.top=y+'px';
+    const xb=tip.querySelector('.x');if(xb)xb.onclick=hide;
+  };
+  const hide=()=>{tip.hidden=true;MPIN=false;svg.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on'))};
+  const hover=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const target=e=>e.target.closest&&e.target.closest('[data-k],[data-pend],[data-none]');
+  if(hover){
+    svg.addEventListener('mousemove',e=>{if(MPIN)return;const el=target(e);if(el)show(el,e,false);else hide()});
+    svg.addEventListener('mouseleave',()=>{if(!MPIN)hide()});
+  }
+  svg.addEventListener('click',e=>{const el=target(e);if(!el){hide();return}MPIN=true;show(el,e,true)});
+  svg.addEventListener('dblclick',e=>{const el=target(e);if(!el)return;const st=(el.dataset.k||el.dataset.pend||el.dataset.none).slice(0,2);zoom($('#mz').value===st?'':st);hide()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});
+  $('#mz').onchange=e=>{zoom(e.target.value);hide()};
+  document.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{MMODE=b.dataset.mo;document.querySelectorAll('[data-mo]').forEach(x=>x.setAttribute('aria-pressed',x===b));hide();draw()});
+  draw();
+}
+const STATES_N={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+
+function mapTip(mode,k){
+  const r=mode==='house'?D.race_map.house[k]:D.race_map.senate[k];if(!r)return `<h3>${esc(k)}</h3><div class="muted">No data.</div>`;
+  const st=k.slice(0,2);
+  const title=mode==='house'?(k.endsWith('-AL')?`${STATES_N[st]} at-large`:`${k}`):`${STATES_N[st]} Senate${r.special?' (special)':''}`;
+  const inc=r.incumbent?`${esc(r.incumbent)} ${ptag(r.inc_party)}`:'<i>Open seat</i>';
+  let h=`<h3>${title}</h3><div class="small muted">${inc}${r.status?' · '+esc(r.status):''}</div>`;
+  // 2024 presidential
+  if(r.trump!=null){const m=r.margin;
+    h+=`<h4>2024 president</h4><div class="pb"><span style="width:${r.harris}%;background:var(--dem)"></span><span style="width:${100-r.harris-r.trump}%"></span><span style="width:${r.trump}%;background:var(--rep)"></span></div>
+      <div>Trump <b>${r.trump.toFixed(1)}%</b> · Harris <b>${r.harris.toFixed(1)}%</b> <span style="color:${pcol(m>0?'R':'D')};font-weight:650;margin-left:4px">${mtxt(m)}</span></div>`}
+  // candidates, major parties first
+  const ord={D:0,R:1};const cs=[...(r.candidates||[])].sort((a,b)=>(ord[a.party]??2)-(ord[b.party]??2));
+  h+=`<h4>Candidates</h4>`+(cs.length?'<ul>'+cs.map(c=>`<li>${esc(c.name)} ${ptag(c.party)}${c.party!=='D'&&c.party!=='R'?` <span class="muted small">${esc(c.label)}</span>`:''}${r.incumbent&&c.name===r.incumbent?' <span class="chip">inc.</span>':''}</li>`).join('')+'</ul>':'<div class="muted">Not listed yet.</div>');
+  // poll average (same 60-day, up-to-5-poll rule as the race tables) and latest polls
+  const a=r.avg;
+  h+='<h4>Polling</h4>';
+  if(a){const m=+a.margin_d_minus_r;
+    h+=`<div>${cand(a.candidate_a,a.party_a)} <b>${a.a_avg}</b> · ${cand(a.candidate_b,a.party_b)} <b>${a.b_avg}</b> <span style="color:${m===0?'var(--muted)':pcol(m>0?'D':'R')};font-weight:650;margin-left:4px">${m===0?'Tie':(m>0?'D':'R')+' +'+Math.abs(m).toFixed(1)}</span></div><div class="small muted">Average of ${a.polls_averaged} poll${a.polls_averaged==1?'':'s'}, latest ended ${esc(a.latest_poll_end)}</div>`}
+  const ps=D.polls.filter(p=>p.matchup!=='primary/hypothetical'&&(mode==='house'?p.poll_type==='us-representative'&&dkey(p.state,p.district)===k:p.poll_type==='us-senator'&&p.state===st)).slice(0,3);
+  h+=ps.length?ps.map(p=>`<div class="pl"><span class="small muted">${esc(p.end_date)} · ${esc(p.pollster)}${p.partisan?' <span class="chip">'+esc(p.partisan)+'</span>':''}</span><br>${answers(p,3)}</div>`).join(''):(a?'':'<div class="muted">No polls in the last 120 days.</div>');
+  // House: outlet ratings, where UF's file rates the seat
+  if(r.ratings){const cls=v=>!v?'':v.startsWith('Tossup')?'rT':/ D/.test(v)?'rD':'rR';
+    h+='<h4>Ratings</h4><div>'+Object.entries(r.ratings).map(([o,v])=>`<span class="rating ${cls(v)}" style="margin:0 3px 3px 0">${esc(OUT[o]||o)}: ${esc(v.replace(' Flip','*'))}</span>`).join('')+'</div>'}
+  return h;
+}
+
 function init(){
   $('#gen').textContent='Last refreshed '+D.generated+'.';
   tabs();kpis();battlegrounds();ev();cmp();['Senate','Governor','House'].forEach(races);latest();ratings();
+  document.querySelector('#tabs [data-t="map"]').addEventListener('click',mapInit);
+  if($('#s-map').classList.contains('on'))mapInit();
 }
 </script>
 </body>

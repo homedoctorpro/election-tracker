@@ -27,6 +27,20 @@ VoteHub only gives candidate names, so `tracker/sources/parties.py` adds a party
 
 Names that can't be matched unambiguously get no party, so the page never guesses. One-letter typos in poll data (e.g. "Maura Healy") are matched within the same race. Every poll view shows party tags and margins as D/R/I +n; `race_summary.csv` adds `party_a`, `party_b` and a signed `margin_d_minus_r`.
 
+## Map tab
+
+A map of every 2026 race, with a House view (435 districts) and a Senate view (the 35 states with a race, counting the Florida and Ohio specials). Each seat is shaded by the 2024 presidential margin. Hover over a seat, or tap it, to see the incumbent, the candidates, the poll average (same rule as the race tables), the three latest polls and, for House seats in UF's ratings file, each outlet's rating. Double-click a district or pick a state to zoom in.
+
+- **2024 presidential by district:** `data/reference/house_pres24.csv`, The Downballot's calculations for the lines used in 2026. Nine states redrew for 2026: AL, CA, FL, LA, NC, OH, TN, TX and UT. Missouri's new map was held back by a referendum petition, so 2026 uses its 2022 lines. Senate figures are the FEC's statewide 2024 totals in `results_state.csv`.
+- **Outlines:** `data/reference/map_paths.json`, already projected (Albers USA) to SVG paths. Census 119th-Congress lines are used for unchanged states, and the SimpleMaps 120th-Congress basic file (CC BY 4.0) for the nine that redrew.
+- **Candidates:** the race tables in Wikipedia's "2026 United States House/Senate elections" articles, read again on every site build. The last good copy is in `data/history/candidates.json`.
+
+To rebuild the reference files (needs Node for `npx mapshaper`):
+```powershell
+python -m tracker.race_map --build-pres
+python -m tracker.race_map --build-shapes --simplemaps "$HOME\Downloads\simplemaps_congress_basicv2.3.zip"
+```
+
 ## Battlegrounds tab
 
 The first tab covers the battleground states (`STATES` in `tracker/battleground.py`): AZ, GA, MI, NC, NV, PA, WI, IA, OH, ME, KS, FL, TX, SC, LA and MS. At the top, an at-a-glance chart gives each state one row: a line from its 2024 D−R margin to its 2026 margin, the shift, turnout pace and the poll margins, grouped by how solid the comparison is. Below it, one card per state adds the vote counts, party mix and a mini chart. Hover over a row or card, or tap it, for cumulative and party-mix charts by days out for every cycle on file, the same-day comparison table, the mail shift projection and the county lean.
