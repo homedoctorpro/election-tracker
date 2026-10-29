@@ -26,7 +26,7 @@ from .compare import _margin, days_out, party_projection, state_comparison
 from .reference import county_key
 from .sources.kalshi import price as kalshi_price
 
-STATES = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI", "IA", "OH", "ME", "KS", "FL", "TX"]
+STATES = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI", "IA", "OH", "ME", "KS", "FL", "TX", "SC", "LA", "MS"]
 PRIMARY_PARTY = {"OH"}  # "party" is the last primary ballot taken, not registration
 
 
@@ -95,8 +95,9 @@ def _at(curve, d, exact):
 
 
 def _county_ref(con, st):
-    """Per-county 2024 presidential margin, keyed by county_key, plus fips."""
-    return {c: (f, 100 * (d - r) / t) for c, f, d, r, t in con.execute(
+    """Per-county 2024 presidential margin, keyed by county_key, plus fips. Stored keys are
+    re-keyed so a change to county_key applies without rebuilding the reference table."""
+    return {county_key(c): (f, 100 * (d - r) / t) for c, f, d, r, t in con.execute(
         "SELECT county, fips, dem, rep, total FROM ref_county_pres WHERE state=? AND year=2024", (st,)) if t}
 
 
@@ -263,6 +264,12 @@ def battlegrounds(con, day, hist, race_summary):
                 pace[str(year)] = {"pct": round(100 * cur[1] / prev[1], 1), "base": prev[1],
                                    "dr_base": prev[2], "dr_now": cur[2], "days_out": prev[0]}
         shifts = {y: p[y] for y in ("2022", "2024") if p.get(y, {}).get("shift") is not None}
+        # Louisiana: UF has party only on all early votes, not split into mail and in person, so
+        # all early votes are compared with the final 2024 early vote. Its in-person window closes
+        # a week before Election Day, so once that's in this is close to like for like.
+        all_final = {}
+        if not shifts and c.get("dr_margin_2026") is not None and c.get("dr_margin_2024_final") is not None:
+            all_final["2024"] = (c["dr_margin_2024_final"], c["dr_margin_2026"])
         ref = _county_ref(con, st)
         # 2026 county counts: the state's own daily county data where it exists (TX, OH), so the
         # base can be taken at the same days out; otherwise UF's latest county file
@@ -282,7 +289,7 @@ def battlegrounds(con, day, hist, race_summary):
         # Ohio's daily data carries the party ballot each voter last took in a primary. It isn't
         # registration, but it's the same definition in 2024 and 2026, so it's compared same-day.
         primary = st in PRIMARY_PARTY and any(v["dr_base"] is not None for v in pace.values())
-        tier = ("same_day" if same or primary else "turnout" if exact else "final" if shifts else "county")
+        tier = ("same_day" if same or primary else "turnout" if exact else "final" if shifts or all_final else "county")
         # Headline per baseline year: the most reliable shift available, with the two margins it
         # compares. Same day: all early votes (mail and in person), since both years are counted
         # through the same day. Vs final (2024 only): mail ballots, because in-person voting starts
@@ -300,6 +307,10 @@ def battlegrounds(con, day, hist, race_summary):
                 s = shifts[y]
                 head = {"value": round(s["mail_2026"] - s["mail_base"], 1), "from": s["mail_base"], "to": s["mail_2026"],
                         "year": y, "votes": "mail", "kind": "final", "basis": f"mail ballots vs {y} final"}
+            elif tier == "final" and y in all_final:
+                base, now = all_final[y]
+                head = {"value": round(now - base, 1), "from": base, "to": now, "year": y, "votes": "all",
+                        "kind": "final", "basis": f"all early votes vs {y} final"}
             elif (tier != "same_day" or primary) and y in lean:
                 # (a primary-party state with no daily data for this year falls back to county lean)
                 lv = lean[y]
@@ -340,10 +351,13 @@ def battlegrounds(con, day, hist, race_summary):
                     trend["final"][y] = v["base"]
         elif kind in ("final", "county"):
             d26 = _daily_2026(con, days, st)
-            trend = {"measure": "mail" if kind == "final" else "county", "series": {}, "final": {}}
+            measure = "county" if kind == "county" else "all" if head["votes"] == "all" else "mail"
+            trend = {"measure": measure, "series": {}, "final": {}}
             if d26[trend["measure"]]:
                 trend["series"]["2026"] = d26[trend["measure"]]
-            if kind == "final":
+            if measure == "all":
+                trend["final"]["2024"] = head["from"]
+            elif kind == "final":
                 pts = [[d, _margin(a, b, n)] for d, a, b, n, t in con.execute(
                     "SELECT days_out, accept_dem, accept_rep, accept_none, accept_all FROM ref_uf_snapshots "
                     "WHERE state=? AND year=2024 AND days_out >= 0 ORDER BY days_out DESC", (st,)) if t and t >= 1000]

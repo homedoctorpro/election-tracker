@@ -31,7 +31,7 @@ h1{font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .grp{display:flex;align-items:baseline;gap:12px;margin:16px 0 4px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
 .grp b{font-size:20px;letter-spacing:.1em;text-transform:uppercase}
 .grp span{font-size:19px;color:var(--muted)}
-.row{display:grid;grid-template-columns:318px 1fr 140px;align-items:center;gap:22px;height:49px;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:318px 1fr 140px;align-items:center;gap:22px;height:var(--rh,49px);border-bottom:1px solid var(--line)}
 .row.early{opacity:.4}
 .st{line-height:1.1}.st b{font-size:25px;font-weight:700}.st b .part{font-size:17px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.st small{display:block;font-size:16px;color:var(--muted);margin-top:3px;white-space:nowrap}
 .tr{position:relative;height:30px}
@@ -46,7 +46,11 @@ h1{font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;margin-
 .foot b{color:var(--ink);font-weight:600}
 .url{margin-top:10px;font-size:20px;font-weight:600;color:var(--ink)}
 /* both: two shift columns */
-.row.b3{grid-template-columns:300px 1fr 104px 104px;gap:14px;height:46px}
+.row.b3{grid-template-columns:300px 1fr 104px 104px;gap:14px;height:var(--rh,46px)}
+/* tight: more rows than fit at full size; pack() sets the row height */
+.tight h1{font-size:46px}.tight .sub{margin-top:8px}.tight .key{margin:16px 0 4px}.tight .grp{margin:10px 0 2px;padding-bottom:4px}
+.tight .foot{font-size:16px;padding-top:12px}.tight .url{margin-top:6px}
+.tight .st{line-height:1.05}.tight .st b{font-size:21px}.tight .st small{font-size:13.5px;margin-top:1px}
 .row.b3.hd{height:auto;border:0;font-size:16px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:8px}
 .sh2{text-align:right;font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sh2 sup{font-size:16px}
@@ -191,6 +195,16 @@ function renderTrend(){
       Sources: UF Election Lab, state election offices, EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }
+// more rows than the card holds at full size (16 states plus split mail / in-person rows): tighten
+// the header and type, then shorten every row just enough to fit. Overflow is measured against the
+// last element, since a foot running into the bottom padding doesn't count as scroll overflow.
+function pack(){const s=document.getElementById('stage'),R=s.querySelectorAll('.row:not(.hd)');
+  const pad=parseFloat(getComputedStyle(s).paddingBottom),last=s.lastElementChild;
+  const over=()=>last.offsetTop+last.offsetHeight-(s.clientHeight-pad);
+  if(!R.length||over()<=0)return;
+  s.classList.add('tight');
+  for(let i=0;i<4&&over()>0;i++)
+    s.style.setProperty('--rh',Math.floor(R[0].offsetHeight-Math.max(1,over()/R.length))+'px')}
 function fit(){const w=document.getElementById('wrap'),s=Math.min(1,w.clientWidth/1080);
   document.getElementById('stage').style.transform=`scale(${s})`;w.style.height=1350*s+'px'}
 // both: 2022, 2024 and 2026 on one axis per state, with the shift against each year
@@ -233,7 +247,7 @@ function renderBoth(){
       Sources: UF Election Lab, state election offices, EAC.
       <div class="url">homedoctorpro.github.io/election-tracker</div></div>`;
 }
-(MODE==='trend'?renderTrend:MODE==='both'?renderBoth:render)();fit();addEventListener('resize',fit);
+(MODE==='trend'?renderTrend:MODE==='both'?renderBoth:render)();pack();fit();addEventListener('resize',fit);
 </script>
 </body>
 </html>

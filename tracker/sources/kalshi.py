@@ -20,6 +20,8 @@ MARKETS = {
     ("NV", "Governor"): "GOVPARTYNV-26-D", ("PA", "Governor"): "GOVPARTYPA-26-D", ("WI", "Governor"): "GOVPARTYWI-26-D",
     ("IA", "Governor"): "GOVPARTYIA-26-D", ("OH", "Governor"): "GOVPARTYOH-26-D", ("ME", "Governor"): "GOVPARTYME-26-D",
     ("KS", "Governor"): "GOVPARTYKS-27-D", ("FL", "Governor"): "GOVPARTYFL-26-D", ("TX", "Governor"): "GOVPARTYTX-26-D",
+    ("SC", "Senate"): "SENATESC-26-D", ("MS", "Senate"): "SENATEMS-26-D", ("SC", "Governor"): "GOVPARTYSC-26-D",
+    # no Louisiana 2026 Senate market: Kalshi's SENATELA-26 event is Kentucky's race, mislabeled
 }
 
 

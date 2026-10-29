@@ -624,8 +624,8 @@ function pacePanels(){
 const BG_YCOL={2018:'#a78bfa',2022:'var(--oth)',2024:'#d97706',2026:'var(--accent)'};
 const sgn=v=>v==null||isNaN(v)?'–':(v>=0?'D +':'R +')+Math.abs(v).toFixed(1);
 const scol=v=>v==null?'var(--muted)':v>=0?'var(--dem)':'var(--rep)';
-// what the headline compares: same day (all early votes), vs final (mail only), or county lean
-const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.votes==='mail'?'final':'county';
+// what the headline compares: same day (all early votes), vs final (mail only; all votes in LA), or county lean
+const bgKind=b=>!b.headline?'none':b.tier==='same_day'?'same':b.headline.kind==='final'?'final':'county';
 // Kalshi price for the Democratic candidate, as a percent chance
 const kp=r=>r.kalshi&&r.kalshi.price!=null?`<span class="muted" title="Kalshi: ${esc(r.kalshi.candidate)} to win, ${Math.round(100*r.kalshi.price)}% (midpoint of bid and ask)">K D ${Math.round(100*r.kalshi.price)}%</span>`:'';
 // in-person party mix vs the final 2024 in-person mix, shown beside mail-vs-final headlines
@@ -636,10 +636,11 @@ const bgAll=b=>bgKind(b)==='final'&&b.headlines_all&&b.headlines_all['2024']||nu
 const bgAllT=a=>`Mail and in-person early votes together: 2026 ${sgn(a.to)} vs the whole 2024 early vote ${sgn(a.from)}. 2026 is weighted to 2024's final split (${Math.round(100*a.mail_share)}% mail), because in-person voting is only partway through; unweighted it's ${sgn(a.raw_2026)}. In-person voting usually gets more Republican as it goes, so this is still rough.`;
 // a county lean taken at the same days out (TX, OH vs 2024) counts as solid
 const bgSolid=b=>bgKind(b)==='same'||!!(b.headline&&b.headline.same_day);
-const bgLabel=b=>bgKind(b)==='county'&&b.headline.same_day?'county_sd':b.headline&&b.headline.votes==='primary'?'same_primary':bgKind(b);
-const TIER={same:'same day · all votes',same_primary:'same day · primary party',final:'vs final · mail only',county:'county lean · all votes',county_sd:'county lean · same day',none:'turnout only'};
+const bgLabel=b=>bgKind(b)==='county'&&b.headline.same_day?'county_sd':b.headline&&b.headline.votes==='primary'?'same_primary':bgKind(b)==='final'&&b.headline.votes==='all'?'final_all':bgKind(b);
+const TIER={same:'same day · all votes',same_primary:'same day · primary party',final:'vs final · mail only',final_all:'vs final · all votes',county:'county lean · all votes',county_sd:'county lean · same day',none:'turnout only'};
 const TIER_T={same:'All early votes (mail and in person) by party, compared with the same number of days before Election Day in 2024, from voter files or daily state reports. The most reliable read.',
   final:'Mail ballots only, compared with the final 2024 mail-ballot mix rather than the same day. Early mail returns usually lean more Democratic than the final count, so this overstates any move toward D. In-person votes are left out because in-person voting starts later and only a few days of it are in.',
+  final_all:'All early votes (mail and in person) by party, compared with the final 2024 early vote. The state reports party only for all early votes combined, not mail and in person separately. Its in-person window closes a week before Election Day, so once that\'s in, only late mail is left to arrive.',
   county:'No usable party data, so the signal is the 2024 presidential margin of the counties this year\'s early votes (mail and in person) come from, compared with the same figure for the whole 2024 early vote by county. 2026 is only partway through, so the mix of counties still moves.',
   same_primary:'Ohio has no party registration. Its daily data tags each voter with the party ballot they last took in a primary (or unaffiliated), and that tag is compared with the same day in 2024. It isn\'t registration: a busy primary on one side tags more voters with that party, so part of a shift can come from which primaries drew voters.',
   county_sd:'No party registration, but the state reports early votes by county every day, so this compares where this year\'s early votes come from (by each county\'s 2024 presidential margin) with where the 2024 early vote came from at the same number of days out.',

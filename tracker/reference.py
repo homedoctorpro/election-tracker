@@ -165,9 +165,10 @@ COUNTY_2024 = ("https://raw.githubusercontent.com/tonmcg/US_County_Level_Electio
 
 
 def county_key(name):
-    """County name as matched between results and UF's county files ("St. Clair County" -> "stclair")."""
+    """County name as matched between results and UF's county files ("St. Clair County" -> "stclair",
+    "Acadia Parish" -> "acadia": UF's Louisiana file has bare parish names)."""
     s = name.lower().replace(" county", "").replace("saint", "st").replace("st.", "st")
-    return re.sub(r"[^a-z]", "", s)
+    return re.sub(r"parish$", "", re.sub(r"[^a-z]", "", s))
 
 
 def build_county_results():
