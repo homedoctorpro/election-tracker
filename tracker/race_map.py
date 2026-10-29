@@ -10,6 +10,8 @@ Refreshed daily:
   candidates         the race tables in Wikipedia's "2026 United States House/Senate elections"
                      articles (general-election candidates once a state's primary is over);
                      the last good parse is kept in data/history/candidates.json if Wikipedia fails
+  ratings            outlet ratings from Wikipedia's House ratings article and the Senate article's
+                     Predictions table, on top of UF's House file; last good copy in ratings_wiki.json
 """
 import argparse
 import csv
@@ -30,6 +32,7 @@ REF = ROOT / "data" / "reference"
 PRES = REF / "house_pres24.csv"
 PATHS = REF / "map_paths.json"
 CANDS = ROOT / "data" / "history" / "candidates.json"  # committed by CI, so a failed fetch has a fallback
+RATINGS = ROOT / "data" / "history" / "ratings_wiki.json"  # same, for the outlet ratings
 DOWNBALLOT = ("https://docs.google.com/spreadsheets/d/1eZfaFI-c-PFOoKx1-zZA2MP0_dxRq_LVK0re3BOQqy0"
               "/export?format=csv&gid=1491069057")
 CENSUS_CD = "https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_cd119_20m.zip"
@@ -260,6 +263,60 @@ def candidates():
     return json.loads(CANDS.read_text(encoding="utf-8")) if CANDS.exists() else {"house": {}, "senate": {}}
 
 
+# ---- outlet ratings (Wikipedia) ----------------------------------------------------------
+
+# column header link text -> the outlet codes UF's ratings file uses (plus NBC, Senate only)
+OUTLETS = {"Cook": "cook", "IE": "ie", "Sabato": "sabato", "Econ": "econ", "Econ.": "econ", "ST": "splitticket",
+           "DDHQ": "ddhq", "FPO": "fpo", "Fox": "fox", "Silver": "silver", "RCP": "rcp", "NBC": "nbc"}
+
+
+def _rating(cell):
+    """'{{USRaceRating|Lean|D|flip}}' -> 'Lean D Flip', the wording UF's file uses."""
+    parts = [p.strip() for p in cell.split("|") if p.strip()]
+    return " ".join(p.capitalize() if p.lower() == "flip" else p for p in parts)
+
+
+def parse_ratings(text, key_of):
+    """{seat key: {outlet: rating}} from the first table with USRaceRating cells in text."""
+    start = text.find("{{USRaceRating")
+    table = text[text.rfind("{|", 0, start):text.find("\n|}", start)]
+    head = table[:table.find("{{USRaceRating")]
+    cols = [OUTLETS[m] for m in re.findall(r"\[\[[^\]|]*\|([^\]]+)\]\]", head) if m in OUTLETS]
+    out = {}
+    for row in re.split(r"\n\|-[^\n]*", table):
+        key = key_of(row.strip())
+        cells = re.findall(r"\{\{USRaceRating\|([^}]*)\}\}", row)
+        if key and len(cells) == len(cols):
+            out[key] = {o: _rating(c) for o, c in zip(cols, cells)}
+    return out
+
+
+def _house_key(row):
+    m = re.match(r"!\s*\{\{ushr\|([A-Z]{2})\|(\w+)\|X\}\}", row)
+    return m and district_key(m.group(1), m.group(2))
+
+
+def _senate_key(row):
+    m = re.match(r"!\s*\[\[2026 United States Senate (special )?election in ([^|\]]+)", row)
+    st = m and NAME_TO_ABBR.get(m.group(2).strip())
+    return st and st + ("-special" if m.group(1) else "")
+
+
+def wiki_ratings():
+    """{'house': {...}, 'senate': {...}} outlet ratings, refreshed from Wikipedia or the last good copy.
+    The House article rates only competitive seats; the Senate article rates every race."""
+    try:
+        got = {"house": parse_ratings(_wikitext("2026 United States House of Representatives election ratings"), _house_key),
+               "senate": parse_ratings(_wikitext("2026 United States Senate elections"), _senate_key)}
+        if len(got["house"]) >= 50 and len(got["senate"]) >= 30:
+            RATINGS.write_text(json.dumps(got, indent=1), encoding="utf-8")
+            return got
+        print(f"  race_map: Wikipedia ratings looked short ({len(got['house'])} House, {len(got['senate'])} Senate); using last copy")
+    except Exception as e:
+        print(f"  race_map: Wikipedia ratings failed ({e}); using last copy")
+    return json.loads(RATINGS.read_text(encoding="utf-8")) if RATINGS.exists() else {"house": {}, "senate": {}}
+
+
 # ---- assemble --------------------------------------------------------------------------
 
 def _polls_by_seat(con):
@@ -317,6 +374,9 @@ def build(summary, ratings, con=None):
     rate = {}
     for r in ratings:
         rate.setdefault(district_key(r["state"], r["district"]), {})[r["outlet"]] = r["rating"]
+    wiki = wiki_ratings()
+    for k, v in wiki["house"].items():  # Wikipedia covers more seats; its ratings win where both have one
+        rate.setdefault(k, {}).update(v)
     house = {}
     for k, p in pres.items():
         c = cands["house"].get(k, {})
@@ -336,7 +396,7 @@ def build(summary, ratings, con=None):
                 continue
             senate[key] = {"trump": round(100 * t / tot, 1), "harris": round(100 * h / tot, 1),
                            "margin": round(100 * (t - h) / tot, 1),
-                           "special": key.endswith("-special"), **c,
+                           "special": key.endswith("-special"), **c, "ratings": wiki["senate"].get(key),
                            # race_summary has one Senate row per state; it belongs to the special in FL/OH
                            "avg": avg.get(st) if key.endswith("-special") or f"{st}-special" not in cands["senate"] else None}
     if con is not None:

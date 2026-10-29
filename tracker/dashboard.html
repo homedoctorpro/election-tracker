@@ -299,7 +299,7 @@ svg.spark{vertical-align:middle}
   <div class="panel map-wrap"><svg id="msvg" role="img" aria-label="Map of 2026 races"></svg></div>
   <div class="mkey" id="mkey"></div>
   <p class="small muted">
-    Colored by each seat's poll average (D&minus;R), its newest poll if none ended in the last 60 days, or its 2024 presidential margin where there are no polls; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. Shape: Hexes swaps the outlines for equal hexagons, one per House district grouped by state (or one per state for the Senate), so small urban seats count as much on screen as big rural ones. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
+    Colored by each seat's poll average (D&minus;R), its newest poll if none ended in the last 60 days, the average of the outlets' ratings (Cook, Sabato, Inside Elections and others, via Wikipedia) where there are no polls, or its 2024 presidential margin where there are neither; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. Shape: Hexes swaps the outlines for equal hexagons, one per House district grouped by state (or one per state for the Senate), so small urban seats count as much on screen as big rural ones. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
     Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
   </p>
   <h2 style="font-size:17px;margin:18px 0 6px">Polls vs the 2024 presidential result</h2>
@@ -340,7 +340,7 @@ const $=s=>document.querySelector(s);
 const fmt=n=>n==null||n===''?'–':Number(n).toLocaleString('en-US',{maximumFractionDigits:0});
 const pct=(n,d=1)=>n==null||n===''||isNaN(n)?'–':Number(n).toFixed(d)+'%';
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const OUT={cook:'Cook',ie:'Inside Elections',sabato:'Sabato',econ:'Economist',splitticket:'Split Ticket',ddhq:'DDHQ',fpo:'50+1',fox:'Fox',silver:'Silver Bulletin',rcp:'RCP'};
+const OUT={cook:'Cook',ie:'Inside Elections',sabato:'Sabato',econ:'Economist',splitticket:'Split Ticket',ddhq:'DDHQ',fpo:'50+1',fox:'Fox',silver:'Silver Bulletin',rcp:'RCP',nbc:'NBC'};
 let D;
 
 fetch('data.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;init()}).catch(e=>{document.body.insertAdjacentHTML('afterbegin','<p style="padding:16px">Could not load data.json: '+esc(e)+'</p>')});
@@ -951,8 +951,9 @@ function hexGeom(cells,stOf){
   return {w,h,cell,edge,lab,fs:sc*.62};
 }
 
-// ratings from the poll average (D−R), or the 2024 presidential margin where a seat has no polls.
-// RB holds the upper bound of each band in points; anything past "likely" is safe.
+// ratings from the poll average (D−R); with no polls, the average of the outlets' ratings; with
+// neither, the 2024 presidential margin. RB holds the upper bound of each band in points; anything
+// past "likely" is safe.
 const RCAT=['Safe D','Likely D','Lean D','Tilt D','Toss-up','Tilt R','Lean R','Likely R','Safe R'];
 let RB={toss:1,tilt:3,lean:6,likely:10},MCOLOR='polls';
 try{RB={...RB,...JSON.parse(localStorage.getItem('mapRB')||'{}')};MCOLOR=localStorage.getItem('mapColor')||MCOLOR}catch(e){}
@@ -962,10 +963,20 @@ function seatRating(r){
   if(a){const ps=[a.party_a,a.party_b];
     if(ps[0]&&ps[0]===ps[1])return {cat:ps[0]==='R'?8:0,m:null,basis:'same'};  // D vs D or R vs R: safe either way
     if(ps.includes('R')){m=ps[1]==='R'?+a.a_avg-+a.b_avg:+a.b_avg-+a.a_avg;basis='polls'}}  // non-R side minus R
+  if(m==null){const o=outletAvg(r);if(o){const c=4+Math.sign(o.avg)*Math.round(Math.abs(o.avg));
+    return {cat:c,m:rmid(Math.abs(c-4))*Math.sign(4-c),basis:'ratings',n:o.n,avg:o.avg}}}
   if(m==null){if(r.margin==null)return {cat:null};m=-r.margin}
   const x=Math.abs(m),lv=x<=RB.toss?-1:x<=RB.tilt?0:x<=RB.lean?1:x<=RB.likely?2:3;
   return {cat:lv<0?4:m>0?3-lv:5+lv,m,basis};
 }
+// outlet ratings on a −4 (Safe D) to +4 (Safe R) scale, averaged; independents count on the D side
+const RSTEP={Tossup:0,Tilt:1,Lean:2,Likely:3,Safe:4,Solid:4};
+function outletAvg(r){
+  const v=Object.values(r.ratings||{}).map(t=>{const [w,p]=t.split(' ');return w in RSTEP?RSTEP[w]*(p==='R'?1:-1):null}).filter(x=>x!=null);
+  return v.length?{avg:v.reduce((a,b)=>a+b,0)/v.length,n:v.length}:null;
+}
+// a D−R margin standing in for a ratings-based category in the poll color mode: the middle of each RB band
+const rmid=i=>[0,(RB.toss+RB.tilt)/2,(RB.tilt+RB.lean)/2,(RB.lean+RB.likely)/2,RB.likely+10][i];
 
 // a flip: the side ahead isn't the party holding the seat now. Toss-ups and seats with no current
 // holder (new districts) don't count; an independent ahead of a Republican counts on the D side.
@@ -973,8 +984,12 @@ const sideOf=p=>p==='R'?'R':p?'D':null;
 function seatFlip(r){
   const s=seatRating(r);if(s.cat==null||s.cat===4)return null;
   const side=s.cat<4?'D':'R',from=sideOf(r.inc_party);if(!from||from===side)return null;
-  const to=side==='R'?'R':s.basis==='polls'?[r.avg.party_a,r.avg.party_b].find(p=>p!=='R')||'D':'D';
-  return {from:r.inc_party,to};
+  return {from:r.inc_party,to:side==='R'?'R':dParty(r,s)};
+}
+// the party on the D side of a rating: the non-Republican in the polls, else D unless only an independent runs
+function dParty(r,s){
+  if(s.basis==='polls')return [r.avg.party_a,r.avg.party_b].find(p=>p!=='R')||'D';
+  const cs=r.candidates||[];return cs.some(c=>c.party==='D')||!cs.some(c=>c.party==='I')?'D':'I';
 }
 let MFLIP=true;
 try{MFLIP=localStorage.getItem('mapFlips')!=='0'}catch(e){}
@@ -984,13 +999,13 @@ function seatBar(){
   const R=D.race_map,house=MMODE==='house',el=$('#mbar-bar');
   const seats=Object.values(house?R.house:R.senate),nu=house?{D:0,R:0}:R.senate_not_up;
   if(!nu){el.innerHTML='<span class="muted small">Seat count unavailable.</span>';return}
-  const n=Array(9).fill(0),pol=Array(9).fill(0);
+  const n=Array(9).fill(0),pol=Array(9).fill(0),rat=Array(9).fill(0);
   let ind=0;  // independents leading against a Republican, counted on the D side
   const fl={D:0,R:0},who=Array.from({length:9},()=>[]);  // seat names per category, for the hover
   Object.entries(house?R.house:R.senate).forEach(([k,r])=>{const f=seatFlip(r);if(f)fl[f.to==='R'?'R':'D']++;
-    const s=seatRating(r);if(s.cat!=null){n[s.cat]++;if(s.basis==='polls')pol[s.cat]++;
+    const s=seatRating(r);if(s.cat!=null){n[s.cat]++;if(s.basis==='polls'||s.basis==='same')pol[s.cat]++;if(s.basis==='ratings')rat[s.cat]++;
     who[s.cat].push((house?k:(STATES_N[k.slice(0,2)]||k)+(r.special?' (special)':''))+(f?' (flip)':''));
-    if(s.cat<4&&s.basis==='polls'&&![r.avg.party_a,r.avg.party_b].includes('D'))ind++}});
+    if(s.cat<4&&s.basis!=='same'&&dParty(r,s)!=='D')ind++}});
   const total=house?435:100,dT=nu.D+n[0]+n[1]+n[2]+n[3],rT=nu.R+n[5]+n[6]+n[7]+n[8];
   const names=i=>{const w=who[i].sort(),m=60;return w.length?'\n'+w.slice(0,m).join(', ')+(w.length>m?`, and ${w.length-m} more`:''):''};
   const seg=(k,c,bg,t)=>k?`<span style="flex:${k};background:${bg}" title="${t}: ${k}${t.includes('not up')?'':names(c)}"></span>`:'';
@@ -1002,7 +1017,7 @@ function seatBar(){
     <div class="sb-bar">${seg(nu.D,0,hatch('dem'),'D, not up')}${n.map((k,i)=>seg(k,i,rfill(i),RCAT[i])).join('')}${seg(nu.R,0,hatch('rep'),'R, not up')}<i style="left:${mid}%"></i></div>
     <div class="sb-cats small muted">${house?'':`<span>Not up: ${nu.D} D, ${nu.R} R</span>`}${RCAT.map((c,i)=>n[i]?`<span title="${c}: ${n[i]}${names(i)}"><i style="background:${rfill(i)}"></i>${c} ${n[i]}</span>`:'').join('')}</div>
     <div class="small muted"><b>Flips:</b> <span style="color:var(--dem)">${fl.D} to D</span>, <span style="color:var(--rep)">${fl.R} to R</span> (net ${fl.D===fl.R?'even':fl.D>fl.R?'D +'+(fl.D-fl.R):'R +'+(fl.R-fl.D)}), counting seats rated Tilt or better for the party that doesn't hold them now.</div>
-    <div class="small muted">${pol.reduce((a,b)=>a+b,0)} of ${seats.length} ${house?'seats':'races'} rated from polls; the rest from the 2024 presidential margin.${ind?` The D count includes ${ind} independent${ind>1?'s':''} leading a Republican.`:''}${dT+rT+n[4]===total?'':' Some seats are missing data.'}</div>`;
+    <div class="small muted">Of ${seats.length} ${house?'seats':'races'}, ${pol.reduce((a,b)=>a+b,0)} rated from polls and ${rat.reduce((a,b)=>a+b,0)} from the average outlet rating; ${seats.length-pol.reduce((a,b)=>a+b,0)-rat.reduce((a,b)=>a+b,0)} have neither and use the 2024 presidential margin.${ind?` The D count includes ${ind} independent${ind>1?'s':''} leading a Republican.`:''}${dT+rT+n[4]===total?'':' Some seats are missing data.'}</div>`;
 }
 
 function mapInit(){
@@ -1200,7 +1215,7 @@ function mapTip(mode,k){
   const sr=seatRating(r),fp=seatFlip(r);
   if(fp)h+=`<div style="margin-top:5px"><b>Flip:</b> ${ptag(fp.from)} &rarr; ${ptag(fp.to)} <span class="small muted">the party that doesn't hold the seat is ahead</span></div>`;
   if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${[2,3,4,5,6].includes(sr.cat)?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
-    <span class="small muted">${sr.basis==='polls'?(r.avg.stale?`from the latest poll (${esc(r.avg.latest_poll_end)})`:'from the poll average'):sr.basis==='same'?'both finalists from one party':'no polls in the last 60 days: from the 2024 presidential margin'}</span></div>`;
+    <span class="small muted">${sr.basis==='polls'?(r.avg.stale?`from the latest poll (${esc(r.avg.latest_poll_end)})`:'from the poll average'):sr.basis==='same'?'both finalists from one party':sr.basis==='ratings'?`no polls: average of ${sr.n} outlet rating${sr.n>1?'s':''} (${sr.avg===0?'even':(sr.avg>0?'R ':'D ')+Math.abs(sr.avg).toFixed(1)} on a 0 to 4 scale)`:'no polls or outlet ratings: from the 2024 presidential margin'}</span></div>`;
   // poll average first (same 60-day, up-to-5-poll rule as the race tables), then the latest polls.
   // Bars put the non-Republican on the left and the Republican on the right, like the 2024 bar below.
   const pb=(l,lc,rv,rc)=>`<div class="pb"><span style="width:${l}%;background:${lc}"></span><span style="width:${Math.max(0,100-l-rv)}%"></span><span style="width:${rv}%;background:${rc}"></span></div>`;
@@ -1222,7 +1237,7 @@ function mapTip(mode,k){
   // candidates, major parties first
   const ord={D:0,R:1};const cs=[...(r.candidates||[])].sort((a,b)=>(ord[a.party]??2)-(ord[b.party]??2));
   h+=`<h4>Candidates</h4>`+(cs.length?'<ul>'+cs.map(c=>`<li>${esc(c.name)} ${ptag(c.party)}${c.party!=='D'&&c.party!=='R'?` <span class="muted small">${esc(c.label)}</span>`:''}${r.incumbent&&c.name===r.incumbent?' <span class="chip">inc.</span>':''}</li>`).join('')+'</ul>':'<div class="muted">Not listed yet.</div>');
-  // House: outlet ratings, where UF's file rates the seat
+  // outlet ratings: every Senate race, and the House seats Wikipedia or UF's file rate
   if(r.ratings){const cls=v=>!v?'':v.startsWith('Tossup')?'rT':/ D/.test(v)?'rD':'rR';
     h+='<h4>Ratings</h4><div>'+Object.entries(r.ratings).map(([o,v])=>`<span class="rating ${cls(v)}" style="margin:0 3px 3px 0">${esc(OUT[o]||o)}: ${esc(v.replace(' Flip','*'))}</span>`).join('')+'</div>'}
   return h;
