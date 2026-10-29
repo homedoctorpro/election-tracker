@@ -132,6 +132,7 @@ tr.click{cursor:pointer}
 #msvg:active{cursor:grabbing}
 #msvg path{vector-effect:non-scaling-stroke}
 #msvg .seat{stroke:var(--panel);stroke-width:.6;cursor:pointer}
+#msvg .seat.polled{stroke:var(--ink);stroke-opacity:.8;stroke-width:1.3}
 #msvg .seat:hover,#msvg .seat.on{stroke:var(--ink);stroke-width:2}
 #msvg .st{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:.9;pointer-events:none}
 #msvg .none{fill:var(--chip);stroke:var(--panel);stroke-width:.6}
@@ -270,7 +271,8 @@ svg.spark{vertical-align:middle}
     <button class="seg" data-mo="house" aria-pressed="true">House</button>
     <button class="seg" data-mo="senate" aria-pressed="false">Senate</button>
     <span class="small muted" style="margin-left:6px">Color:</span>
-    <button class="seg" data-mc="margin" aria-pressed="true">2024 margin</button>
+    <button class="seg" data-mc="polls" aria-pressed="true">Polls</button>
+    <button class="seg" data-mc="margin" aria-pressed="false">2024 margin</button>
     <button class="seg" data-mc="rating" aria-pressed="false">Rating</button>
     <select id="mz" aria-label="Zoom to state"><option value="">Whole country</option></select>
     <button class="seg" id="mreset" style="display:none">Reset zoom</button>
@@ -286,7 +288,7 @@ svg.spark{vertical-align:middle}
   <div class="panel map-wrap"><svg id="msvg" role="img" aria-label="Map of 2026 races"></svg></div>
   <div class="mkey" id="mkey"></div>
   <p class="small muted">
-    Colored by the 2024 presidential margin (Trump minus Harris) within each seat; House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
+    Colored by each seat's poll average (D&minus;R), or its 2024 presidential margin where there are no polls; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
     Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
   </p>
   <h2 style="font-size:17px;margin:18px 0 6px">Polls vs the 2024 presidential result</h2>
@@ -909,14 +911,15 @@ const dkey=(st,d)=>{d=String(d??'').toUpperCase();return AT_LARGE.has(st)||!d||d
 // margin bins, R+ on the left; each step gets a stronger share of the party color
 const MBINS=[[30,'R+30'],[15,'R+15'],[5,'R+5'],[0,'R+0'],[-5,'D+0'],[-15,'D+5'],[-30,'D+15'],[-1e9,'D+30']];
 const MSHADE=[88,64,42,22,22,42,64,88];
-const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';const i=MBINS.findIndex(b=>m>=b[0]);return `color-mix(in srgb,${i<4?'var(--rep)':'var(--dem)'} ${MSHADE[i]}%,var(--mapbase))`};
+// a dead heat (|m| < 0.05) leans neither way, so it gets a neutral grey
+const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';if(Math.abs(m)<.05)return 'color-mix(in srgb,var(--oth) 55%,var(--mapbase))';const i=MBINS.findIndex(b=>m>=b[0]);return `color-mix(in srgb,${i<4?'var(--rep)':'var(--dem)'} ${MSHADE[i]}%,var(--mapbase))`};
 const mtxt=m=>{return m===0?'Even':m>0?`R+${m.toFixed(1)}`:`D+${(-m).toFixed(1)}`};
 let MAP=null,MMODE='house',MPIN=false;
 
 // ratings from the poll average (D−R), or the 2024 presidential margin where a seat has no polls.
 // RB holds the upper bound of each band in points; anything past "likely" is safe.
 const RCAT=['Safe D','Likely D','Lean D','Tilt D','Toss-up','Tilt R','Lean R','Likely R','Safe R'];
-let RB={toss:1,tilt:3,lean:6,likely:10},MCOLOR='margin';
+let RB={toss:1,tilt:3,lean:6,likely:10},MCOLOR='polls';
 try{RB={...RB,...JSON.parse(localStorage.getItem('mapRB')||'{}')};MCOLOR=localStorage.getItem('mapColor')||MCOLOR}catch(e){}
 const RSHADE=[88,64,42,22,0,22,42,64,88];
 const rfill=c=>c==null?'var(--chip)':c===4?'#e8b730':`color-mix(in srgb,${c<4?'var(--dem)':'var(--rep)'} ${RSHADE[c]}%,var(--mapbase))`;
@@ -975,21 +978,28 @@ function mapSetup(){
     if(!p)setV({x:0,y:0,w:MAP.w});else{const b=p.getBBox(),w=Math.max(b.width,b.height/AR)*1.15;setV({w,x:b.x+b.width/2-w/2,y:b.y+b.height/2-w*AR/2})}
     $('#mz').value=p?st:''};
   setV(V);
-  const fill=r=>MCOLOR==='rating'?rfill(seatRating(r).cat):mfill(r.margin);
+  const fill=r=>{if(MCOLOR==='margin')return mfill(r.margin);const s=seatRating(r);if(MCOLOR==='rating')return rfill(s.cat);
+    return s.basis==='same'?mfill(s.cat===8?40:-40):s.m==null?'var(--chip)':mfill(-s.m)};
+  // polled seats are drawn last so their outline isn't covered by a neighbor
+  const polled=r=>MCOLOR!=='margin'&&r&&seatRating(r).basis==='polls';
+  const seatPath=(k,d,r)=>`<path class="seat${polled(r)?' polled':''}" data-k="${k}" d="${d}" fill="${r?fill(r):'var(--chip)'}"/>`;
+  const byPolled=(a,b)=>polled(a[2])-polled(b[2]);
   const draw=()=>{
     const R=D.race_map,pend=new Set(MAP.missing.map(k=>k.slice(0,2)));
     // key: one sample margin per bin (R on the left), or the rating categories
     $('#mkey').innerHTML=(MCOLOR==='rating'?RCAT.map((c,i)=>`<i style="background:${rfill(i)};width:14px"></i><span>${c}</span>`).join(''):
       '<span style="margin-left:0">R+30</span>'+[40,20,10,2,-2,-10,-20,-40].map(m=>`<i style="background:${mfill(m)}"></i>`).join('')+'<span>D+30</span>')
-      +'<i style="background:var(--chip);margin-left:10px"></i><span>no race this year</span>';
+      +'<i style="background:var(--chip);margin-left:10px"></i><span>no race this year</span>'
+      +(MCOLOR==='margin'?'':'<i style="background:transparent;border:1.5px solid var(--ink);width:16px;margin-left:6px"></i><span>has polls; unpolled seats use the 2024 margin</span>');
     seatBar();
     let h='<defs><pattern id="mhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--chip)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-opacity=".5"/></pattern></defs>';
     if(MMODE==='house'){
-      h+=Object.entries(MAP.house).map(([k,d])=>{const r=R.house[k];return `<path class="seat" data-k="${k}" d="${d}" fill="${r?fill(r):'var(--chip)'}"/>`}).join('');
+      h+=Object.entries(MAP.house).map(([k,d])=>[k,d,R.house[k]]).sort(byPolled).map(x=>seatPath(...x)).join('');
       h+=[...pend].map(s=>MAP.states[s]?`<path class="pending" data-pend="${s}" d="${MAP.states[s]}"/>`:'').join('');
     }else{
       const by={};Object.entries(R.senate).forEach(([k,r])=>by[k.split('-')[0]]=k);
-      h+=sts.map(s=>{const k=by[s],r=k&&R.senate[k];return r?`<path class="seat" data-k="${k}" d="${MAP.states[s]}" fill="${fill(r)}"/>`:`<path class="none" data-none="${s}" d="${MAP.states[s]}"/>`}).join('');
+      h+=sts.filter(s=>!by[s]).map(s=>`<path class="none" data-none="${s}" d="${MAP.states[s]}"/>`).join('');
+      h+=sts.filter(s=>by[s]).map(s=>[by[s],MAP.states[s],R.senate[by[s]]]).sort(byPolled).map(x=>seatPath(...x)).join('');
     }
     h+=sts.map(s=>`<path class="st" data-st="${s}" d="${MAP.states[s]}"/>`).join('');
     svg.innerHTML=h;
