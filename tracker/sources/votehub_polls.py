@@ -8,6 +8,7 @@ import json
 import re
 
 from ..common import NAME_TO_ABBR, fetch, save_raw
+from . import manual_polls
 
 URL = "https://api.votehub.com/polls"
 SOURCE = "votehub"
@@ -93,4 +94,5 @@ def collect(con, day: str) -> dict:
         stats[TYPES[p["poll_type"]]] += 1
     con.commit()
     stats["new_today"] = new
+    stats.update(manual_polls.load(con, day))  # hand-entered polls VoteHub hasn't added yet
     return stats

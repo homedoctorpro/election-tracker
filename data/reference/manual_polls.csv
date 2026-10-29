@@ -1,0 +1,5 @@
+poll_id,poll_type,state,district,pollster,sponsors,start_date,end_date,sample_size,population,url,choice,pct
+manual-sc-sen-siena-1026,us-senator,SC,,The New York Times/Siena University,,2026-10-19,2026-10-26,707,lv,https://sri.siena.edu/2026/10/28/nytimes-siena-poll-of-likely-voters-florida-minnesota-and-south-carolina/,Annie Andrews,48
+manual-sc-sen-siena-1026,us-senator,SC,,The New York Times/Siena University,,2026-10-19,2026-10-26,707,lv,https://sri.siena.edu/2026/10/28/nytimes-siena-poll-of-likely-voters-florida-minnesota-and-south-carolina/,Darline Graham,48
+manual-sc-gov-siena-1026,governor,SC,,The New York Times/Siena University,,2026-10-19,2026-10-26,707,lv,https://sri.siena.edu/2026/10/28/nytimes-siena-poll-of-likely-voters-florida-minnesota-and-south-carolina/,Alan Wilson,51
+manual-sc-gov-siena-1026,governor,SC,,The New York Times/Siena University,,2026-10-19,2026-10-26,707,lv,https://sri.siena.edu/2026/10/28/nytimes-siena-poll-of-likely-voters-florida-minnesota-and-south-carolina/,Jermaine Johnson,44
