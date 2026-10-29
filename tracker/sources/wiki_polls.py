@@ -251,6 +251,8 @@ def _articles(titles, chunk=5):
 
 
 def load(con, day: str) -> dict:
+    # rows are rebuilt every run; keep each poll's first_seen so the morning digest only lists it once
+    seen = dict(con.execute("SELECT poll_id, first_seen FROM polls WHERE source = ?", (SOURCE,)).fetchall())
     con.execute("DELETE FROM poll_answers WHERE poll_id IN (SELECT poll_id FROM polls WHERE source = ?)", (SOURCE,))
     con.execute("DELETE FROM polls WHERE source = ?", (SOURCE,))
     cutoff = (dt.date.fromisoformat(day) - dt.timedelta(days=DAYS)).isoformat()
@@ -262,8 +264,8 @@ def load(con, day: str) -> dict:
     texts = _articles([t for r in races for t in _titles(*r)])
     stats = {"wiki_added": 0, "wiki_already_known": 0, "wiki_articles": len(texts)}
     for ptype, st in races:
-        found = [p for t in _titles(ptype, st) if t in texts
-                 for p in parse(texts[t]) if cutoff <= p["end"] <= day]
+        found = [{**p, "url": "https://en.wikipedia.org/wiki/" + urllib.parse.quote(t.replace(" ", "_"))}
+                 for t in _titles(ptype, st) if t in texts for p in parse(texts[t]) if cutoff <= p["end"] <= day]
         known = _known(con, ptype, st)
         for p in found:
             if _dup(p, known):
@@ -272,7 +274,7 @@ def load(con, day: str) -> dict:
             pid = "wiki-" + hashlib.sha1(f"{ptype}|{st}|{p['pollster']}|{p['end']}".encode()).hexdigest()[:12]
             con.execute("INSERT OR REPLACE INTO polls VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         (pid, ptype, f"{st} {KIND[ptype]}", st, None, None, p["pollster"], "", p["start"], p["end"],
-                         None, p["n"], p["pop"], 0, p["partisan"], None, SOURCE, None, day, day))
+                         None, p["n"], p["pop"], 0, p["partisan"], p["url"], SOURCE, None, seen.get(pid, day), day))
             con.execute("DELETE FROM poll_answers WHERE poll_id = ?", (pid,))
             con.executemany("INSERT OR REPLACE INTO poll_answers VALUES (?,?,?)", [(pid, n, v) for n, v in p["answers"]])
             known.append((_words(p["pollster"]), p["end"], sorted((v for _, v in p["answers"]), reverse=True)[:2]))

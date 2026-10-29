@@ -26,6 +26,8 @@ def _in_votehub(con, p):
 
 
 def load(con, day: str) -> dict:
+    # rows are rebuilt every run; keep each poll's first_seen so the morning digest only lists it once
+    seen = dict(con.execute("SELECT poll_id, first_seen FROM polls WHERE source = ?", (SOURCE,)).fetchall())
     con.execute("DELETE FROM poll_answers WHERE poll_id IN (SELECT poll_id FROM polls WHERE source = ?)", (SOURCE,))
     con.execute("DELETE FROM polls WHERE source = ?", (SOURCE,))
     polls = {}
@@ -43,7 +45,7 @@ def load(con, day: str) -> dict:
         con.execute("INSERT INTO polls VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (pid, p["poll_type"], race, p["state"], dist, None, p["pollster"], p["sponsors"],
                      p["start_date"], p["end_date"], None, int(p["sample_size"]) if p["sample_size"] else None,
-                     p["population"], 0, None, p["url"], SOURCE, None, day, day))
+                     p["population"], 0, None, p["url"], SOURCE, None, seen.get(pid, day), day))
         con.executemany("INSERT INTO poll_answers VALUES (?,?,?)", [(pid, c, v) for c, v in p["answers"]])
         stats["manual"] += 1
     con.commit()
