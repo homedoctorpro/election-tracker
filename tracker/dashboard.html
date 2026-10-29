@@ -137,6 +137,9 @@ tr.click{cursor:pointer}
 #msvg .st{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:.9;pointer-events:none}
 #msvg .none{fill:var(--chip);stroke:var(--panel);stroke-width:.6}
 #msvg .pending{fill:url(#mhatch);stroke:var(--panel);stroke-width:.6;cursor:help}
+/* hex states are set apart by a gap in the page color, so the ink outline still means "has polls" */
+#msvg .st.hx{stroke:var(--panel);stroke-opacity:1;stroke-width:3.5;stroke-linecap:round}
+#msvg .lbl{font-family:inherit;font-weight:600;fill:var(--ink);stroke:var(--panel);paint-order:stroke;pointer-events:none;text-anchor:middle;dominant-baseline:central}
 .mkey{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:8px 2px;font-size:12px;color:var(--muted)}
 .mkey i{display:inline-block;width:34px;height:10px}
 .mkey span{margin:0 8px 0 4px}
@@ -270,6 +273,9 @@ svg.spark{vertical-align:middle}
   <div class="pm-tools" style="margin-top:0">
     <button class="seg" data-mo="house" aria-pressed="true">House</button>
     <button class="seg" data-mo="senate" aria-pressed="false">Senate</button>
+    <span class="small muted" style="margin-left:6px">Shape:</span>
+    <button class="seg" data-ms="geo" aria-pressed="true">Map</button>
+    <button class="seg" data-ms="hex" aria-pressed="false" title="Equal hexagons: one per House district, or one per state for the Senate">Hexes</button>
     <span class="small muted" style="margin-left:6px">Color:</span>
     <button class="seg" data-mc="polls" aria-pressed="true">Polls</button>
     <button class="seg" data-mc="margin" aria-pressed="false">2024 margin</button>
@@ -289,7 +295,7 @@ svg.spark{vertical-align:middle}
   <div class="panel map-wrap"><svg id="msvg" role="img" aria-label="Map of 2026 races"></svg></div>
   <div class="mkey" id="mkey"></div>
   <p class="small muted">
-    Colored by each seat's poll average (D&minus;R), its newest poll if none ended in the last 60 days, or its 2024 presidential margin where there are no polls; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
+    Colored by each seat's poll average (D&minus;R), its newest poll if none ended in the last 60 days, or its 2024 presidential margin where there are no polls; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. Shape: Hexes swaps the outlines for equal hexagons, one per House district grouped by state (or one per state for the Senate), so small urban seats count as much on screen as big rural ones. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
     Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
   </p>
   <h2 style="font-size:17px;margin:18px 0 6px">Polls vs the 2024 presidential result</h2>
@@ -919,7 +925,27 @@ const DRAMP=['#1d4ed8','#3b82f6','#93c5fd','#d3e4fd'],RRAMP=['#b91c1c','#ef4444'
 // a dead heat (|m| < 0.05) leans neither way, so it gets a neutral grey
 const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';if(Math.abs(m)<.05)return 'color-mix(in srgb,var(--oth) 55%,var(--mapbase))';const i=MBINS.findIndex(b=>m>=b[0]);return i<4?RRAMP[i]:DRAMP[7-i]};
 const mtxt=m=>{return m===0?'Even':m>0?`R+${m.toFixed(1)}`:`D+${(-m).toFixed(1)}`};
-let MAP=null,MMODE='house',MPIN=false;
+let MAP=null,MMODE='house',MPIN=false,MSHAPE='geo';
+try{MSHAPE=localStorage.getItem('mapShape')||MSHAPE}catch(e){}
+
+// equal-hex layout from map.json's axial (q,r) cells: one pointy-top hex per House district, or one
+// per state for the Senate. Returns hex paths per cell, each state's outer edge and a label spot.
+const HEX_NB=[[0,1],[-1,1],[-1,0],[0,-1],[1,-1],[1,0]];  // neighbor across edge i (vertex i to i+1)
+function hexGeom(cells,stOf){
+  const s3=Math.sqrt(3),ks=Object.keys(cells),c=Object.fromEntries(ks.map(k=>[k,[s3*(cells[k][0]+cells[k][1]/2),1.5*cells[k][1]]]));
+  const xs=ks.map(k=>c[k][0]),ys=ks.map(k=>c[k][1]),x0=Math.min(...xs)-s3/2,y0=Math.min(...ys)-1;
+  const w=975,sc=(w-10)/(Math.max(...xs)+s3/2-x0),h=Math.round((Math.max(...ys)+1-y0)*sc+10);
+  const at={};ks.forEach(k=>at[cells[k]]=stOf(k));
+  const vx=(k,i)=>{const a=Math.PI/180*(30+60*(i%6));return ((c[k][0]+Math.cos(a)*.97-x0)*sc+5).toFixed(1)+','+((c[k][1]+Math.sin(a)*.97-y0)*sc+5).toFixed(1)};
+  const vo=(k,i)=>{const a=Math.PI/180*(30+60*(i%6));return ((c[k][0]+Math.cos(a)-x0)*sc+5).toFixed(1)+','+((c[k][1]+Math.sin(a)-y0)*sc+5).toFixed(1)};
+  const cell={},edge={},sum={};
+  ks.forEach(k=>{const [q,r]=cells[k],s=stOf(k);
+    cell[k]='M'+[0,1,2,3,4,5].map(i=>vx(k,i)).join('L')+'Z';
+    edge[s]=(edge[s]||'')+HEX_NB.map(([dq,dr],i)=>at[[q+dq,r+dr]]===s?'':`M${vo(k,i)}L${vo(k,i+1)}`).join('');
+    const m=sum[s]||(sum[s]=[0,0,0]);m[0]+=c[k][0];m[1]+=c[k][1];m[2]++});
+  const lab=Object.entries(sum).map(([s,m])=>[s,(m[0]/m[2]-x0)*sc+5,(m[1]/m[2]-y0)*sc+5]);
+  return {w,h,cell,edge,lab,fs:sc*.62};
+}
 
 // ratings from the poll average (D−R), or the 2024 presidential margin where a seat has no polls.
 // RB holds the upper bound of each band in points; anything past "likely" is safe.
@@ -968,20 +994,27 @@ function mapSetup(){
   const svg=$('#msvg'),tip=$('#m-tip');
   const sts=Object.keys(MAP.states).sort();
   $('#mz').innerHTML='<option value="">Whole country</option>'+sts.map(s=>`<option>${s}</option>`).join('');
-  // the view is a viewBox held at the map's aspect ratio, so the svg never changes height
-  const AR=MAP.h/MAP.w,MINW=MAP.w/60;let V={x:0,y:0,w:MAP.w};
-  const setV=v=>{const w=Math.min(MAP.w,Math.max(MINW,v.w)),h=w*AR,full=w>=MAP.w-.5;
-    V={w,x:Math.min(MAP.w-w,Math.max(0,v.x)),y:Math.min(MAP.h-h,Math.max(0,v.y))};
+  // the shapes on screen: geographic outlines, or the hex layout for the chamber shown
+  // (house: district shapes; tile: a state's Senate shape; st: state outlines drawn on top)
+  const HG={};
+  const geom=()=>{if(MSHAPE!=='hex'||!MAP.hex)return {key:'geo',w:MAP.w,h:MAP.h,house:MAP.house,tile:MAP.states,st:MAP.states};
+    const g=HG[MMODE]||(HG[MMODE]=MMODE==='house'?hexGeom(MAP.hex.house,k=>k.slice(0,2)):hexGeom(MAP.hex.senate,k=>k));
+    return {key:'hex-'+MMODE,w:g.w,h:g.h,house:g.cell,tile:g.cell,st:g.edge,lab:g.lab,fs:g.fs,hex:true}};
+  let G=geom();
+  // the view is a viewBox held at the shapes' aspect ratio, so the svg only changes height with the shape
+  let AR=G.h/G.w,MINW=G.w/60,V={x:0,y:0,w:G.w};
+  const setV=v=>{const w=Math.min(G.w,Math.max(MINW,v.w)),h=w*AR,full=w>=G.w-.5;
+    V={w,x:Math.min(G.w-w,Math.max(0,v.x)),y:Math.min(G.h-h,Math.max(0,v.y))};
     svg.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${h}`);
     $('#mreset').style.display=full?'none':'';
     // zoomed out, a one-finger swipe scrolls the page; zoomed in, it pans the map
     svg.style.touchAction=full?'pan-y':'none'};
   const toMap=(cx,cy)=>{const r=svg.getBoundingClientRect();return [V.x+(cx-r.left)/r.width*V.w,V.y+(cy-r.top)/r.height*V.w*AR]};
-  const zoomAt=(cx,cy,f)=>{const [px,py]=toMap(cx,cy),w=Math.min(MAP.w,Math.max(MINW,V.w*f)),k=w/V.w;setV({w,x:px-(px-V.x)*k,y:py-(py-V.y)*k});leaveState()};
+  const zoomAt=(cx,cy,f)=>{const [px,py]=toMap(cx,cy),w=Math.min(G.w,Math.max(MINW,V.w*f)),k=w/V.w;setV({w,x:px-(px-V.x)*k,y:py-(py-V.y)*k});leaveState()};
   // free zoom or drag leaves a picked state; update the URL once, not on every wheel tick
   const leaveState=()=>{if($('#mz').value){$('#mz').value='';syncURL()}};
   const zoom=st=>{const p=st&&svg.querySelector(`.st[data-st="${st}"]`);
-    if(!p)setV({x:0,y:0,w:MAP.w});else{const b=p.getBBox(),w=Math.max(b.width,b.height/AR)*1.15;setV({w,x:b.x+b.width/2-w/2,y:b.y+b.height/2-w*AR/2})}
+    if(!p)setV({x:0,y:0,w:G.w});else{const b=p.getBBox(),w=Math.max(b.width,b.height/AR)*1.15;setV({w,x:b.x+b.width/2-w/2,y:b.y+b.height/2-w*AR/2})}
     $('#mz').value=p?st:''};
   setV(V);
   const fill=r=>{if(MCOLOR==='margin')return mfill(r.margin);const s=seatRating(r);if(MCOLOR==='rating')return rfill(s.cat);
@@ -999,16 +1032,21 @@ function mapSetup(){
       +(MCOLOR==='margin'?'':'<i style="background:transparent;border:1.5px solid var(--ink);width:16px;margin-left:6px"></i><span>has polls; unpolled seats use the 2024 margin</span>');
     seatBar();
     let h='<defs><pattern id="mhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--chip)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-opacity=".5"/></pattern></defs>';
+    const g=geom();
     if(MMODE==='house'){
-      h+=Object.entries(MAP.house).map(([k,d])=>[k,d,R.house[k]]).sort(byPolled).map(x=>seatPath(...x)).join('');
-      h+=[...pend].map(s=>MAP.states[s]?`<path class="pending" data-pend="${s}" d="${MAP.states[s]}"/>`:'').join('');
+      h+=Object.entries(g.house).map(([k,d])=>[k,d,R.house[k]]).sort(byPolled).map(x=>seatPath(...x)).join('');
+      if(!g.hex)h+=[...pend].map(s=>MAP.states[s]?`<path class="pending" data-pend="${s}" d="${MAP.states[s]}"/>`:'').join('');
     }else{
       const by={};Object.entries(R.senate).forEach(([k,r])=>by[k.split('-')[0]]=k);
-      h+=sts.filter(s=>!by[s]).map(s=>`<path class="none" data-none="${s}" d="${MAP.states[s]}"/>`).join('');
-      h+=sts.filter(s=>by[s]).map(s=>[by[s],MAP.states[s],R.senate[by[s]]]).sort(byPolled).map(x=>seatPath(...x)).join('');
+      h+=sts.filter(s=>!by[s]&&g.tile[s]).map(s=>`<path class="none" data-none="${s}" d="${g.tile[s]}"/>`).join('');
+      h+=sts.filter(s=>by[s]&&g.tile[s]).map(s=>[by[s],g.tile[s],R.senate[by[s]]]).sort(byPolled).map(x=>seatPath(...x)).join('');
     }
-    h+=sts.map(s=>`<path class="st" data-st="${s}" d="${MAP.states[s]}"/>`).join('');
+    // Senate tiles are each their own state, so their edge is only kept for zooming
+    h+=sts.filter(s=>g.st[s]).map(s=>`<path class="st${g.hex?' hx':''}" data-st="${s}" d="${g.st[s]}"${g.hex&&MMODE==='senate'?' style="stroke:none"':''}/>`).join('');
+    if(g.lab)h+=g.lab.map(([s,x,y])=>`<text class="lbl" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${g.fs.toFixed(1)}" stroke-width="${(g.fs/5).toFixed(1)}">${s}</text>`).join('');
     svg.innerHTML=h;
+    // a new set of shapes needs its own view; keep a picked state in frame
+    if(g.key!==G.key){G=g;AR=G.h/G.w;MINW=G.w/60;zoom($('#mz').value)}
     const nh=Object.keys(R.house).length,drawn=Object.keys(MAP.house).length;
     $('#mnote').textContent=MMODE==='house'?(MAP.missing.length?`${drawn} of ${nh} districts drawn; 2026 lines for ${[...pend].join(', ')} aren't loaded yet (hatched).`:`${nh} districts`):`${Object.keys(R.senate).length} Senate races`;
   };
@@ -1059,6 +1097,8 @@ function mapSetup(){
   document.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{MMODE=b.dataset.mo;mo();hide();draw();syncURL()});
   const mc=()=>document.querySelectorAll('[data-mc]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mc===MCOLOR));
   document.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{MCOLOR=b.dataset.mc;mc();try{localStorage.setItem('mapColor',MCOLOR)}catch(e){}draw();syncURL()});
+  const ms=()=>document.querySelectorAll('[data-ms]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.ms===MSHAPE);x.hidden=!MAP.hex});
+  document.querySelectorAll('[data-ms]').forEach(b=>b.onclick=()=>{MSHAPE=b.dataset.ms;ms();try{localStorage.setItem('mapShape',MSHAPE)}catch(e){}hide();draw();syncURL()});
   // rating cutoffs: number inputs, saved per viewer
   const rb=()=>document.querySelectorAll('[data-rb]').forEach(i=>i.value=RB[i.dataset.rb]);
   document.querySelectorAll('[data-rb]').forEach(i=>i.oninput=()=>{const v=parseFloat(i.value);if(isNaN(v)||v<0)return;
@@ -1069,9 +1109,10 @@ function mapSetup(){
   const q=new URLSearchParams(location.hash.split('?')[1]||'');
   if(q.get('chamber')==='senate')MMODE='senate';
   if(['polls','margin','rating'].includes(q.get('color')))MCOLOR=q.get('color');
+  if(['geo','hex'].includes(q.get('shape')))MSHAPE=q.get('shape');
   const cut=(q.get('cut')||'').split(',').map(Number);
   if(cut.length===4&&cut.every(x=>!isNaN(x)&&x>=0))RB={toss:cut[0],tilt:cut[1],lean:cut[2],likely:cut[3]};
-  mo();mc();rb();draw();
+  mo();mc();ms();rb();draw();
   if(q.get('state'))zoom(q.get('state').toUpperCase());
   // after layout, so the card can be placed on the seat (rAF would wait for a background tab to be shown)
   if(q.get('seat'))setTimeout(()=>pinSeat(q.get('seat').toUpperCase()),50);
@@ -1083,6 +1124,7 @@ function syncURL(){
   const q=new URLSearchParams();
   if(MMODE==='senate')q.set('chamber','senate');
   if(MCOLOR!=='polls')q.set('color',MCOLOR);
+  if(MSHAPE==='hex')q.set('shape','hex');
   if(RB.toss!==1||RB.tilt!==3||RB.lean!==6||RB.likely!==10)q.set('cut',[RB.toss,RB.tilt,RB.lean,RB.likely].join(','));
   if($('#mz').value)q.set('state',$('#mz').value);
   if(SEAT)q.set('seat',SEAT);

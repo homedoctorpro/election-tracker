@@ -357,6 +357,91 @@ def build(summary, ratings, con=None):
             "no_senate": sorted(set(STATES) - SENATE_2026 - {"DC"})}
 
 
+# ---- hex layout ---------------------------------------------------------------------------
+
+# Senate: one hex per state, rows of (column, state) on an odd-r offset grid (odd rows sit half a
+# hex to the right), after the familiar square state-tile layout
+SENATE_TILES = [
+    [(0, "AK"), (10, "ME")],
+    [(5, "WI"), (9, "VT"), (10, "NH")],
+    [(0, "WA"), (1, "ID"), (2, "MT"), (3, "ND"), (4, "MN"), (5, "IL"), (6, "MI"), (8, "NY"), (9, "MA")],
+    [(0, "OR"), (1, "NV"), (2, "WY"), (3, "SD"), (4, "IA"), (5, "IN"), (6, "OH"), (7, "PA"), (8, "NJ"),
+     (9, "CT"), (10, "RI")],
+    [(0, "CA"), (1, "UT"), (2, "CO"), (3, "NE"), (4, "MO"), (5, "KY"), (6, "WV"), (7, "VA"), (8, "MD"),
+     (9, "DE")],
+    [(1, "AZ"), (2, "NM"), (3, "KS"), (4, "AR"), (5, "TN"), (6, "NC"), (7, "SC")],
+    [(3, "OK"), (4, "LA"), (5, "MS"), (6, "AL"), (7, "GA")],
+    [(0, "HI"), (3, "TX"), (7, "FL")],
+]
+
+
+def _ring_pts(d):
+    return [[tuple(map(float, p.split(","))) for p in ring.split("L")] for ring in re.findall(r"M([^MZ]+)Z", d)]
+
+
+def _centroid(d):
+    """(area, x, y) of an SVG path made of closed M...L...Z rings."""
+    a = cx = cy = 0.0
+    for r in _ring_pts(d):
+        for (x0, y0), (x1, y1) in zip(r, r[1:] + r[:1]):
+            c = x0 * y1 - x1 * y0
+            a += c
+            cx += (x0 + x1) * c
+            cy += (y0 + y1) * c
+    return abs(a) / 2, cx / (3 * a), cy / (3 * a)
+
+
+def build_hex(iters=60, pull=.04):
+    """Equal-hexagon cartogram, one hex per House district grouped into state blobs, in axial
+    (q, r) coordinates for pointy-top hexes. Each state claims as many hexes as it has seats,
+    nearest its seed (a capacity-constrained assignment), and the seeds then move to their
+    blob's middle, a few dozen times; inside a state, districts take the hex that best matches
+    where they sit on the real map. Needs numpy and scipy; written into map_paths.json."""
+    import numpy as np
+    from scipy.optimize import linear_sum_assignment
+    m = json.loads(PATHS.read_text(encoding="utf-8"))
+    dist = {k: _centroid(d) for k, d in m["house"].items()}
+    seats = {}
+    for k in sorted(dist):
+        seats.setdefault(k[:2], []).append(k)
+    sts = sorted(seats)
+    geo = {s: _centroid(m["states"][s]) for s in sts}
+    # hex size so the hexes cover about as much area as the states do
+    size = (sum(g[0] for g in geo.values()) / len(dist) / (1.5 * 3 ** .5)) ** .5
+    seed = np.array([[geo[s][1], geo[s][2]] for s in sts]) / size
+    rows = np.repeat(np.arange(len(sts)), [len(seats[s]) for s in sts])
+    to_xy = lambda qr: np.c_[3 ** .5 * (qr[:, 0] + qr[:, 1] / 2), 1.5 * qr[:, 1]]
+    rr = np.arange(-8, round(m["h"] / size / 1.5) + 8)
+    qr = np.array([(q, r) for r in rr for q in range(-r // 2 - 8, round(m["w"] / size / 3 ** .5) - r // 2 + 8)])
+    xy = to_xy(qr)
+    # seats bunch in the East, so the West would float apart; a small pull toward the middle
+    # on every pass packs the blobs together while the assignment keeps them from overlapping
+    # (Alaska and Hawaii are insets and stay put)
+    main = np.array([s not in ("AK", "HI") for s in sts])
+    n = np.bincount(rows)[:, None] * main[:, None]
+    mid = (seed * n).sum(0) / n.sum()
+    for _ in range(iters):
+        cost = ((seed[rows, None, :] - xy[None, :, :]) ** 2).sum(-1)
+        _, col = linear_sum_assignment(cost)
+        seed = np.array([xy[col[rows == i]].mean(0) for i in range(len(sts))])
+        seed[main] += pull * (mid - seed[main])
+    out = {}
+    for i, s in enumerate(sts):
+        cells, pts = qr[col[rows == i]], to_xy(qr[col[rows == i]])
+        ks = seats[s]
+        d = np.array([[dist[k][1], dist[k][2]] for k in ks])
+        norm = lambda a: (a - a.mean(0)) / (a.std(0) + 1e-9)
+        if len(ks) > 1:
+            a, b = linear_sum_assignment(((norm(d)[:, None, :] - norm(pts)[None, :, :]) ** 2).sum(-1))
+        else:
+            a, b = [0], [0]
+        out.update({ks[j]: [int(cells[h][0]), int(cells[h][1])] for j, h in zip(a, b)})
+    senate = {s: [c - (r - (r & 1)) // 2, r] for r, row in enumerate(SENATE_TILES) for c, s in row}
+    m["hex"] = {"house": out, "senate": senate}
+    PATHS.write_text(json.dumps(m, separators=(",", ":")), encoding="utf-8")
+    print(f"wrote hex layout to {PATHS}: {len(out)} districts, {len(senate)} states")
+
+
 def write_paths(site):
     if PATHS.exists():
         shutil.copy(PATHS, site / "map.json")
@@ -367,12 +452,15 @@ if __name__ == "__main__":
     ap.add_argument("--build-pres", action="store_true")
     ap.add_argument("--build-shapes", action="store_true")
     ap.add_argument("--simplemaps", help="SimpleMaps congress basic zip (120th Congress lines)")
+    ap.add_argument("--build-hex", action="store_true", help="equal-hex layout from the outlines")
     ap.add_argument("--candidates", action="store_true", help="parse Wikipedia and print counts")
     a = ap.parse_args()
     if a.build_pres:
         build_pres()
     if a.build_shapes:
         build_shapes(a.simplemaps)
+    if a.build_hex or a.build_shapes:
+        build_hex()
     if a.candidates:
         c = candidates()
         print(len(c["house"]), "House races,", len(c["senate"]), "Senate races")
