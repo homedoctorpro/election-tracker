@@ -986,19 +986,21 @@ function seatBar(){
   if(!nu){el.innerHTML='<span class="muted small">Seat count unavailable.</span>';return}
   const n=Array(9).fill(0),pol=Array(9).fill(0);
   let ind=0;  // independents leading against a Republican, counted on the D side
-  const fl={D:0,R:0};
-  seats.forEach(r=>{const f=seatFlip(r);if(f)fl[f.to==='R'?'R':'D']++;
+  const fl={D:0,R:0},who=Array.from({length:9},()=>[]);  // seat names per category, for the hover
+  Object.entries(house?R.house:R.senate).forEach(([k,r])=>{const f=seatFlip(r);if(f)fl[f.to==='R'?'R':'D']++;
     const s=seatRating(r);if(s.cat!=null){n[s.cat]++;if(s.basis==='polls')pol[s.cat]++;
+    who[s.cat].push((house?k:(STATES_N[k.slice(0,2)]||k)+(r.special?' (special)':''))+(f?' (flip)':''));
     if(s.cat<4&&s.basis==='polls'&&![r.avg.party_a,r.avg.party_b].includes('D'))ind++}});
   const total=house?435:100,dT=nu.D+n[0]+n[1]+n[2]+n[3],rT=nu.R+n[5]+n[6]+n[7]+n[8];
-  const seg=(k,c,bg,t)=>k?`<span style="flex:${k};background:${bg}" title="${t}: ${k}"></span>`:'';
+  const names=i=>{const w=who[i].sort(),m=60;return w.length?'\n'+w.slice(0,m).join(', ')+(w.length>m?`, and ${w.length-m} more`:''):''};
+  const seg=(k,c,bg,t)=>k?`<span style="flex:${k};background:${bg}" title="${t}: ${k}${t.includes('not up')?'':names(c)}"></span>`:'';
   const hatch=p=>{const r=p==='dem'?DRAMP:RRAMP;return `repeating-linear-gradient(45deg,${r[0]} 0 3px,${r[2]} 3px 6px)`};
   const maj=house?218:51,mid=house?218/435*100:50;
   el.innerHTML=`<div class="sb-top"><span style="color:var(--dem)"><b>${dT}</b> D</span>
       <span class="sb-mid">${n[4]?`<b>${n[4]}</b> toss-up${n[4]>1?'s':''}`:'No toss-ups'} · ${house?'218 for a majority':'D needs 51, R needs 50 (VP breaks ties)'}</span>
       <span style="color:var(--rep)">R <b>${rT}</b></span></div>
     <div class="sb-bar">${seg(nu.D,0,hatch('dem'),'D, not up')}${n.map((k,i)=>seg(k,i,rfill(i),RCAT[i])).join('')}${seg(nu.R,0,hatch('rep'),'R, not up')}<i style="left:${mid}%"></i></div>
-    <div class="sb-cats small muted">${house?'':`<span>Not up: ${nu.D} D, ${nu.R} R</span>`}${RCAT.map((c,i)=>n[i]?`<span><i style="background:${rfill(i)}"></i>${c} ${n[i]}</span>`:'').join('')}</div>
+    <div class="sb-cats small muted">${house?'':`<span>Not up: ${nu.D} D, ${nu.R} R</span>`}${RCAT.map((c,i)=>n[i]?`<span title="${c}: ${n[i]}${names(i)}"><i style="background:${rfill(i)}"></i>${c} ${n[i]}</span>`:'').join('')}</div>
     <div class="small muted"><b>Flips:</b> <span style="color:var(--dem)">${fl.D} to D</span>, <span style="color:var(--rep)">${fl.R} to R</span> (net ${fl.D===fl.R?'even':fl.D>fl.R?'D +'+(fl.D-fl.R):'R +'+(fl.R-fl.D)}), counting seats rated Tilt or better for the party that doesn't hold them now.</div>
     <div class="small muted">${pol.reduce((a,b)=>a+b,0)} of ${seats.length} ${house?'seats':'races'} rated from polls; the rest from the 2024 presidential margin.${ind?` The D count includes ${ind} independent${ind>1?'s':''} leading a Republican.`:''}${dT+rT+n[4]===total?'':' Some seats are missing data.'}</div>`;
 }
