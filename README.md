@@ -22,8 +22,9 @@ Two runners:
 
 VoteHub only gives candidate names, so `tracker/sources/parties.py` adds a party to each one every morning:
 1. `data/reference/party_overrides.csv` for manual fixes (columns: poll_type, state, choice, party)
-2. the FEC's 2026 candidate file for Senate and House, matched on state, district and last name
-3. the Wikipedia article on each race, used for governors and as a fallback; it reads the infobox and the party sections that list candidates
+2. the FEC's 2026 candidate file for Senate and House, matched on state, district and last name. Filings the FEC codes as unknown, "other", blank or write-in are skipped, since they say nothing about the party (Jim Risch is filed as unknown).
+3. Wikipedia's national 2026 House and Senate race tables, which list each seat's candidates with their ballot party (the same parse the Map tab uses, kept in `data/history/candidates.json`)
+4. the Wikipedia article on each race, used for governors and as a last fallback; it reads the infobox and the party sections that list candidates
 
 Names that can't be matched unambiguously get no party, so the page never guesses. One-letter typos in poll data (e.g. "Maura Healy") are matched within the same race. Every poll view shows party tags and margins as D/R/I +n; `race_summary.csv` adds `party_a`, `party_b` and a signed `margin_d_minus_r`.
 

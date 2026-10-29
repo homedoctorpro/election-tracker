@@ -3,8 +3,11 @@
 VoteHub gives candidate names only. Parties come from:
   1. data/reference/party_overrides.csv: manual fixes, always win
   2. FEC candidate master file (Senate, House): matched on state, office, district and
-     last name; https://www.fec.gov/files/bulk-downloads/2026/cn26.zip (no API key needed)
-  3. Wikipedia's "2026 <State> <office> election" article (governors, and a fallback for
+     last name; https://www.fec.gov/files/bulk-downloads/2026/cn26.zip (no API key needed).
+     Filings coded unknown, "other", blank or write-in are skipped (FEC_NO_PARTY)
+  3. Wikipedia's national 2026 House/Senate race tables, as parsed by race_map
+     (data/history/candidates.json): each seat's candidates with their ballot party
+  4. Wikipedia's "2026 <State> <office> election" article (governors, and a last fallback for
      Senate/House): infobox nominees, then the party section a candidate is listed under
 Names that can't be matched unambiguously are left without a party rather than guessed.
 """
@@ -38,10 +41,17 @@ def _last(tokens):
     return t[-1] if t else ""
 
 
+# FEC codes that say nothing about the party: unknown, generic "other", blank, write-in.
+# These return None so the lookup falls through to Wikipedia (Risch is filed UNK, Kiley OTH).
+FEC_NO_PARTY = {"", "UNK", "OTH", "W", "N"}
+
+
 def _fec_party(code):
-    code = (code or "").upper()
-    return {"DEM": "D", "DFL": "D", "REP": "R", "LIB": "L", "GRE": "G"}.get(
-        code, "I" if code in ("IND", "NPA", "NNE", "UN", "NOP", "IDP") else "O")
+    code = (code or "").strip().upper()
+    if code in FEC_NO_PARTY:
+        return None
+    return {"DEM": "D", "DFL": "D", "REP": "R", "GOP": "R", "LIB": "L", "GRE": "G"}.get(
+        code, "I" if code in ("IND", "NPA", "NNE", "UN", "NOP", "IDP", "NPP", "NON") else "O")
 
 
 def fec_index():
@@ -141,6 +151,18 @@ def _overrides():
         return {(r["poll_type"], r["state"], r["choice"].strip().lower()): r["party"] for r in csv.DictReader(f)}
 
 
+def race_table(ptype, st, dist, _cache={}):
+    """{last name: party} for one seat from the national House/Senate race tables that
+    race_map parses on each site build (data/history/candidates.json)."""
+    from ..race_map import CANDS, district_key  # imported here: race_map imports this module
+    if "all" not in _cache:
+        _cache["all"] = json.loads(CANDS.read_text(encoding="utf-8")) if CANDS.exists() else {"house": {}, "senate": {}}
+    c = _cache["all"]
+    seats = ([c["house"].get(district_key(st, dist))] if ptype == "us-representative"
+             else [v for k, v in c["senate"].items() if k.split("-")[0] == st])
+    return {_last(_norm(x["name"])): x["party"] for s in seats if s for x in s["candidates"]}
+
+
 def collect(con, day: str) -> dict:
     cands = con.execute("""SELECT DISTINCT p.poll_type, p.state, COALESCE(p.district, ''), a.choice
                            FROM polls p JOIN poll_answers a USING (poll_id)
@@ -171,11 +193,13 @@ def collect(con, day: str) -> dict:
             pool = fec.get((OFFICE[ptype], st, dist if ptype == "us-representative" else ""), [])
             if not pool and ptype == "us-representative":
                 pool = fec.get(("H", st, "00"), [])  # at-large seats are district 00 at the FEC
-            hits = [c for c in pool if c[0] == _last(tokens)]
+            hits = [c for c in pool if c[0] == _last(tokens) and c[2]]  # filings with no party don't count
             if len({h[2] for h in hits}) > 1:  # same last name, different parties: use first name
                 hits = [h for h in hits if tokens[0] in h[1]]
             if hits and len({h[2] for h in hits}) == 1:
                 party, source = hits[0][2], "fec"
+        if not party and ptype != "governor":
+            party, source = _lookup(race_table(ptype, st, dist), _last(tokens)), "race table"
         if not party:
             party, source = _lookup(wiki_for(ptype, st), _last(tokens)), "wikipedia"
         if party:
