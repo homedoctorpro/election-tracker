@@ -2,13 +2,9 @@
 tracker's poll and early-vote reads.
 
 Read-only: it only sends GET requests (balance, positions, market prices) and never places or
-cancels orders. Run it yourself; it reads your API key from environment variables, so the key
-stays on your machine.
+cancels orders. Run it yourself; it reads your API key on your machine, from KALSHI_KEY_ID and
+KALSHI_KEY_FILE if set, else from Documents\\Tallysheet .env\\.env.local.
 
-Setup (PowerShell), once per session:
-    $env:KALSHI_KEY_ID = "<your API key id>"
-    $env:KALSHI_KEY_FILE = "C:\\path\\to\\kalshi-private-key.pem"
-Then:
     python scripts\\kalshi_portfolio.py
 
 Needs the `cryptography` package (pip install cryptography).
@@ -16,26 +12,36 @@ Needs the `cryptography` package (pip install cryptography).
 import base64
 import json
 import os
+import re
 import sys
 import time
 import urllib.request
 
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.asymmetric import ed25519, padding
 
 HOST = "https://api.elections.kalshi.com"
 TRACKER = "https://homedoctorpro.github.io/election-tracker/data.json"
 
 
+def sign(key, ts, method, path):
+    """Kalshi request signature over timestamp + method + path (no query). Ed25519 keys (Kalshi's
+    default since Oct 2026) sign the message directly; RSA keys use RSA-PSS with SHA-256."""
+    msg = (ts + method + path.split("?")[0]).encode()
+    if isinstance(key, ed25519.Ed25519PrivateKey):
+        return base64.b64encode(key.sign(msg)).decode()
+    return base64.b64encode(key.sign(
+        msg, padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.DIGEST_LENGTH),
+        hashes.SHA256())).decode()
+
+
 def _signed_get(path, key_id, key):
-    """GET with Kalshi's request signing: RSA-PSS over timestamp + method + path."""
+    """GET with Kalshi's request signing."""
     ts = str(int(time.time() * 1000))
-    sig = key.sign((ts + "GET" + path.split("?")[0]).encode(),
-                   padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.DIGEST_LENGTH),
-                   hashes.SHA256())
+    sig = sign(key, ts, "GET", path)
     req = urllib.request.Request(HOST + path, headers={
         "KALSHI-ACCESS-KEY": key_id, "KALSHI-ACCESS-TIMESTAMP": ts,
-        "KALSHI-ACCESS-SIGNATURE": base64.b64encode(sig).decode()})
+        "KALSHI-ACCESS-SIGNATURE": sig})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
 
@@ -61,12 +67,63 @@ def count(d, base):
     return float(v) if v not in (None, "") else 0.0
 
 
-def main():
-    key_id, key_file = os.environ.get("KALSHI_KEY_ID"), os.environ.get("KALSHI_KEY_FILE")
-    if not key_id or not key_file:
-        sys.exit("Set KALSHI_KEY_ID and KALSHI_KEY_FILE first (see the top of this script).")
+TALLYSHEET_ENV = os.path.expanduser(r"~\Documents\Tallysheet .env\.env.local")
+
+
+def _pem(text):
+    """Rebuild a PEM pasted as one line, with literal \\n, or with an unwrapped body."""
+    text = text.replace("\\n", "\n").strip().strip('"').strip("'")
+    m = re.search(r"-----BEGIN ([A-Z ]+)-----(.*?)-----END \1-----", text, re.S)
+    if not m:
+        return None
+    body = re.sub(r"\s+", "", m[2])
+    lines = "\n".join(body[i:i + 64] for i in range(0, len(body), 64))
+    return f"-----BEGIN {m[1]}-----\n{lines}\n-----END {m[1]}-----\n".encode()
+
+
+def load_key():
+    """API key id and private key: from the environment, else from Tallysheet's .env.local.
+    The key can be inline (NEW_API_PRIVATE_KEY or KALSHI_PRIVATE_KEY, multi-line allowed) or a
+    file (KALSHI_PRIVATE_KEY_FILE), so nothing needs setting per session."""
+    env = {}
+    if os.path.exists(TALLYSHEET_ENV):
+        with open(TALLYSHEET_ENV, encoding="utf-8") as f:
+            lines = iter(f.read().splitlines())
+        for line in lines:
+            k, sep, v = line.strip().partition("=")
+            if not sep or k.startswith("#"):
+                continue
+            if "-----BEGIN" in v and "-----END" not in v:  # multi-line PEM value
+                for more in lines:
+                    v += "\n" + more
+                    if "-----END" in more:
+                        break
+            env[k.strip()] = v.strip().strip('"').strip("'")
+    key_id = os.environ.get("KALSHI_KEY_ID") or env.get("KALSHI_KEY_ID")
+    if not key_id:
+        sys.exit(f"No KALSHI_KEY_ID in the environment or {TALLYSHEET_ENV}.")
+    for name, id_name in (("KALSHI_PRIVATE_KEY", "KALSHI_KEY_ID"), ("NEW_API_PRIVATE_KEY", "NEW_API_KEY_ID")):
+        pem = _pem(os.environ.get(name) or env.get(name) or "")
+        if pem:
+            # a pasted key needs its own key's id; NEW_API_KEY_ID pairs with NEW_API_PRIVATE_KEY
+            key_id = os.environ.get(id_name) or env.get(id_name) or key_id
+            return key_id, serialization.load_pem_private_key(pem, password=None)
+    key_file = (os.environ.get("KALSHI_KEY_FILE") or os.environ.get("KALSHI_PRIVATE_KEY_FILE")
+                or env.get("KALSHI_PRIVATE_KEY_FILE"))
+    if not key_file:
+        sys.exit(f"No Kalshi private key found in the environment or {TALLYSHEET_ENV}.")
+    key_file = os.path.expanduser(key_file)
+    if not os.path.isabs(key_file):  # relative paths in the .env are relative to its folder
+        key_file = os.path.join(os.path.dirname(TALLYSHEET_ENV), key_file)
+    if not os.path.exists(key_file):
+        sys.exit(f"Kalshi private key file not found: {key_file}\n"
+                 "Save the key Kalshi gave you there (or set KALSHI_KEY_FILE to where it is).")
     with open(key_file, "rb") as f:
-        key = serialization.load_pem_private_key(f.read(), password=None)
+        return key_id, serialization.load_pem_private_key(f.read(), password=None)
+
+
+def main():
+    key_id, key = load_key()
 
     bal = _signed_get("/trade-api/v2/portfolio/balance", key_id, key)
     print(f"Balance: ${dollars(bal, 'balance'):,.2f}")
