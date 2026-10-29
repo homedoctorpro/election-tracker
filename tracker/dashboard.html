@@ -276,6 +276,7 @@ svg.spark{vertical-align:middle}
     <button class="seg" data-mc="rating" aria-pressed="false">Rating</button>
     <select id="mz" aria-label="Zoom to state"><option value="">Whole country</option></select>
     <button class="seg" id="mreset" style="display:none">Reset zoom</button>
+    <button class="seg" id="mlink" title="Copy a link to this view">Copy link</button>
     <span class="small muted" id="mnote"></span>
   </div>
   <div class="panel" id="mbar">
@@ -336,9 +337,11 @@ fetch('data.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{D=d;init()}).ca
 
 function tabs(){
   const b=[...document.querySelectorAll('#tabs button')];
-  const show=t=>{b.forEach(x=>x.setAttribute('aria-selected',x.dataset.t===t));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id==='s-'+t));try{localStorage.setItem('tab',t)}catch(e){}};
+  // the open tab is kept in the URL (#map, #Senate, ...) so a copied link opens the same view
+  const show=t=>{b.forEach(x=>x.setAttribute('aria-selected',x.dataset.t===t));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id==='s-'+t));try{localStorage.setItem('tab',t)}catch(e){}
+    if(location.hash.slice(1).split('?')[0]!==t)history.replaceState(null,'','#'+t)};
   b.forEach(x=>x.onclick=()=>show(x.dataset.t));
-  let t=location.hash.slice(1);try{t=t||localStorage.getItem('tab')}catch(e){}
+  let t=location.hash.slice(1).split('?')[0];try{t=t||localStorage.getItem('tab')}catch(e){}
   if(t&&document.getElementById('s-'+t))show(t);
 }
 
@@ -973,7 +976,9 @@ function mapSetup(){
     // zoomed out, a one-finger swipe scrolls the page; zoomed in, it pans the map
     svg.style.touchAction=full?'pan-y':'none'};
   const toMap=(cx,cy)=>{const r=svg.getBoundingClientRect();return [V.x+(cx-r.left)/r.width*V.w,V.y+(cy-r.top)/r.height*V.w*AR]};
-  const zoomAt=(cx,cy,f)=>{const [px,py]=toMap(cx,cy),w=Math.min(MAP.w,Math.max(MINW,V.w*f)),k=w/V.w;setV({w,x:px-(px-V.x)*k,y:py-(py-V.y)*k});$('#mz').value=''};
+  const zoomAt=(cx,cy,f)=>{const [px,py]=toMap(cx,cy),w=Math.min(MAP.w,Math.max(MINW,V.w*f)),k=w/V.w;setV({w,x:px-(px-V.x)*k,y:py-(py-V.y)*k});leaveState()};
+  // free zoom or drag leaves a picked state; update the URL once, not on every wheel tick
+  const leaveState=()=>{if($('#mz').value){$('#mz').value='';syncURL()}};
   const zoom=st=>{const p=st&&svg.querySelector(`.st[data-st="${st}"]`);
     if(!p)setV({x:0,y:0,w:MAP.w});else{const b=p.getBBox(),w=Math.max(b.width,b.height/AR)*1.15;setV({w,x:b.x+b.width/2-w/2,y:b.y+b.height/2-w*AR/2})}
     $('#mz').value=p?st:''};
@@ -1019,7 +1024,9 @@ function mapSetup(){
     tip.style.left=x+'px';tip.style.top=y+'px';
     const xb=tip.querySelector('.x');if(xb)xb.onclick=hide;
   };
-  const hide=()=>{tip.hidden=true;MPIN=false;svg.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on'))};
+  const hide=()=>{tip.hidden=true;MPIN=false;svg.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on'));if(SEAT){SEAT=null;syncURL()}};
+  const pinSeat=k=>{const el=svg.querySelector(`[data-k="${k}"]`);if(!el)return;const b=el.getBoundingClientRect();
+    MPIN=true;show(el,{clientX:b.left+b.width/2,clientY:b.top+b.height/2},true);SEAT=k;syncURL()};
   const hover=matchMedia('(hover:hover) and (pointer:fine)').matches;
   const target=e=>e.target.closest&&e.target.closest('[data-k],[data-pend],[data-none]');
   // pointers held down: one drags the map, two pinch-zoom around their midpoint
@@ -1038,22 +1045,48 @@ function mapSetup(){
       pinch={d,m};moved=true;hide();return}
     if(drag&&(moved||Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4)){
       if(!moved)svg.setPointerCapture(e.pointerId);moved=true;hide();
-      setV({w:drag.v.w,x:drag.v.x-(e.clientX-drag.x)*s,y:drag.v.y-(e.clientY-drag.y)*s});$('#mz').value=''}});
+      setV({w:drag.v.w,x:drag.v.x-(e.clientX-drag.x)*s,y:drag.v.y-(e.clientY-drag.y)*s});leaveState()}});
   const up=e=>{P.delete(e.pointerId);if(P.size<2)pinch=null;if(!P.size)drag=null};
   svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
   // a click that ended a drag or pinch isn't a tap on a seat
-  svg.addEventListener('click',e=>{if(moved){moved=false;return}const el=target(e);if(!el){hide();return}MPIN=true;show(el,e,true)});
+  svg.addEventListener('click',e=>{if(moved){moved=false;return}const el=target(e);if(!el){hide();return}MPIN=true;show(el,e,true);SEAT=el.dataset.k||null;syncURL()});
   svg.addEventListener('dblclick',e=>{hide();zoomAt(e.clientX,e.clientY,.5)});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});
-  $('#mz').onchange=e=>{zoom(e.target.value);hide()};
-  $('#mreset').onclick=()=>{zoom('');hide()};
-  document.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{MMODE=b.dataset.mo;document.querySelectorAll('[data-mo]').forEach(x=>x.setAttribute('aria-pressed',x===b));hide();draw()});
-  const mc=()=>document.querySelectorAll('[data-mc]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mc===MCOLOR));mc();
-  document.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{MCOLOR=b.dataset.mc;mc();try{localStorage.setItem('mapColor',MCOLOR)}catch(e){}draw()});
+  $('#mz').onchange=e=>{zoom(e.target.value);hide();syncURL()};
+  $('#mreset').onclick=()=>{zoom('');hide();syncURL()};
+  const mo=()=>document.querySelectorAll('[data-mo]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mo===MMODE));
+  document.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{MMODE=b.dataset.mo;mo();hide();draw();syncURL()});
+  const mc=()=>document.querySelectorAll('[data-mc]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mc===MCOLOR));
+  document.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{MCOLOR=b.dataset.mc;mc();try{localStorage.setItem('mapColor',MCOLOR)}catch(e){}draw();syncURL()});
   // rating cutoffs: number inputs, saved per viewer
-  document.querySelectorAll('[data-rb]').forEach(i=>{i.value=RB[i.dataset.rb];i.oninput=()=>{const v=parseFloat(i.value);if(isNaN(v)||v<0)return;
-    RB[i.dataset.rb]=v;try{localStorage.setItem('mapRB',JSON.stringify(RB))}catch(e){}draw()}});
-  draw();
+  const rb=()=>document.querySelectorAll('[data-rb]').forEach(i=>i.value=RB[i.dataset.rb]);
+  document.querySelectorAll('[data-rb]').forEach(i=>i.oninput=()=>{const v=parseFloat(i.value);if(isNaN(v)||v<0)return;
+    RB[i.dataset.rb]=v;try{localStorage.setItem('mapRB',JSON.stringify(RB))}catch(e){}draw();syncURL()});
+  $('#mlink').onclick=()=>{const b=$('#mlink'),done=t=>{b.textContent=t;setTimeout(()=>b.textContent='Copy link',1600)};
+    navigator.clipboard?navigator.clipboard.writeText(location.href).then(()=>done('Copied'),()=>prompt('Copy this link:',location.href)):prompt('Copy this link:',location.href)};
+  // a shared link (#map?chamber=senate&color=rating&cut=1,3,6,10&state=TX&seat=TX) overrides saved settings
+  const q=new URLSearchParams(location.hash.split('?')[1]||'');
+  if(q.get('chamber')==='senate')MMODE='senate';
+  if(['polls','margin','rating'].includes(q.get('color')))MCOLOR=q.get('color');
+  const cut=(q.get('cut')||'').split(',').map(Number);
+  if(cut.length===4&&cut.every(x=>!isNaN(x)&&x>=0))RB={toss:cut[0],tilt:cut[1],lean:cut[2],likely:cut[3]};
+  mo();mc();rb();draw();
+  if(q.get('state'))zoom(q.get('state').toUpperCase());
+  // after layout, so the card can be placed on the seat (rAF would wait for a background tab to be shown)
+  if(q.get('seat'))setTimeout(()=>pinSeat(q.get('seat').toUpperCase()),50);
+}
+// write the map's view into the URL hash; replaceState, so it doesn't add back-button steps
+let SEAT=null;
+function syncURL(){
+  if(!$('#s-map').classList.contains('on'))return;
+  const q=new URLSearchParams();
+  if(MMODE==='senate')q.set('chamber','senate');
+  if(MCOLOR!=='polls')q.set('color',MCOLOR);
+  if(RB.toss!==1||RB.tilt!==3||RB.lean!==6||RB.likely!==10)q.set('cut',[RB.toss,RB.tilt,RB.lean,RB.likely].join(','));
+  if($('#mz').value)q.set('state',$('#mz').value);
+  if(SEAT)q.set('seat',SEAT);
+  const h='#map'+(q.toString()?'?'+q.toString().replace(/%2C/g,','):'');
+  if(location.hash!==h)history.replaceState(null,'',h);
 }
 const STATES_N={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 
@@ -1115,7 +1148,7 @@ function mapTip(mode,k){
 function init(){
   $('#gen').textContent='Last refreshed '+D.generated+'.';
   tabs();kpis();battlegrounds();ev();cmp();['Senate','Governor','House'].forEach(races);latest();ratings();
-  document.querySelector('#tabs [data-t="map"]').addEventListener('click',mapInit);
+  document.querySelector('#tabs [data-t="map"]').addEventListener('click',()=>{mapInit();if(MAP&&MAP!=='loading')syncURL()});
   if($('#s-map').classList.contains('on'))mapInit();
   shifts();
 }
