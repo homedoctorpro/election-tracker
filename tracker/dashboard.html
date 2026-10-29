@@ -913,9 +913,11 @@ const AT_LARGE=new Set(['AK','DE','ND','SD','VT','WY']);
 const dkey=(st,d)=>{d=String(d??'').toUpperCase();return AT_LARGE.has(st)||!d||d==='AL'||+d===0?st+'-AL':st+'-'+d.padStart(2,'0')};
 // margin bins, R+ on the left; each step gets a stronger share of the party color
 const MBINS=[[30,'R+30'],[15,'R+15'],[5,'R+5'],[0,'R+0'],[-5,'D+0'],[-15,'D+5'],[-30,'D+15'],[-1e9,'D+30']];
-const MSHADE=[88,64,42,22,22,42,64,88];
+// fixed blue and red steps, strongest first; mixing the party color into the warm page tone
+// pulled the light blues toward lavender, so the ramps are explicit
+const DRAMP=['#1d4ed8','#3b82f6','#93c5fd','#d3e4fd'],RRAMP=['#b91c1c','#ef4444','#fca5a5','#fddcdc'];
 // a dead heat (|m| < 0.05) leans neither way, so it gets a neutral grey
-const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';if(Math.abs(m)<.05)return 'color-mix(in srgb,var(--oth) 55%,var(--mapbase))';const i=MBINS.findIndex(b=>m>=b[0]);return `color-mix(in srgb,${i<4?'var(--rep)':'var(--dem)'} ${MSHADE[i]}%,var(--mapbase))`};
+const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';if(Math.abs(m)<.05)return 'color-mix(in srgb,var(--oth) 55%,var(--mapbase))';const i=MBINS.findIndex(b=>m>=b[0]);return i<4?RRAMP[i]:DRAMP[7-i]};
 const mtxt=m=>{return m===0?'Even':m>0?`R+${m.toFixed(1)}`:`D+${(-m).toFixed(1)}`};
 let MAP=null,MMODE='house',MPIN=false;
 
@@ -924,8 +926,7 @@ let MAP=null,MMODE='house',MPIN=false;
 const RCAT=['Safe D','Likely D','Lean D','Tilt D','Toss-up','Tilt R','Lean R','Likely R','Safe R'];
 let RB={toss:1,tilt:3,lean:6,likely:10},MCOLOR='polls';
 try{RB={...RB,...JSON.parse(localStorage.getItem('mapRB')||'{}')};MCOLOR=localStorage.getItem('mapColor')||MCOLOR}catch(e){}
-const RSHADE=[88,64,42,22,0,22,42,64,88];
-const rfill=c=>c==null?'var(--chip)':c===4?'#e8b730':`color-mix(in srgb,${c<4?'var(--dem)':'var(--rep)'} ${RSHADE[c]}%,var(--mapbase))`;
+const rfill=c=>c==null?'var(--chip)':c===4?'#e8b730':c<4?DRAMP[c]:RRAMP[8-c];
 function seatRating(r){
   const a=r.avg;let m=null,basis='2024';
   if(a){const ps=[a.party_a,a.party_b];
@@ -947,7 +948,7 @@ function seatBar(){
     if(s.cat<4&&s.basis==='polls'&&![r.avg.party_a,r.avg.party_b].includes('D'))ind++}});
   const total=house?435:100,dT=nu.D+n[0]+n[1]+n[2]+n[3],rT=nu.R+n[5]+n[6]+n[7]+n[8];
   const seg=(k,c,bg,t)=>k?`<span style="flex:${k};background:${bg}" title="${t}: ${k}"></span>`:'';
-  const hatch=p=>`repeating-linear-gradient(45deg,var(--${p}) 0 3px,color-mix(in srgb,var(--${p}) 55%,var(--mapbase)) 3px 6px)`;
+  const hatch=p=>{const r=p==='dem'?DRAMP:RRAMP;return `repeating-linear-gradient(45deg,${r[0]} 0 3px,${r[2]} 3px 6px)`};
   const maj=house?218:51,mid=house?218/435*100:50;
   el.innerHTML=`<div class="sb-top"><span style="color:var(--dem)"><b>${dT}</b> D</span>
       <span class="sb-mid">${n[4]?`<b>${n[4]}</b> toss-up${n[4]>1?'s':''}`:'No toss-ups'} · ${house?'218 for a majority':'D needs 51, R needs 50 (VP breaks ties)'}</span>
@@ -1123,7 +1124,7 @@ function mapTip(mode,k){
   const inc=r.incumbent?`${esc(r.incumbent)} ${ptag(r.inc_party)}`:'<i>Open seat</i>';
   let h=`<h3>${title}</h3><div class="small muted">${inc}${r.status?' · '+esc(r.status):''}</div>`;
   const sr=seatRating(r);
-  if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${sr.cat===4||RSHADE[sr.cat]<50?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
+  if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${[2,3,4,5,6].includes(sr.cat)?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
     <span class="small muted">${sr.basis==='polls'?'from the poll average':sr.basis==='same'?'both finalists from one party':'no polls: from the 2024 presidential margin'}</span></div>`;
   // 2024 presidential
   if(r.trump!=null){const m=r.margin;
