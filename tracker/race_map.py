@@ -35,6 +35,9 @@ CENSUS_CD = "https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_cd119_20m
 CENSUS_STATE = "https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_us_state_20m.zip"
 # states whose 2026 House map differs from the 119th Congress lines in the Census file
 REDRAWN = {"AL", "CA", "FL", "LA", "NC", "OH", "TN", "TX", "UT"}
+# Senate going into the 2026 election: 53 R, 45 D plus 2 independents who caucus with the
+# Democrats (King, Sanders), per the 2026 Senate elections article's infobox
+SENATE_BEFORE = {"R": 53, "D": 47}
 AT_LARGE = {"AK", "DE", "ND", "SD", "VT", "WY"}
 FIPS = {"01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO", "09": "CT", "10": "DE",
         "11": "DC", "12": "FL", "13": "GA", "15": "HI", "16": "ID", "17": "IL", "18": "IN", "19": "IA",
@@ -44,7 +47,8 @@ FIPS = {"01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO", 
         "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA",
         "54": "WV", "55": "WI", "56": "WY"}
 NAME_TO_ABBR = {v: k for k, v in STATES.items()}
-PARTY_WORDS = [("Democratic", "D"), ("Republican", "R"), ("Libertarian", "L"), ("Green", "G")]
+# DFL: Minnesota's Democratic–Farmer–Labor Party, the state's Democratic Party
+PARTY_WORDS = [("Democratic", "D"), ("DFL", "D"), ("Republican", "R"), ("Libertarian", "L"), ("Green", "G")]
 
 
 def district_key(state, district):
@@ -294,7 +298,14 @@ def build(summary, ratings):
                            "special": key.endswith("-special"), **c,
                            # race_summary has one Senate row per state; it belongs to the special in FL/OH
                            "avg": avg.get(st) if key.endswith("-special") or f"{st}-special" not in cands["senate"] else None}
-    return {"house": house, "senate": senate, "no_senate": sorted(set(STATES) - SENATE_2026 - {"DC"})}
+    # seats not up this year = the current split minus the incumbents whose seats are up
+    up = {p: sum(1 for r in senate.values() if r.get("inc_party") == p) for p in SENATE_BEFORE}
+    not_up = {p: SENATE_BEFORE[p] - up[p] for p in SENATE_BEFORE}
+    if sum(not_up.values()) + len(senate) != 100:
+        print(f"  race_map: Senate seats don't add to 100 ({not_up} not up, {len(senate)} races); bar left out")
+        not_up = None
+    return {"house": house, "senate": senate, "senate_not_up": not_up,
+            "no_senate": sorted(set(STATES) - SENATE_2026 - {"DC"})}
 
 
 def write_paths(site):

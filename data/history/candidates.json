@@ -4377,19 +4377,19 @@
     },
     {
      "name": "Jake Johnson",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     }
    ]
   },
   "MN-02": {
    "incumbent": "Angie Craig",
-   "inc_party": null,
+   "inc_party": "D",
    "status": "run for U.S. Senate]]",
    "candidates": [
     {
      "name": "Matt Little",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     },
     {
@@ -4401,7 +4401,7 @@
   },
   "MN-03": {
    "incumbent": "Kelly Morrison",
-   "inc_party": null,
+   "inc_party": "D",
    "status": "Incumbent renominated",
    "candidates": [
     {
@@ -4411,19 +4411,19 @@
     },
     {
      "name": "Kelly Morrison",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     }
    ]
   },
   "MN-04": {
    "incumbent": "Betty McCollum",
-   "inc_party": null,
+   "inc_party": "D",
    "status": "Incumbent renominated",
    "candidates": [
     {
      "name": "Betty McCollum",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     },
     {
@@ -4435,7 +4435,7 @@
   },
   "MN-05": {
    "incumbent": "Ilhan Omar",
-   "inc_party": null,
+   "inc_party": "D",
    "status": "Incumbent renominated",
    "candidates": [
     {
@@ -4450,7 +4450,7 @@
     },
     {
      "name": "Ilhan Omar",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     }
    ]
@@ -4462,7 +4462,7 @@
    "candidates": [
     {
      "name": "Doug Chapin",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     },
     {
@@ -4484,7 +4484,7 @@
     },
     {
      "name": "Erik Osberg",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     }
    ]
@@ -4501,7 +4501,7 @@
     },
     {
      "name": "Trina Swanson",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     }
    ]
@@ -9343,12 +9343,12 @@
   },
   "MN": {
    "incumbent": "Tina Smith",
-   "inc_party": null,
+   "inc_party": "D",
    "status": "Incumbent retiring",
    "candidates": [
     {
      "name": "Peggy Flanagan",
-     "party": "O",
+     "party": "D",
      "label": "DFL"
     },
     {

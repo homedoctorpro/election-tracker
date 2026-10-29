@@ -127,8 +127,9 @@ tr.click{cursor:pointer}
 #bg-pop h4{margin:12px 0 2px;font-size:13px}
 #bg-shade{position:fixed;inset:0;z-index:29;background:rgba(0,0,0,.35)}
 #s-map .pm-tools select{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
-.map-wrap{padding:8px;touch-action:manipulation}
-#msvg{display:block;width:100%;height:auto}
+.map-wrap{padding:8px}
+#msvg{display:block;width:100%;height:auto;cursor:grab;user-select:none;-webkit-user-select:none}
+#msvg:active{cursor:grabbing}
 #msvg path{vector-effect:non-scaling-stroke}
 #msvg .seat{stroke:var(--panel);stroke-width:.6;cursor:pointer}
 #msvg .seat:hover,#msvg .seat.on{stroke:var(--ink);stroke-width:2}
@@ -138,6 +139,18 @@ tr.click{cursor:pointer}
 .mkey{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:8px 2px;font-size:12px;color:var(--muted)}
 .mkey i{display:inline-block;width:34px;height:10px}
 .mkey span{margin:0 8px 0 4px}
+#mbar{padding:10px 12px;margin-bottom:10px}
+.sb-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:15px}
+.sb-top b{font-size:22px}.sb-mid{font-size:12.5px;color:var(--muted);text-align:center}
+.sb-top>span:not(.sb-mid){white-space:nowrap}
+.sb-bar{position:relative;display:flex;height:22px;border-radius:4px;overflow:hidden;margin:4px 0 6px;background:var(--chip)}
+.sb-bar span{display:block;height:100%;border-right:1px solid var(--panel)}
+.sb-bar span:last-of-type{border-right:0}
+.sb-bar i{position:absolute;top:-2px;bottom:-2px;width:2px;margin-left:-1px;background:var(--ink)}
+.sb-cats{display:flex;flex-wrap:wrap;gap:4px 12px;margin-bottom:4px}
+.sb-cats i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.sb-cut{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);line-height:2}
+.sb-cut input{width:56px;font:inherit;font-size:13px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
 #m-tip{position:fixed;z-index:30;width:min(380px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;background:var(--panel);border:1px solid var(--muted);border-radius:10px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.18);font-size:13px}
 #m-tip[hidden]{display:none}
 #m-tip h3{margin:0 18px 2px 0;font-size:16px}
@@ -256,13 +269,24 @@ svg.spark{vertical-align:middle}
   <div class="pm-tools" style="margin-top:0">
     <button class="seg" data-mo="house" aria-pressed="true">House</button>
     <button class="seg" data-mo="senate" aria-pressed="false">Senate</button>
+    <span class="small muted" style="margin-left:6px">Color:</span>
+    <button class="seg" data-mc="margin" aria-pressed="true">2024 margin</button>
+    <button class="seg" data-mc="rating" aria-pressed="false">Rating</button>
     <select id="mz" aria-label="Zoom to state"><option value="">Whole country</option></select>
+    <button class="seg" id="mreset" style="display:none">Reset zoom</button>
     <span class="small muted" id="mnote"></span>
+  </div>
+  <div class="panel" id="mbar">
+    <div id="mbar-bar"></div>
+    <div class="sb-cut small muted">Rating from the poll margin: Toss-up &le; <input type="number" data-rb="toss" step="0.5" min="0" aria-label="Toss-up cutoff">
+      Tilt &le; <input type="number" data-rb="tilt" step="0.5" min="0" aria-label="Tilt cutoff">
+      Lean &le; <input type="number" data-rb="lean" step="0.5" min="0" aria-label="Lean cutoff">
+      Likely &le; <input type="number" data-rb="likely" step="0.5" min="0" aria-label="Likely cutoff"> pts, Safe beyond.</div>
   </div>
   <div class="panel map-wrap"><svg id="msvg" role="img" aria-label="Map of 2026 races"></svg></div>
   <div class="mkey" id="mkey"></div>
   <p class="small muted">
-    Colored by the 2024 presidential margin (Trump minus Harris) within each seat; House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Double-click a district or pick a state to zoom in.
+    Colored by the 2024 presidential margin (Trump minus Harris) within each seat; House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
     Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
   </p>
   <h2 style="font-size:17px;margin:18px 0 6px">Polls vs the 2024 presidential result</h2>
@@ -889,6 +913,44 @@ const mfill=m=>{if(m==null||isNaN(m))return 'var(--chip)';const i=MBINS.findInde
 const mtxt=m=>{return m===0?'Even':m>0?`R+${m.toFixed(1)}`:`D+${(-m).toFixed(1)}`};
 let MAP=null,MMODE='house',MPIN=false;
 
+// ratings from the poll average (D−R), or the 2024 presidential margin where a seat has no polls.
+// RB holds the upper bound of each band in points; anything past "likely" is safe.
+const RCAT=['Safe D','Likely D','Lean D','Tilt D','Toss-up','Tilt R','Lean R','Likely R','Safe R'];
+let RB={toss:1,tilt:3,lean:6,likely:10},MCOLOR='margin';
+try{RB={...RB,...JSON.parse(localStorage.getItem('mapRB')||'{}')};MCOLOR=localStorage.getItem('mapColor')||MCOLOR}catch(e){}
+const RSHADE=[88,64,42,22,0,22,42,64,88];
+const rfill=c=>c==null?'var(--chip)':c===4?'#e8b730':`color-mix(in srgb,${c<4?'var(--dem)':'var(--rep)'} ${RSHADE[c]}%,var(--mapbase))`;
+function seatRating(r){
+  const a=r.avg;let m=null,basis='2024';
+  if(a){const ps=[a.party_a,a.party_b];
+    if(ps[0]&&ps[0]===ps[1])return {cat:ps[0]==='R'?8:0,m:null,basis:'same'};  // D vs D or R vs R: safe either way
+    if(ps.includes('R')){m=ps[1]==='R'?+a.a_avg-+a.b_avg:+a.b_avg-+a.a_avg;basis='polls'}}  // non-R side minus R
+  if(m==null){if(r.margin==null)return {cat:null};m=-r.margin}
+  const x=Math.abs(m),lv=x<=RB.toss?-1:x<=RB.tilt?0:x<=RB.lean?1:x<=RB.likely?2:3;
+  return {cat:lv<0?4:m>0?3-lv:5+lv,m,basis};
+}
+
+// seat count bar for the chamber on screen; Senate seats not up this year sit at each end
+function seatBar(){
+  const R=D.race_map,house=MMODE==='house',el=$('#mbar-bar');
+  const seats=Object.values(house?R.house:R.senate),nu=house?{D:0,R:0}:R.senate_not_up;
+  if(!nu){el.innerHTML='<span class="muted small">Seat count unavailable.</span>';return}
+  const n=Array(9).fill(0),pol=Array(9).fill(0);
+  let ind=0;  // independents leading against a Republican, counted on the D side
+  seats.forEach(r=>{const s=seatRating(r);if(s.cat!=null){n[s.cat]++;if(s.basis==='polls')pol[s.cat]++;
+    if(s.cat<4&&s.basis==='polls'&&![r.avg.party_a,r.avg.party_b].includes('D'))ind++}});
+  const total=house?435:100,dT=nu.D+n[0]+n[1]+n[2]+n[3],rT=nu.R+n[5]+n[6]+n[7]+n[8];
+  const seg=(k,c,bg,t)=>k?`<span style="flex:${k};background:${bg}" title="${t}: ${k}"></span>`:'';
+  const hatch=p=>`repeating-linear-gradient(45deg,var(--${p}) 0 3px,color-mix(in srgb,var(--${p}) 55%,var(--mapbase)) 3px 6px)`;
+  const maj=house?218:51,mid=house?218/435*100:50;
+  el.innerHTML=`<div class="sb-top"><span style="color:var(--dem)"><b>${dT}</b> D</span>
+      <span class="sb-mid">${n[4]?`<b>${n[4]}</b> toss-up${n[4]>1?'s':''}`:'No toss-ups'} · ${house?'218 for a majority':'D needs 51, R needs 50 (VP breaks ties)'}</span>
+      <span style="color:var(--rep)">R <b>${rT}</b></span></div>
+    <div class="sb-bar">${seg(nu.D,0,hatch('dem'),'D, not up')}${n.map((k,i)=>seg(k,i,rfill(i),RCAT[i])).join('')}${seg(nu.R,0,hatch('rep'),'R, not up')}<i style="left:${mid}%"></i></div>
+    <div class="sb-cats small muted">${house?'':`<span>Not up: ${nu.D} D, ${nu.R} R</span>`}${RCAT.map((c,i)=>n[i]?`<span><i style="background:${rfill(i)}"></i>${c} ${n[i]}</span>`:'').join('')}</div>
+    <div class="small muted">${pol.reduce((a,b)=>a+b,0)} of ${seats.length} ${house?'seats':'races'} rated from polls; the rest from the 2024 presidential margin.${ind?` The D count includes ${ind} independent${ind>1?'s':''} leading a Republican.`:''}${dT+rT+n[4]===total?'':' Some seats are missing data.'}</div>`;
+}
+
 function mapInit(){
   if(MAP||!D.race_map)return;
   MAP='loading';
@@ -897,22 +959,37 @@ function mapInit(){
 
 function mapSetup(){
   const svg=$('#msvg'),tip=$('#m-tip');
-  svg.setAttribute('viewBox',`0 0 ${MAP.w} ${MAP.h}`);
-  // key: one sample margin per bin, R on the left
-  $('#mkey').innerHTML='<span style="margin-left:0">R+30</span>'+[40,20,10,2,-2,-10,-20,-40].map(m=>`<i style="background:${mfill(m)}"></i>`).join('')+'<span>D+30</span><i style="background:var(--chip);margin-left:10px"></i><span>no race this year</span>';
   const sts=Object.keys(MAP.states).sort();
   $('#mz').innerHTML='<option value="">Whole country</option>'+sts.map(s=>`<option>${s}</option>`).join('');
-  const zoom=st=>{let vb=`0 0 ${MAP.w} ${MAP.h}`;if(st){const p=svg.querySelector(`.st[data-st="${st}"]`);if(p){const b=p.getBBox(),pad=Math.max(b.width,b.height)*.08;vb=`${b.x-pad} ${b.y-pad} ${b.width+2*pad} ${b.height+2*pad}`}}
-    svg.setAttribute('viewBox',vb);$('#mz').value=st||''};
+  // the view is a viewBox held at the map's aspect ratio, so the svg never changes height
+  const AR=MAP.h/MAP.w,MINW=MAP.w/60;let V={x:0,y:0,w:MAP.w};
+  const setV=v=>{const w=Math.min(MAP.w,Math.max(MINW,v.w)),h=w*AR,full=w>=MAP.w-.5;
+    V={w,x:Math.min(MAP.w-w,Math.max(0,v.x)),y:Math.min(MAP.h-h,Math.max(0,v.y))};
+    svg.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${h}`);
+    $('#mreset').style.display=full?'none':'';
+    // zoomed out, a one-finger swipe scrolls the page; zoomed in, it pans the map
+    svg.style.touchAction=full?'pan-y':'none'};
+  const toMap=(cx,cy)=>{const r=svg.getBoundingClientRect();return [V.x+(cx-r.left)/r.width*V.w,V.y+(cy-r.top)/r.height*V.w*AR]};
+  const zoomAt=(cx,cy,f)=>{const [px,py]=toMap(cx,cy),w=Math.min(MAP.w,Math.max(MINW,V.w*f)),k=w/V.w;setV({w,x:px-(px-V.x)*k,y:py-(py-V.y)*k});$('#mz').value=''};
+  const zoom=st=>{const p=st&&svg.querySelector(`.st[data-st="${st}"]`);
+    if(!p)setV({x:0,y:0,w:MAP.w});else{const b=p.getBBox(),w=Math.max(b.width,b.height/AR)*1.15;setV({w,x:b.x+b.width/2-w/2,y:b.y+b.height/2-w*AR/2})}
+    $('#mz').value=p?st:''};
+  setV(V);
+  const fill=r=>MCOLOR==='rating'?rfill(seatRating(r).cat):mfill(r.margin);
   const draw=()=>{
     const R=D.race_map,pend=new Set(MAP.missing.map(k=>k.slice(0,2)));
+    // key: one sample margin per bin (R on the left), or the rating categories
+    $('#mkey').innerHTML=(MCOLOR==='rating'?RCAT.map((c,i)=>`<i style="background:${rfill(i)};width:14px"></i><span>${c}</span>`).join(''):
+      '<span style="margin-left:0">R+30</span>'+[40,20,10,2,-2,-10,-20,-40].map(m=>`<i style="background:${mfill(m)}"></i>`).join('')+'<span>D+30</span>')
+      +'<i style="background:var(--chip);margin-left:10px"></i><span>no race this year</span>';
+    seatBar();
     let h='<defs><pattern id="mhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--chip)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-opacity=".5"/></pattern></defs>';
     if(MMODE==='house'){
-      h+=Object.entries(MAP.house).map(([k,d])=>{const r=R.house[k];return `<path class="seat" data-k="${k}" d="${d}" fill="${r?mfill(r.margin):'var(--chip)'}"/>`}).join('');
+      h+=Object.entries(MAP.house).map(([k,d])=>{const r=R.house[k];return `<path class="seat" data-k="${k}" d="${d}" fill="${r?fill(r):'var(--chip)'}"/>`}).join('');
       h+=[...pend].map(s=>MAP.states[s]?`<path class="pending" data-pend="${s}" d="${MAP.states[s]}"/>`:'').join('');
     }else{
       const by={};Object.entries(R.senate).forEach(([k,r])=>by[k.split('-')[0]]=k);
-      h+=sts.map(s=>{const k=by[s],r=k&&R.senate[k];return r?`<path class="seat" data-k="${k}" d="${MAP.states[s]}" fill="${mfill(r.margin)}"/>`:`<path class="none" data-none="${s}" d="${MAP.states[s]}"/>`}).join('');
+      h+=sts.map(s=>{const k=by[s],r=k&&R.senate[k];return r?`<path class="seat" data-k="${k}" d="${MAP.states[s]}" fill="${fill(r)}"/>`:`<path class="none" data-none="${s}" d="${MAP.states[s]}"/>`}).join('');
     }
     h+=sts.map(s=>`<path class="st" data-st="${s}" d="${MAP.states[s]}"/>`).join('');
     svg.innerHTML=h;
@@ -935,15 +1012,37 @@ function mapSetup(){
   const hide=()=>{tip.hidden=true;MPIN=false;svg.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on'))};
   const hover=matchMedia('(hover:hover) and (pointer:fine)').matches;
   const target=e=>e.target.closest&&e.target.closest('[data-k],[data-pend],[data-none]');
+  // pointers held down: one drags the map, two pinch-zoom around their midpoint
+  const P=new Map();let drag=null,pinch=null,moved=false;
   if(hover){
-    svg.addEventListener('mousemove',e=>{if(MPIN)return;const el=target(e);if(el)show(el,e,false);else hide()});
+    svg.addEventListener('mousemove',e=>{if(MPIN||P.size)return;const el=target(e);if(el)show(el,e,false);else hide()});
     svg.addEventListener('mouseleave',()=>{if(!MPIN)hide()});
   }
-  svg.addEventListener('click',e=>{const el=target(e);if(!el){hide();return}MPIN=true;show(el,e,true)});
-  svg.addEventListener('dblclick',e=>{const el=target(e);if(!el)return;const st=(el.dataset.k||el.dataset.pend||el.dataset.none).slice(0,2);zoom($('#mz').value===st?'':st);hide()});
+  svg.addEventListener('wheel',e=>{e.preventDefault();hide();zoomAt(e.clientX,e.clientY,Math.exp(e.deltaY*(e.deltaMode?.05:.0015)))},{passive:false});
+  svg.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;
+    P.set(e.pointerId,[e.clientX,e.clientY]);moved=false;pinch=null;drag=P.size===1?{x:e.clientX,y:e.clientY,v:{...V}}:null});
+  svg.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;P.set(e.pointerId,[e.clientX,e.clientY]);
+    const s=V.w/svg.getBoundingClientRect().width;
+    if(P.size>=2){const [a,b]=[...P.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+      if(pinch){zoomAt(m[0],m[1],pinch.d/d);setV({w:V.w,x:V.x-(m[0]-pinch.m[0])*s,y:V.y-(m[1]-pinch.m[1])*s})}
+      pinch={d,m};moved=true;hide();return}
+    if(drag&&(moved||Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4)){
+      if(!moved)svg.setPointerCapture(e.pointerId);moved=true;hide();
+      setV({w:drag.v.w,x:drag.v.x-(e.clientX-drag.x)*s,y:drag.v.y-(e.clientY-drag.y)*s});$('#mz').value=''}});
+  const up=e=>{P.delete(e.pointerId);if(P.size<2)pinch=null;if(!P.size)drag=null};
+  svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+  // a click that ended a drag or pinch isn't a tap on a seat
+  svg.addEventListener('click',e=>{if(moved){moved=false;return}const el=target(e);if(!el){hide();return}MPIN=true;show(el,e,true)});
+  svg.addEventListener('dblclick',e=>{hide();zoomAt(e.clientX,e.clientY,.5)});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});
   $('#mz').onchange=e=>{zoom(e.target.value);hide()};
+  $('#mreset').onclick=()=>{zoom('');hide()};
   document.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{MMODE=b.dataset.mo;document.querySelectorAll('[data-mo]').forEach(x=>x.setAttribute('aria-pressed',x===b));hide();draw()});
+  const mc=()=>document.querySelectorAll('[data-mc]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mc===MCOLOR));mc();
+  document.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{MCOLOR=b.dataset.mc;mc();try{localStorage.setItem('mapColor',MCOLOR)}catch(e){}draw()});
+  // rating cutoffs: number inputs, saved per viewer
+  document.querySelectorAll('[data-rb]').forEach(i=>{i.value=RB[i.dataset.rb];i.oninput=()=>{const v=parseFloat(i.value);if(isNaN(v)||v<0)return;
+    RB[i.dataset.rb]=v;try{localStorage.setItem('mapRB',JSON.stringify(RB))}catch(e){}draw()}});
   draw();
 }
 const STATES_N={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
@@ -980,6 +1079,9 @@ function mapTip(mode,k){
   const title=mode==='house'?(k.endsWith('-AL')?`${STATES_N[st]} at-large`:`${k}`):`${STATES_N[st]} Senate${r.special?' (special)':''}`;
   const inc=r.incumbent?`${esc(r.incumbent)} ${ptag(r.inc_party)}`:'<i>Open seat</i>';
   let h=`<h3>${title}</h3><div class="small muted">${inc}${r.status?' · '+esc(r.status):''}</div>`;
+  const sr=seatRating(r);
+  if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${sr.cat===4||RSHADE[sr.cat]<50?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
+    <span class="small muted">${sr.basis==='polls'?'from the poll average':sr.basis==='same'?'both finalists from one party':'no polls: from the 2024 presidential margin'}</span></div>`;
   // 2024 presidential
   if(r.trump!=null){const m=r.margin;
     h+=`<h4>2024 president</h4><div class="pb"><span style="width:${r.harris}%;background:var(--dem)"></span><span style="width:${100-r.harris-r.trump}%"></span><span style="width:${r.trump}%;background:var(--rep)"></span></div>
