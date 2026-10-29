@@ -130,6 +130,8 @@ tr.click{cursor:pointer}
 .map-wrap{padding:8px}
 #msvg{display:block;width:100%;height:auto;cursor:grab;user-select:none;-webkit-user-select:none}
 #msvg:active{cursor:grabbing}
+/* zoomed all the way out there's nothing to drag, so no grab hand */
+#msvg.full,#msvg.full:active{cursor:default}
 #msvg path{vector-effect:non-scaling-stroke}
 #msvg .seat{stroke:var(--panel);stroke-width:.6;cursor:pointer}
 #msvg .seat.polled{stroke:var(--ink);stroke-opacity:.8;stroke-width:1.3}
@@ -138,6 +140,7 @@ tr.click{cursor:pointer}
 #msvg .none{fill:var(--chip);stroke:var(--panel);stroke-width:.6}
 #msvg .pending{fill:url(#mhatch);stroke:var(--panel);stroke-width:.6;cursor:help}
 /* hex states are set apart by a gap in the page color, so the ink outline still means "has polls" */
+#msvg .flip{pointer-events:none}
 #msvg .st.hx{stroke:var(--panel);stroke-opacity:1;stroke-width:3.5;stroke-linecap:round}
 #msvg .lbl{font-family:inherit;font-weight:600;fill:var(--ink);stroke:var(--panel);paint-order:stroke;pointer-events:none;text-anchor:middle;dominant-baseline:central}
 .mkey{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:8px 2px;font-size:12px;color:var(--muted)}
@@ -280,6 +283,7 @@ svg.spark{vertical-align:middle}
     <button class="seg" data-mc="polls" aria-pressed="true">Polls</button>
     <button class="seg" data-mc="margin" aria-pressed="false">2024 margin</button>
     <button class="seg" data-mc="rating" aria-pressed="false">Rating</button>
+    <button class="seg" id="mflips" aria-pressed="true" title="Stripe seats where the party that doesn't hold them is ahead">Flips</button>
     <select id="mz" aria-label="Zoom to state"><option value="">Whole country</option></select>
     <button class="seg" id="mreset" style="display:none">Reset zoom</button>
     <button class="seg" id="mlink" title="Copy a link to this view">Copy link</button>
@@ -963,6 +967,18 @@ function seatRating(r){
   return {cat:lv<0?4:m>0?3-lv:5+lv,m,basis};
 }
 
+// a flip: the side ahead isn't the party holding the seat now. Toss-ups and seats with no current
+// holder (new districts) don't count; an independent ahead of a Republican counts on the D side.
+const sideOf=p=>p==='R'?'R':p?'D':null;
+function seatFlip(r){
+  const s=seatRating(r);if(s.cat==null||s.cat===4)return null;
+  const side=s.cat<4?'D':'R',from=sideOf(r.inc_party);if(!from||from===side)return null;
+  const to=side==='R'?'R':s.basis==='polls'?[r.avg.party_a,r.avg.party_b].find(p=>p!=='R')||'D':'D';
+  return {from:r.inc_party,to};
+}
+let MFLIP=true;
+try{MFLIP=localStorage.getItem('mapFlips')!=='0'}catch(e){}
+
 // seat count bar for the chamber on screen; Senate seats not up this year sit at each end
 function seatBar(){
   const R=D.race_map,house=MMODE==='house',el=$('#mbar-bar');
@@ -970,7 +986,9 @@ function seatBar(){
   if(!nu){el.innerHTML='<span class="muted small">Seat count unavailable.</span>';return}
   const n=Array(9).fill(0),pol=Array(9).fill(0);
   let ind=0;  // independents leading against a Republican, counted on the D side
-  seats.forEach(r=>{const s=seatRating(r);if(s.cat!=null){n[s.cat]++;if(s.basis==='polls')pol[s.cat]++;
+  const fl={D:0,R:0};
+  seats.forEach(r=>{const f=seatFlip(r);if(f)fl[f.to==='R'?'R':'D']++;
+    const s=seatRating(r);if(s.cat!=null){n[s.cat]++;if(s.basis==='polls')pol[s.cat]++;
     if(s.cat<4&&s.basis==='polls'&&![r.avg.party_a,r.avg.party_b].includes('D'))ind++}});
   const total=house?435:100,dT=nu.D+n[0]+n[1]+n[2]+n[3],rT=nu.R+n[5]+n[6]+n[7]+n[8];
   const seg=(k,c,bg,t)=>k?`<span style="flex:${k};background:${bg}" title="${t}: ${k}"></span>`:'';
@@ -981,6 +999,7 @@ function seatBar(){
       <span style="color:var(--rep)">R <b>${rT}</b></span></div>
     <div class="sb-bar">${seg(nu.D,0,hatch('dem'),'D, not up')}${n.map((k,i)=>seg(k,i,rfill(i),RCAT[i])).join('')}${seg(nu.R,0,hatch('rep'),'R, not up')}<i style="left:${mid}%"></i></div>
     <div class="sb-cats small muted">${house?'':`<span>Not up: ${nu.D} D, ${nu.R} R</span>`}${RCAT.map((c,i)=>n[i]?`<span><i style="background:${rfill(i)}"></i>${c} ${n[i]}</span>`:'').join('')}</div>
+    <div class="small muted"><b>Flips:</b> <span style="color:var(--dem)">${fl.D} to D</span>, <span style="color:var(--rep)">${fl.R} to R</span> (net ${fl.D===fl.R?'even':fl.D>fl.R?'D +'+(fl.D-fl.R):'R +'+(fl.R-fl.D)}), counting seats rated Tilt or better for the party that doesn't hold them now.</div>
     <div class="small muted">${pol.reduce((a,b)=>a+b,0)} of ${seats.length} ${house?'seats':'races'} rated from polls; the rest from the 2024 presidential margin.${ind?` The D count includes ${ind} independent${ind>1?'s':''} leading a Republican.`:''}${dT+rT+n[4]===total?'':' Some seats are missing data.'}</div>`;
 }
 
@@ -1006,7 +1025,7 @@ function mapSetup(){
   const setV=v=>{const w=Math.min(G.w,Math.max(MINW,v.w)),h=w*AR,full=w>=G.w-.5;
     V={w,x:Math.min(G.w-w,Math.max(0,v.x)),y:Math.min(G.h-h,Math.max(0,v.y))};
     svg.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${h}`);
-    $('#mreset').style.display=full?'none':'';
+    $('#mreset').style.display=full?'none':'';svg.classList.toggle('full',full);
     // zoomed out, a one-finger swipe scrolls the page; zoomed in, it pans the map
     svg.style.touchAction=full?'pan-y':'none'};
   const toMap=(cx,cy)=>{const r=svg.getBoundingClientRect();return [V.x+(cx-r.left)/r.width*V.w,V.y+(cy-r.top)/r.height*V.w*AR]};
@@ -1029,17 +1048,24 @@ function mapSetup(){
     $('#mkey').innerHTML=(MCOLOR==='rating'?RCAT.map((c,i)=>`<i style="background:${rfill(i)};width:14px"></i><span>${c}</span>`).join(''):
       '<span style="margin-left:0">R+30</span>'+[40,20,10,2,-2,-10,-20,-40].map(m=>`<i style="background:${mfill(m)}"></i>`).join('')+'<span>D+30</span>')
       +'<i style="background:var(--chip);margin-left:10px"></i><span>no race this year</span>'
-      +(MCOLOR==='margin'?'':'<i style="background:transparent;border:1.5px solid var(--ink);width:16px;margin-left:6px"></i><span>has polls; unpolled seats use the 2024 margin</span>');
+      +(MCOLOR==='margin'?'':'<i style="background:transparent;border:1.5px solid var(--ink);width:16px;margin-left:6px"></i><span>has polls; unpolled seats use the 2024 margin</span>')
+      +(MCOLOR==='margin'||!MFLIP?'':'<i style="background:repeating-linear-gradient(45deg,'+RRAMP[0]+' 0 1.6px,transparent 1.6px 5px),'+DRAMP[2]+';width:16px;margin-left:6px"></i><span>flip: stripes show the party losing the seat</span>');
     seatBar();
-    let h='<defs><pattern id="mhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--chip)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-opacity=".5"/></pattern></defs>';
+    let h='<defs><pattern id="mhatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--chip)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted)" stroke-width="1.5" stroke-opacity=".5"/></pattern>'
+      +[['R',RRAMP[0]],['D',DRAMP[0]]].map(([p,c])=>`<pattern id="mflip${p}" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="${c}" stroke-width="1.6"/></pattern>`).join('')+'</defs>';
+    // seats that would change party get stripes in the color of the party losing them
+    // (not in 2024-margin mode, which isn't a forecast)
+    const flips=(list)=>MFLIP&&MCOLOR!=='margin'?list.map(([k,d,r])=>[d,r&&seatFlip(r)]).filter(x=>x[1]).map(([d,f])=>`<path class="flip" d="${d}" fill="url(#mflip${sideOf(f.from)})"/>`).join(''):'';
     const g=geom();
     if(MMODE==='house'){
-      h+=Object.entries(g.house).map(([k,d])=>[k,d,R.house[k]]).sort(byPolled).map(x=>seatPath(...x)).join('');
+      const L=Object.entries(g.house).map(([k,d])=>[k,d,R.house[k]]);
+      h+=L.sort(byPolled).map(x=>seatPath(...x)).join('')+flips(L);
       if(!g.hex)h+=[...pend].map(s=>MAP.states[s]?`<path class="pending" data-pend="${s}" d="${MAP.states[s]}"/>`:'').join('');
     }else{
       const by={};Object.entries(R.senate).forEach(([k,r])=>by[k.split('-')[0]]=k);
       h+=sts.filter(s=>!by[s]&&g.tile[s]).map(s=>`<path class="none" data-none="${s}" d="${g.tile[s]}"/>`).join('');
-      h+=sts.filter(s=>by[s]&&g.tile[s]).map(s=>[by[s],g.tile[s],R.senate[by[s]]]).sort(byPolled).map(x=>seatPath(...x)).join('');
+      const L=sts.filter(s=>by[s]&&g.tile[s]).map(s=>[by[s],g.tile[s],R.senate[by[s]]]);
+      h+=L.sort(byPolled).map(x=>seatPath(...x)).join('')+flips(L);
     }
     // Senate tiles are each their own state, so their edge is only kept for zooming
     h+=sts.filter(s=>g.st[s]).map(s=>`<path class="st${g.hex?' hx':''}" data-st="${s}" d="${g.st[s]}"${g.hex&&MMODE==='senate'?' style="stroke:none"':''}/>`).join('');
@@ -1096,7 +1122,9 @@ function mapSetup(){
   const mo=()=>document.querySelectorAll('[data-mo]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mo===MMODE));
   document.querySelectorAll('[data-mo]').forEach(b=>b.onclick=()=>{MMODE=b.dataset.mo;mo();hide();draw();syncURL()});
   const mc=()=>document.querySelectorAll('[data-mc]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.mc===MCOLOR));
-  document.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{MCOLOR=b.dataset.mc;mc();try{localStorage.setItem('mapColor',MCOLOR)}catch(e){}draw();syncURL()});
+  document.querySelectorAll('[data-mc]').forEach(b=>b.onclick=()=>{MCOLOR=b.dataset.mc;mc();mf();try{localStorage.setItem('mapColor',MCOLOR)}catch(e){}draw();syncURL()});
+  const mf=()=>{$('#mflips').setAttribute('aria-pressed',MFLIP);$('#mflips').hidden=MCOLOR==='margin'};
+  $('#mflips').onclick=()=>{MFLIP=!MFLIP;mf();try{localStorage.setItem('mapFlips',MFLIP?'1':'0')}catch(e){}draw();syncURL()};
   const ms=()=>document.querySelectorAll('[data-ms]').forEach(x=>{x.setAttribute('aria-pressed',x.dataset.ms===MSHAPE);x.hidden=!MAP.hex});
   document.querySelectorAll('[data-ms]').forEach(b=>b.onclick=()=>{MSHAPE=b.dataset.ms;ms();try{localStorage.setItem('mapShape',MSHAPE)}catch(e){}hide();draw();syncURL()});
   // rating cutoffs: number inputs, saved per viewer
@@ -1110,9 +1138,10 @@ function mapSetup(){
   if(q.get('chamber')==='senate')MMODE='senate';
   if(['polls','margin','rating'].includes(q.get('color')))MCOLOR=q.get('color');
   if(['geo','hex'].includes(q.get('shape')))MSHAPE=q.get('shape');
+  if(q.get('flips')==='0')MFLIP=false;
   const cut=(q.get('cut')||'').split(',').map(Number);
   if(cut.length===4&&cut.every(x=>!isNaN(x)&&x>=0))RB={toss:cut[0],tilt:cut[1],lean:cut[2],likely:cut[3]};
-  mo();mc();ms();rb();draw();
+  mo();mc();mf();ms();rb();draw();
   if(q.get('state'))zoom(q.get('state').toUpperCase());
   // after layout, so the card can be placed on the seat (rAF would wait for a background tab to be shown)
   if(q.get('seat'))setTimeout(()=>pinSeat(q.get('seat').toUpperCase()),50);
@@ -1125,6 +1154,7 @@ function syncURL(){
   if(MMODE==='senate')q.set('chamber','senate');
   if(MCOLOR!=='polls')q.set('color',MCOLOR);
   if(MSHAPE==='hex')q.set('shape','hex');
+  if(!MFLIP)q.set('flips','0');
   if(RB.toss!==1||RB.tilt!==3||RB.lean!==6||RB.likely!==10)q.set('cut',[RB.toss,RB.tilt,RB.lean,RB.likely].join(','));
   if($('#mz').value)q.set('state',$('#mz').value);
   if(SEAT)q.set('seat',SEAT);
@@ -1165,7 +1195,8 @@ function mapTip(mode,k){
   const title=mode==='house'?(k.endsWith('-AL')?`${STATES_N[st]} at-large`:`${k}`):`${STATES_N[st]} Senate${r.special?' (special)':''}`;
   const inc=r.incumbent?`${esc(r.incumbent)} ${ptag(r.inc_party)}`:'<i>Open seat</i>';
   let h=`<h3>${title}</h3><div class="small muted">${inc}${r.status?' · '+esc(r.status):''}</div>`;
-  const sr=seatRating(r);
+  const sr=seatRating(r),fp=seatFlip(r);
+  if(fp)h+=`<div style="margin-top:5px"><b>Flip:</b> ${ptag(fp.from)} &rarr; ${ptag(fp.to)} <span class="small muted">the party that doesn't hold the seat is ahead</span></div>`;
   if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${[2,3,4,5,6].includes(sr.cat)?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
     <span class="small muted">${sr.basis==='polls'?(r.avg.stale?`from the latest poll (${esc(r.avg.latest_poll_end)})`:'from the poll average'):sr.basis==='same'?'both finalists from one party':'no polls in the last 60 days: from the 2024 presidential margin'}</span></div>`;
   // poll average first (same 60-day, up-to-5-poll rule as the race tables), then the latest polls.
