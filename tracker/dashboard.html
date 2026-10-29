@@ -289,7 +289,7 @@ svg.spark{vertical-align:middle}
   <div class="panel map-wrap"><svg id="msvg" role="img" aria-label="Map of 2026 races"></svg></div>
   <div class="mkey" id="mkey"></div>
   <p class="small muted">
-    Colored by each seat's poll average (D&minus;R), or its 2024 presidential margin where there are no polls; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
+    Colored by each seat's poll average (D&minus;R), its newest poll if none ended in the last 60 days, or its 2024 presidential margin where there are no polls; outlined seats have polls. The Color buttons switch to the 2024 margin alone or to ratings. House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Scroll or pinch to zoom, drag to move around, or pick a state.
     Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
   </p>
   <h2 style="font-size:17px;margin:18px 0 6px">Polls vs the 2024 presidential result</h2>
@@ -298,7 +298,7 @@ svg.spark{vertical-align:middle}
     <span class="note">Shift = poll average (D&minus;R) minus Harris&minus;Trump in 2024 in the same seat. Positive means the race is running toward Democrats compared with 2024. Click a column to sort.</span>
   </div>
   <div class="panel scroll"><table id="sht"></table></div>
-  <p class="small muted" style="margin-top:8px">Every polled House and Senate race with a two-party matchup. The poll average is the same one used in the race tables (up to 5 polls ending in the last 60 days, unweighted), so a seat with one poll, or only partisan polls, can swing a lot. * The leading non-Republican is an independent (Nebraska, Montana, South Dakota, Alaska House); that candidate counts as the D side. Same-party matchups are left out.</p>
+  <p class="small muted" style="margin-top:8px">Every polled House and Senate race with a two-party matchup. The poll average is the same one used in the race tables (up to 5 polls ending in the last 60 days, unweighted). Seats with no poll in that window use their newest poll instead, marked "older poll", as long as it polls the two 2026 candidates. A seat with one poll, or only partisan polls, can swing a lot. * The leading non-Republican is an independent (Nebraska, Montana, South Dakota, Alaska House); that candidate counts as the D side. Same-party matchups are left out.</p>
 </section>
 <div id="m-tip" hidden></div>
 <section id="s-Senate"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Senate"></table></div></section>
@@ -1105,7 +1105,7 @@ function shifts(){
     const st=k.slice(0,2);
     rows.push({race:office==='House'?(k.endsWith('-AL')?st+'-AL':k):STATES_N[st]+(r.special?' (special)':''),office,
       dem:nr,dp:np,rep:[a.candidate_a,a.candidate_b][ri],poll:+poll.toFixed(1),pres:+pres.toFixed(1),shift:+(poll-pres).toFixed(1),
-      n:+a.polls_averaged,last:a.latest_poll_end,ind:np!=='D'});
+      n:+a.polls_averaged,last:a.latest_poll_end,stale:!!a.stale,ind:np!=='D'});
   }));
   const cols=[{h:'Race',k:'race',cls:'l'},{h:'Office',k:'office',cls:'l hide-sm'},{h:'D side',k:'dem',cls:'l'},{h:'R',k:'rep',cls:'l hide-sm'},
     {h:'Poll avg',k:'poll'},{h:'2024 pres',k:'pres'},{h:'Shift',k:'shift'},{h:'Polls',k:'n',cls:'hide-sm'},{h:'Latest',k:'last',cls:'hide-sm'}];
@@ -1113,7 +1113,7 @@ function shifts(){
     r=>`<tr><td><b>${esc(r.race)}</b>${r.ind?' *':''}</td><td class="l hide-sm">${r.office}</td><td class="l">${cand(r.dem,r.dp)}</td><td class="l hide-sm">${cand(r.rep,'R')}</td>
       <td style="color:${col(r.poll)};font-weight:600">${sgn(r.poll)}</td><td style="color:${col(r.pres)}">${sgn(r.pres)}</td>
       <td><span class="mpill" style="background:${r.shift===0?'var(--oth)':pcol(r.shift>0?'D':'R')}">${sgn(r.shift)}</span></td>
-      <td class="hide-sm">${r.n}</td><td class="hide-sm small muted">${esc(r.last)}</td></tr>`);
+      <td class="hide-sm">${r.n}</td><td class="hide-sm small muted">${esc(r.last)}${r.stale?' <span class="chip" title="No polls in the last 60 days; newest poll shown">older poll</span>':''}</td></tr>`);
   $('#shf').onchange=draw;
 }
 
@@ -1125,21 +1125,28 @@ function mapTip(mode,k){
   let h=`<h3>${title}</h3><div class="small muted">${inc}${r.status?' · '+esc(r.status):''}</div>`;
   const sr=seatRating(r);
   if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${[2,3,4,5,6].includes(sr.cat)?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
-    <span class="small muted">${sr.basis==='polls'?'from the poll average':sr.basis==='same'?'both finalists from one party':'no polls: from the 2024 presidential margin'}</span></div>`;
+    <span class="small muted">${sr.basis==='polls'?(r.avg.stale?`from the latest poll (${esc(r.avg.latest_poll_end)})`:'from the poll average'):sr.basis==='same'?'both finalists from one party':'no polls in the last 60 days: from the 2024 presidential margin'}</span></div>`;
+  // poll average first (same 60-day, up-to-5-poll rule as the race tables), then the latest polls.
+  // Bars put the non-Republican on the left and the Republican on the right, like the 2024 bar below.
+  const pb=(l,lc,rv,rc)=>`<div class="pb"><span style="width:${l}%;background:${lc}"></span><span style="width:${Math.max(0,100-l-rv)}%"></span><span style="width:${rv}%;background:${rc}"></span></div>`;
+  const lead=m=>`<span style="color:${m===0?'var(--muted)':pcol(m>0?'D':'R')};font-weight:650;margin-left:4px">${m===0?'Tie':(m>0?'D':'R')+' +'+Math.abs(m).toFixed(1)}</span>`;
+  const a=r.avg;
+  const ps=D.polls.filter(p=>p.matchup!=='primary/hypothetical'&&(mode==='house'?p.poll_type==='us-representative'&&dkey(p.state,p.district)===k:p.poll_type==='us-senator'&&p.state===st)).slice(0,3);
+  h+=`<h4>${a&&a.stale?'Latest poll':'Polling average'}</h4>`;
+  if(a){const m=+a.margin_d_minus_r,rFirst=a.party_a==='R';
+    const L=rFirst?[a.candidate_b,a.party_b,+a.b_avg]:[a.candidate_a,a.party_a,+a.a_avg],R=rFirst?[a.candidate_a,a.party_a,+a.a_avg]:[a.candidate_b,a.party_b,+a.b_avg];
+    h+=pb(L[2],pcol(L[1]),R[2],pcol(R[1]))+`<div>${cand(L[0],L[1])} <b>${L[2]}</b> · ${cand(R[0],R[1])} <b>${R[2]}</b> ${a.margin_d_minus_r===''?'':lead(m)}</div>
+      <div class="small muted">${a.stale?`Ended ${esc(a.latest_poll_end)}. No polls in the last 60 days, so the newest poll stands in for an average.`:`Average of ${a.polls_averaged} poll${a.polls_averaged==1?'':'s'}, latest ended ${esc(a.latest_poll_end)}`}</div>`}
+  else h+=`<div class="muted">${ps.length?'No polls in the last 60 days, so no average; latest polls below.':'No polls in the last 120 days.'}</div>`;
+  // skip the list when it would only repeat the single older poll shown above
+  if(ps.length&&!(a&&a.stale&&ps.length===1&&ps[0].end_date===a.latest_poll_end))h+='<h4>Latest polls</h4>'+ps.map(p=>`<div class="pl"><span class="small muted">${esc(p.end_date)} · ${esc(p.pollster)}${p.partisan?' <span class="chip">'+esc(p.partisan)+'</span>':''}</span><br>${answers(p,3)}</div>`).join('');
   // 2024 presidential
   if(r.trump!=null){const m=r.margin;
-    h+=`<h4>2024 president</h4><div class="pb"><span style="width:${r.harris}%;background:var(--dem)"></span><span style="width:${100-r.harris-r.trump}%"></span><span style="width:${r.trump}%;background:var(--rep)"></span></div>
-      <div>Trump <b>${r.trump.toFixed(1)}%</b> · Harris <b>${r.harris.toFixed(1)}%</b> <span style="color:${pcol(m>0?'R':'D')};font-weight:650;margin-left:4px">${mtxt(m)}</span></div>`}
+    h+=`<h4>2024 president</h4>${pb(r.harris,'var(--dem)',r.trump,'var(--rep)')}
+      <div>Harris <b>${r.harris.toFixed(1)}%</b> · Trump <b>${r.trump.toFixed(1)}%</b> <span style="color:${pcol(m>0?'R':'D')};font-weight:650;margin-left:4px">${mtxt(m)}</span></div>`}
   // candidates, major parties first
   const ord={D:0,R:1};const cs=[...(r.candidates||[])].sort((a,b)=>(ord[a.party]??2)-(ord[b.party]??2));
   h+=`<h4>Candidates</h4>`+(cs.length?'<ul>'+cs.map(c=>`<li>${esc(c.name)} ${ptag(c.party)}${c.party!=='D'&&c.party!=='R'?` <span class="muted small">${esc(c.label)}</span>`:''}${r.incumbent&&c.name===r.incumbent?' <span class="chip">inc.</span>':''}</li>`).join('')+'</ul>':'<div class="muted">Not listed yet.</div>');
-  // poll average (same 60-day, up-to-5-poll rule as the race tables) and latest polls
-  const a=r.avg;
-  h+='<h4>Polling</h4>';
-  if(a){const m=+a.margin_d_minus_r;
-    h+=`<div>${cand(a.candidate_a,a.party_a)} <b>${a.a_avg}</b> · ${cand(a.candidate_b,a.party_b)} <b>${a.b_avg}</b> <span style="color:${m===0?'var(--muted)':pcol(m>0?'D':'R')};font-weight:650;margin-left:4px">${m===0?'Tie':(m>0?'D':'R')+' +'+Math.abs(m).toFixed(1)}</span></div><div class="small muted">Average of ${a.polls_averaged} poll${a.polls_averaged==1?'':'s'}, latest ended ${esc(a.latest_poll_end)}</div>`}
-  const ps=D.polls.filter(p=>p.matchup!=='primary/hypothetical'&&(mode==='house'?p.poll_type==='us-representative'&&dkey(p.state,p.district)===k:p.poll_type==='us-senator'&&p.state===st)).slice(0,3);
-  h+=ps.length?ps.map(p=>`<div class="pl"><span class="small muted">${esc(p.end_date)} · ${esc(p.pollster)}${p.partisan?' <span class="chip">'+esc(p.partisan)+'</span>':''}</span><br>${answers(p,3)}</div>`).join(''):(a?'':'<div class="muted">No polls in the last 120 days.</div>');
   // House: outlet ratings, where UF's file rates the seat
   if(r.ratings){const cls=v=>!v?'':v.startsWith('Tossup')?'rT':/ D/.test(v)?'rD':'rR';
     h+='<h4>Ratings</h4><div>'+Object.entries(r.ratings).map(([o,v])=>`<span class="rating ${cls(v)}" style="margin:0 3px 3px 0">${esc(OUT[o]||o)}: ${esc(v.replace(' Flip','*'))}</span>`).join('')+'</div>'}

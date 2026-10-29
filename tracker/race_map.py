@@ -24,6 +24,7 @@ import zipfile
 from pathlib import Path
 
 from .common import ROOT, SENATE_2026, STATES, fetch
+from .sources.parties import _last, _norm
 
 REF = ROOT / "data" / "reference"
 PRES = REF / "house_pres24.csv"
@@ -261,8 +262,48 @@ def candidates():
 
 # ---- assemble --------------------------------------------------------------------------
 
-def build(summary, ratings):
-    """Data for the map tab. Polls themselves are looked up in data.json's poll list by the page."""
+def _polls_by_seat(con):
+    """{House key or Senate state: [(end_date, [(choice, pct, party), ...]), ...]} newest first,
+    every House and Senate poll except flagged ones and primary/hypothetical matchups."""
+    out, cur = {}, None
+    for pid, ptype, st, dist, end, choice, pct, party in con.execute("""
+            SELECT p.poll_id, p.poll_type, p.state, COALESCE(p.district, ''), p.end_date, a.choice, a.pct, cp.party
+            FROM polls p JOIN poll_answers a ON a.poll_id = p.poll_id
+            LEFT JOIN poll_matchup m ON m.poll_id = p.poll_id
+            LEFT JOIN candidate_party cp ON cp.poll_type = p.poll_type AND cp.state = p.state
+                 AND cp.district = COALESCE(p.district, '') AND cp.choice = a.choice
+            WHERE p.poll_type IN ('us-representative', 'us-senator') AND p.quality_flag IS NULL
+              AND COALESCE(m.matchup, '') != 'primary/hypothetical' AND a.pct IS NOT NULL
+            ORDER BY p.end_date DESC, p.poll_id, a.pct DESC"""):
+        if pid != cur:
+            cur = pid
+            key = district_key(st, dist) if ptype == "us-representative" else st
+            out.setdefault(key, []).append((end, []))
+        out[key][-1][1].append((choice, pct, party))
+    return out
+
+
+def _latest_poll(polls, cands):
+    """The newest poll whose top two names are both 2026 candidates in the seat, as an "avg" dict
+    in race_summary's shape (one poll, marked stale), or None. Matching on the candidate list keeps
+    out old primary or hypothetical matchups, which VoteHub can't tag without recent polling."""
+    names = {_last(_norm(c["name"])): c["party"] for c in cands}
+    for end, answers in polls or []:
+        top = [a for a in answers if _last(_norm(a[0])) in names][:2]
+        if len(top) < 2:
+            continue
+        # party from this seat's Wikipedia candidate list first: the poll-side tags come from FEC
+        # matching and can be stale or missing (Kiley now runs as an independent; Risch came back "O")
+        (ca, pa, pa_), (cb, pb, pb_) = [(n, p, names[_last(_norm(n))] or party) for n, p, party in top]
+        dr = "" if {pa_, pb_} != {"D", "R"} else round(pa - pb if pa_ == "D" else pb - pa, 1)
+        return {"candidate_a": ca, "party_a": pa_ or "", "a_avg": str(pa), "candidate_b": cb, "party_b": pb_ or "",
+                "b_avg": str(pb), "polls_averaged": "1", "latest_poll_end": end, "margin_d_minus_r": str(dr), "stale": True}
+    return None
+
+
+def build(summary, ratings, con=None):
+    """Data for the map tab. Polls themselves are looked up in data.json's poll list by the page.
+    Seats with no poll in race_summary's 60-day window use their newest valid poll instead."""
     cands = candidates()
     pres = load_pres()
     avg = {}
@@ -298,6 +339,14 @@ def build(summary, ratings):
                            "special": key.endswith("-special"), **c,
                            # race_summary has one Senate row per state; it belongs to the special in FL/OH
                            "avg": avg.get(st) if key.endswith("-special") or f"{st}-special" not in cands["senate"] else None}
+    if con is not None:
+        by_seat = _polls_by_seat(con)
+        for k, r in house.items():
+            if not r["avg"]:
+                r["avg"] = _latest_poll(by_seat.get(k), r["candidates"])
+        for k, r in senate.items():
+            if not r["avg"]:
+                r["avg"] = _latest_poll(by_seat.get(k.split("-")[0]), r["candidates"])
     # seats not up this year = the current split minus the incumbents whose seats are up
     up = {p: sum(1 for r in senate.values() if r.get("inc_party") == p) for p in SENATE_BEFORE}
     not_up = {p: SENATE_BEFORE[p] - up[p] for p in SENATE_BEFORE}

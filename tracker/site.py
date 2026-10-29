@@ -145,7 +145,7 @@ def build(con):
         "battlegrounds": battleground.battlegrounds(con, today_et(), hist_rows, summary),
     }
     try:  # the map tab must never block the site build
-        data["race_map"] = race_map.build(summary, ratings)
+        data["race_map"] = race_map.build(summary, ratings, con)
     except Exception as e:
         print(f"  race map failed: {e}")
     data["daily"] = daily.build(con, hist_rows, data["nv_firewall"], today_et(), ROOT / "data" / "history" / "daily_posts")
