@@ -8,7 +8,7 @@ import json
 import re
 
 from ..common import NAME_TO_ABBR, fetch, save_raw
-from . import manual_polls
+from . import manual_polls, wiki_polls
 
 URL = "https://api.votehub.com/polls"
 SOURCE = "votehub"
@@ -95,4 +95,8 @@ def collect(con, day: str) -> dict:
     con.commit()
     stats["new_today"] = new
     stats.update(manual_polls.load(con, day))  # hand-entered polls VoteHub hasn't added yet
+    try:  # Wikipedia's race articles often list a poll before VoteHub does
+        stats.update(wiki_polls.load(con, day))
+    except Exception as e:
+        print(f"  wikipedia polls failed: {e}")
     return stats
