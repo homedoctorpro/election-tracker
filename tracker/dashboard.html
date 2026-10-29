@@ -265,6 +265,13 @@ svg.spark{vertical-align:middle}
     Colored by the 2024 presidential margin (Trump minus Harris) within each seat; House districts use the lines in force for 2026, including the nine states that redrew (AL, CA, FL, LA, NC, OH, TN, TX, UT). Hover over a seat, or tap it, for the candidates, the poll average and the latest polls. Double-click a district or pick a state to zoom in.
     Candidates come from Wikipedia's 2026 House and Senate race tables, refreshed with the site; before a state's primary they can include declared candidates rather than nominees.
   </p>
+  <h2 style="font-size:17px;margin:18px 0 6px">Polls vs the 2024 presidential result</h2>
+  <div class="tools">
+    <select id="shf" aria-label="Office"><option value="">House and Senate</option><option value="House">House</option><option value="Senate">Senate</option></select>
+    <span class="note">Shift = poll average (D&minus;R) minus Harris&minus;Trump in 2024 in the same seat. Positive means the race is running toward Democrats compared with 2024. Click a column to sort.</span>
+  </div>
+  <div class="panel scroll"><table id="sht"></table></div>
+  <p class="small muted" style="margin-top:8px">Every polled House and Senate race with a two-party matchup. The poll average is the same one used in the race tables (up to 5 polls ending in the last 60 days, unweighted), so a seat with one poll, or only partisan polls, can swing a lot. * The leading non-Republican is an independent (Nebraska, Montana, South Dakota, Alaska House); that candidate counts as the D side. Same-party matchups are left out.</p>
 </section>
 <div id="m-tip" hidden></div>
 <section id="s-Senate"><div class="tools"><span class="note">Average of each race's current matchup over up to 5 polls that ended in the last 60 days. Older polls aren't averaged. Click a race for its polls.</span></div><div class="panel scroll"><table id="t-Senate"></table></div></section>
@@ -941,6 +948,32 @@ function mapSetup(){
 }
 const STATES_N={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 
+// polled seats: poll D−R against 2024 Harris−Trump in the same seat (race_map.margin is Trump minus Harris)
+function shifts(){
+  if(!D.race_map)return;
+  const sgn=m=>m==null?'–':m===0?'Even':(m>0?'D+':'R+')+Math.abs(m).toFixed(1);
+  const col=m=>m>0?pcol('D'):m<0?pcol('R'):'var(--muted)';
+  const rows=[];
+  [['House',D.race_map.house],['Senate',D.race_map.senate]].forEach(([office,seats])=>Object.entries(seats).forEach(([k,r])=>{
+    const a=r.avg;if(!a||r.margin==null)return;
+    const ps=[a.party_a,a.party_b];if(!ps.includes('R')||ps[0]===ps[1])return;  // needs an R against someone else
+    const ri=ps.indexOf('R'),ni=1-ri,nr=[a.candidate_a,a.candidate_b][ni],np=ps[ni];
+    const poll=(ni===0?+a.a_avg-+a.b_avg:+a.b_avg-+a.a_avg),pres=-r.margin;
+    const st=k.slice(0,2);
+    rows.push({race:office==='House'?(k.endsWith('-AL')?st+'-AL':k):STATES_N[st]+(r.special?' (special)':''),office,
+      dem:nr,dp:np,rep:[a.candidate_a,a.candidate_b][ri],poll:+poll.toFixed(1),pres:+pres.toFixed(1),shift:+(poll-pres).toFixed(1),
+      n:+a.polls_averaged,last:a.latest_poll_end,ind:np!=='D'});
+  }));
+  const cols=[{h:'Race',k:'race',cls:'l'},{h:'Office',k:'office',cls:'l hide-sm'},{h:'D side',k:'dem',cls:'l'},{h:'R',k:'rep',cls:'l hide-sm'},
+    {h:'Poll avg',k:'poll'},{h:'2024 pres',k:'pres'},{h:'Shift',k:'shift'},{h:'Polls',k:'n',cls:'hide-sm'},{h:'Latest',k:'last',cls:'hide-sm'}];
+  const draw=sortable($('#sht'),()=>{const f=$('#shf').value;return rows.filter(r=>!f||r.office===f).sort((x,y)=>y.shift-x.shift)},cols,
+    r=>`<tr><td><b>${esc(r.race)}</b>${r.ind?' *':''}</td><td class="l hide-sm">${r.office}</td><td class="l">${cand(r.dem,r.dp)}</td><td class="l hide-sm">${cand(r.rep,'R')}</td>
+      <td style="color:${col(r.poll)};font-weight:600">${sgn(r.poll)}</td><td style="color:${col(r.pres)}">${sgn(r.pres)}</td>
+      <td><span class="mpill" style="background:${r.shift===0?'var(--oth)':pcol(r.shift>0?'D':'R')}">${sgn(r.shift)}</span></td>
+      <td class="hide-sm">${r.n}</td><td class="hide-sm small muted">${esc(r.last)}</td></tr>`);
+  $('#shf').onchange=draw;
+}
+
 function mapTip(mode,k){
   const r=mode==='house'?D.race_map.house[k]:D.race_map.senate[k];if(!r)return `<h3>${esc(k)}</h3><div class="muted">No data.</div>`;
   const st=k.slice(0,2);
@@ -972,6 +1005,7 @@ function init(){
   tabs();kpis();battlegrounds();ev();cmp();['Senate','Governor','House'].forEach(races);latest();ratings();
   document.querySelector('#tabs [data-t="map"]').addEventListener('click',mapInit);
   if($('#s-map').classList.contains('on'))mapInit();
+  shifts();
 }
 </script>
 </body>
