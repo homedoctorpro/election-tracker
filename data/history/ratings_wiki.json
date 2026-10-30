@@ -1760,7 +1760,7 @@
    "splitticket": "Safe D"
   },
   "FL-special": {
-   "cook": "Solid R",
+   "cook": "Likely R",
    "ddhq": "Likely R",
    "econ": "Likely R",
    "fpo": "Likely R",
@@ -1942,7 +1942,7 @@
    "splitticket": "Safe R"
   },
   "NE": {
-   "cook": "Likely R",
+   "cook": "Lean R",
    "ddhq": "Lean R",
    "econ": "Likely R",
    "fpo": "Likely R",
