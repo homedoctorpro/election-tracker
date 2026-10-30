@@ -9,7 +9,7 @@
    "ddhq": "Lean R Flip",
    "fpo": "Lean R Flip",
    "fox": "Likely R Flip",
-   "silver": "Likely R Flip",
+   "silver": "Lean R Flip",
    "rcp": "Lean R Flip"
   },
   "AK-AL": {
@@ -29,7 +29,7 @@
    "ie": "Tilt D Flip",
    "sabato": "Lean D Flip",
    "econ": "Likely D Flip",
-   "splitticket": "Likely D Flip",
+   "splitticket": "Safe D Flip",
    "ddhq": "Lean D Flip",
    "fpo": "Likely D Flip",
    "fox": "Lean D Flip",
@@ -52,7 +52,7 @@
    "cook": "Solid R",
    "ie": "Solid R",
    "sabato": "Safe R",
-   "econ": "Lean R",
+   "econ": "Likely R",
    "splitticket": "Safe R",
    "ddhq": "Likely R",
    "fpo": "Safe R",
@@ -81,7 +81,7 @@
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
   },
   "AR-02": {
@@ -177,7 +177,7 @@
    "ddhq": "Likely D Flip",
    "fpo": "Safe D Flip",
    "fox": "Likely D Flip",
-   "silver": "Likely D Flip",
+   "silver": "Solid D Flip",
    "rcp": "Likely D Flip"
   },
   "CO-03": {
@@ -196,7 +196,7 @@
    "cook": "Lean R",
    "ie": "Likely R",
    "sabato": "Lean R",
-   "econ": "Tossup",
+   "econ": "Lean R",
    "splitticket": "Tossup",
    "ddhq": "Likely R",
    "fpo": "Likely R",
@@ -205,7 +205,7 @@
    "rcp": "Tossup"
   },
   "CO-05": {
-   "cook": "Lean R",
+   "cook": "Tossup",
    "ie": "Tossup",
    "sabato": "Tossup",
    "econ": "Lean R",
@@ -258,7 +258,7 @@
    "sabato": "Safe R",
    "econ": "Likely R",
    "splitticket": "Likely R",
-   "ddhq": "Likely R",
+   "ddhq": "Lean R",
    "fpo": "Likely R",
    "fox": "Solid R",
    "silver": "Likely R",
@@ -277,10 +277,10 @@
    "rcp": "Solid R"
   },
   "FL-07": {
-   "cook": "Likely R",
+   "cook": "Lean R",
    "ie": "Likely R",
    "sabato": "Likely R",
-   "econ": "Lean D Flip",
+   "econ": "Tossup",
    "splitticket": "Tossup",
    "ddhq": "Lean R",
    "fpo": "Lean R",
@@ -301,7 +301,7 @@
    "rcp": "Solid R"
   },
   "FL-09": {
-   "cook": "Likely R Flip",
+   "cook": "Lean R Flip",
    "ie": "Likely R Flip",
    "sabato": "Likely R Flip",
    "econ": "Tossup",
@@ -352,7 +352,7 @@
    "cook": "Tossup",
    "ie": "Tilt D",
    "sabato": "Tossup",
-   "econ": "Likely D",
+   "econ": "Lean D",
    "splitticket": "Lean D",
    "ddhq": "Lean D",
    "fpo": "Lean D",
@@ -369,7 +369,7 @@
    "ddhq": "Likely R",
    "fpo": "Safe R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
   },
   "FL-16": {
@@ -383,18 +383,6 @@
    "fox": "Likely R",
    "silver": "Likely R",
    "rcp": "Likely R"
-  },
-  "FL-17": {
-   "cook": "Solid R",
-   "ie": "Solid R",
-   "sabato": "Safe R",
-   "econ": "Safe R",
-   "splitticket": "Safe R",
-   "ddhq": "Likely R",
-   "fpo": "Safe R",
-   "fox": "Solid R",
-   "silver": "Solid R",
-   "rcp": "Solid R"
   },
   "FL-18": {
    "cook": "Solid R",
@@ -424,7 +412,7 @@
    "cook": "Tossup",
    "ie": "Tossup",
    "sabato": "Tossup",
-   "econ": "Lean D",
+   "econ": "Tossup",
    "splitticket": "Tossup",
    "ddhq": "Tossup",
    "fpo": "Tossup",
@@ -437,11 +425,11 @@
    "ie": "Tilt D",
    "sabato": "Lean D",
    "econ": "Lean D",
-   "splitticket": "Lean D",
+   "splitticket": "Likely D",
    "ddhq": "Lean D",
    "fpo": "Lean D",
    "fox": "Lean D",
-   "silver": "Lean D",
+   "silver": "Likely D",
    "rcp": "Lean D"
   },
   "FL-26": {
@@ -477,7 +465,7 @@
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
   },
   "GA-07": {
@@ -525,20 +513,8 @@
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
-  },
-  "IL-17": {
-   "cook": "Solid D",
-   "ie": "Solid D",
-   "sabato": "Safe D",
-   "econ": "Safe D",
-   "splitticket": "Safe D",
-   "ddhq": "Likely D",
-   "fpo": "Safe D",
-   "fox": "Solid D",
-   "silver": "Solid D",
-   "rcp": "Solid D"
   },
   "IN-01": {
    "cook": "Likely D",
@@ -553,7 +529,7 @@
    "rcp": "Likely D"
   },
   "IN-05": {
-   "cook": "Likely R",
+   "cook": "Lean R",
    "ie": "Likely R",
    "sabato": "Likely R",
    "econ": "Lean R",
@@ -562,7 +538,7 @@
    "fpo": "Likely R",
    "fox": "Likely R",
    "silver": "Likely R",
-   "rcp": "Likely R"
+   "rcp": "Lean R"
   },
   "IA-01": {
    "cook": "Lean D Flip",
@@ -640,7 +616,7 @@
    "cook": "Lean R Flip",
    "ie": "Lean R Flip",
    "sabato": "Lean R Flip",
-   "econ": "Lean D",
+   "econ": "Tossup",
    "splitticket": "Tossup",
    "ddhq": "Tossup",
    "fpo": "Lean D",
@@ -796,7 +772,7 @@
    "cook": "Likely R",
    "ie": "Likely R",
    "sabato": "Likely R",
-   "econ": "Lean R",
+   "econ": "Likely R",
    "splitticket": "Likely R",
    "ddhq": "Likely R",
    "fpo": "Lean R",
@@ -889,7 +865,7 @@
    "rcp": "Solid D"
   },
   "NJ-02": {
-   "cook": "Solid R",
+   "cook": "Likely R",
    "ie": "Likely R",
    "sabato": "Likely R",
    "econ": "Likely R",
@@ -929,7 +905,7 @@
    "ie": "Tilt D",
    "sabato": "Lean D",
    "econ": "Likely D",
-   "splitticket": "Likely D",
+   "splitticket": "Safe D",
    "ddhq": "Likely D",
    "fpo": "Likely D",
    "fox": "Likely D",
@@ -990,7 +966,7 @@
    "sabato": "Tossup",
    "econ": "Lean D Flip",
    "splitticket": "Lean D Flip",
-   "ddhq": "Tossup",
+   "ddhq": "Lean D Flip",
    "fpo": "Likely D Flip",
    "fox": "Lean D Flip",
    "silver": "Likely D Flip",
@@ -1036,7 +1012,7 @@
    "cook": "Tossup",
    "ie": "Tilt D",
    "sabato": "Lean D",
-   "econ": "Lean D",
+   "econ": "Tossup",
    "splitticket": "Lean D",
    "ddhq": "Lean D",
    "fpo": "Lean D",
@@ -1057,7 +1033,7 @@
    "rcp": "Lean R"
   },
   "NC-05": {
-   "cook": "Solid R",
+   "cook": "Likely R",
    "ie": "Solid R",
    "sabato": "Safe R",
    "econ": "Likely R",
@@ -1065,7 +1041,7 @@
    "ddhq": "Likely R",
    "fpo": "Safe R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Likely R"
   },
   "NC-06": {
@@ -1085,7 +1061,7 @@
    "ie": "Solid R",
    "sabato": "Safe R",
    "econ": "Likely R",
-   "splitticket": "Likely R",
+   "splitticket": "Safe R",
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Likely R",
@@ -1105,7 +1081,7 @@
    "rcp": "Solid R"
   },
   "NC-09": {
-   "cook": "Solid R",
+   "cook": "Likely R",
    "ie": "Likely R",
    "sabato": "Safe R",
    "econ": "Likely R",
@@ -1145,7 +1121,7 @@
    "ie": "Likely R",
    "sabato": "Safe R",
    "econ": "Likely R",
-   "splitticket": "Likely R",
+   "splitticket": "Safe R",
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Likely R",
@@ -1161,7 +1137,7 @@
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
   },
   "OH-01": {
@@ -1180,7 +1156,7 @@
    "cook": "Tossup",
    "ie": "Tilt D Flip",
    "sabato": "Tossup",
-   "econ": "Lean D Flip",
+   "econ": "Tossup",
    "splitticket": "Lean D Flip",
    "ddhq": "Tossup",
    "fpo": "Tossup",
@@ -1197,11 +1173,11 @@
    "ddhq": "Likely R",
    "fpo": "Safe R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
   },
   "OH-09": {
-   "cook": "Tossup",
+   "cook": "Lean D",
    "ie": "Tilt D",
    "sabato": "Tossup",
    "econ": "Lean D",
@@ -1221,7 +1197,7 @@
    "ddhq": "Likely R",
    "fpo": "Tossup",
    "fox": "Likely R",
-   "silver": "Likely R",
+   "silver": "Lean R",
    "rcp": "Lean R"
   },
   "OH-13": {
@@ -1240,7 +1216,7 @@
    "cook": "Lean R",
    "ie": "Lean R",
    "sabato": "Lean R",
-   "econ": "Lean R",
+   "econ": "Likely R",
    "splitticket": "Lean R",
    "ddhq": "Likely R",
    "fpo": "Tossup",
@@ -1264,7 +1240,7 @@
    "cook": "Solid R",
    "ie": "Likely R",
    "sabato": "Safe R",
-   "econ": "Likely R",
+   "econ": "Safe R",
    "splitticket": "Safe R",
    "ddhq": "Likely R",
    "fpo": "Likely R",
@@ -1273,12 +1249,12 @@
    "rcp": "Solid R"
   },
   "PA-01": {
-   "cook": "Lean R",
+   "cook": "Tossup",
    "ie": "Tossup",
    "sabato": "Tossup",
    "econ": "Tossup",
    "splitticket": "Tossup",
-   "ddhq": "Lean R",
+   "ddhq": "Tossup",
    "fpo": "Likely D Flip",
    "fox": "Tossup",
    "silver": "Lean D Flip",
@@ -1297,7 +1273,7 @@
    "rcp": "Lean D Flip"
   },
   "PA-08": {
-   "cook": "Tossup",
+   "cook": "Lean D Flip",
    "ie": "Tilt D Flip",
    "sabato": "Lean D Flip",
    "econ": "Tossup",
@@ -1312,7 +1288,7 @@
    "cook": "Lean D Flip",
    "ie": "Tilt D Flip",
    "sabato": "Lean D Flip",
-   "econ": "Likely D Flip",
+   "econ": "Lean D Flip",
    "splitticket": "Lean D Flip",
    "ddhq": "Lean D Flip",
    "fpo": "Likely D Flip",
@@ -1333,7 +1309,7 @@
    "rcp": "Solid R"
   },
   "SC-01": {
-   "cook": "Lean R",
+   "cook": "Tossup",
    "ie": "Tilt R",
    "sabato": "Lean R",
    "econ": "Tossup",
@@ -1341,29 +1317,17 @@
    "ddhq": "Lean R",
    "fpo": "Lean R",
    "fox": "Lean R",
-   "silver": "Likely R",
+   "silver": "Lean R",
    "rcp": "Tossup"
   },
   "SC-02": {
    "cook": "Solid R",
    "ie": "Solid R",
    "sabato": "Safe R",
-   "econ": "Likely R",
+   "econ": "Safe R",
    "splitticket": "Safe R",
    "ddhq": "Likely R",
    "fpo": "Likely R",
-   "fox": "Solid R",
-   "silver": "Solid R",
-   "rcp": "Solid R"
-  },
-  "SC-05": {
-   "cook": "Solid R",
-   "ie": "Solid R",
-   "sabato": "Safe R",
-   "econ": "Likely R",
-   "splitticket": "Safe R",
-   "ddhq": "Safe R",
-   "fpo": "Safe R",
    "fox": "Solid R",
    "silver": "Solid R",
    "rcp": "Solid R"
@@ -1468,7 +1432,7 @@
    "cook": "Solid R",
    "ie": "Solid R",
    "sabato": "Safe R",
-   "econ": "Likely R",
+   "econ": "Safe R",
    "splitticket": "Safe R",
    "ddhq": "Likely R",
    "fpo": "Safe R",
@@ -1564,7 +1528,7 @@
    "cook": "Tossup",
    "ie": "Tossup",
    "sabato": "Tossup",
-   "econ": "Tossup",
+   "econ": "Lean R Flip",
    "splitticket": "Lean D",
    "ddhq": "Tossup",
    "fpo": "Tossup",
@@ -1593,7 +1557,7 @@
    "ddhq": "Lean R",
    "fpo": "Lean D Flip",
    "fox": "Tossup",
-   "silver": "Lean D Flip",
+   "silver": "Tossup",
    "rcp": "Tossup"
   },
   "VA-02": {
@@ -1660,7 +1624,7 @@
    "cook": "Lean R",
    "ie": "Lean R",
    "sabato": "Lean R",
-   "econ": "Tossup",
+   "econ": "Lean R",
    "splitticket": "Lean R",
    "ddhq": "Lean R",
    "fpo": "Lean D Flip",
@@ -1696,7 +1660,7 @@
    "cook": "Solid R",
    "ie": "Solid R",
    "sabato": "Safe R",
-   "econ": "Lean R",
+   "econ": "Likely R",
    "splitticket": "Safe R",
    "ddhq": "Safe R",
    "fpo": "Safe R",
@@ -1713,7 +1677,7 @@
    "ddhq": "Likely R",
    "fpo": "Likely R",
    "fox": "Solid R",
-   "silver": "Likely R",
+   "silver": "Solid R",
    "rcp": "Solid R"
   },
   "WY-AL": {
@@ -1895,7 +1859,7 @@
    "ie": "Likely R",
    "nbc": "Solid R",
    "rcp": "Solid R",
-   "sabato": "Safe R",
+   "sabato": "Likely R",
    "silver": "Solid R",
    "splitticket": "Safe R"
   },
@@ -1947,7 +1911,7 @@
    "ie": "Lean D",
    "nbc": "Likely D",
    "rcp": "Lean D",
-   "sabato": "Lean D",
+   "sabato": "Likely D",
    "silver": "Likely D",
    "splitticket": "Likely D"
   },
@@ -2046,7 +2010,7 @@
    "cook": "Tossup",
    "ddhq": "Tossup",
    "econ": "Tossup",
-   "fpo": "Tossup",
+   "fpo": "Lean D Flip",
    "fox": "Lean D Flip",
    "ie": "Tilt D Flip",
    "nbc": "Tossup",
