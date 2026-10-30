@@ -139,9 +139,10 @@ tr.click{cursor:pointer}
 #msvg .st{fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:.9;pointer-events:none}
 #msvg .none{fill:var(--chip);stroke:var(--panel);stroke-width:.6}
 #msvg .pending{fill:url(#mhatch);stroke:var(--panel);stroke-width:.6;cursor:help}
-/* hex states are set apart by a gap in the page color, so the ink outline still means "has polls" */
 #msvg .flip{pointer-events:none}
-#msvg .st.hx{stroke:var(--panel);stroke-opacity:1;stroke-width:3.5;stroke-linecap:round}
+/* hex states are set apart by wider gaps in the hex geometry itself (see hexGeom), so the ink
+   outline still means "has polls"; their outlines stay in the DOM only for zoom-to-state */
+#msvg .st.hx{stroke:none}
 #msvg .lbl{font-family:inherit;font-weight:600;fill:var(--ink);stroke:var(--panel);paint-order:stroke;pointer-events:none;text-anchor:middle;dominant-baseline:central}
 .mkey{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:8px 2px;font-size:12px;color:var(--muted)}
 .mkey i{display:inline-block;width:34px;height:10px}
@@ -940,11 +941,17 @@ function hexGeom(cells,stOf){
   const xs=ks.map(k=>c[k][0]),ys=ks.map(k=>c[k][1]),x0=Math.min(...xs)-s3/2,y0=Math.min(...ys)-1;
   const w=975,sc=(w-10)/(Math.max(...xs)+s3/2-x0),h=Math.round((Math.max(...ys)+1-y0)*sc+10);
   const at={};ks.forEach(k=>at[cells[k]]=stOf(k));
-  const vx=(k,i)=>{const a=Math.PI/180*(30+60*(i%6));return ((c[k][0]+Math.cos(a)*.97-x0)*sc+5).toFixed(1)+','+((c[k][1]+Math.sin(a)*.97-y0)*sc+5).toFixed(1)};
-  const vo=(k,i)=>{const a=Math.PI/180*(30+60*(i%6));return ((c[k][0]+Math.cos(a)-x0)*sc+5).toFixed(1)+','+((c[k][1]+Math.sin(a)-y0)*sc+5).toFixed(1)};
+  const pt=(x,y)=>((x-x0)*sc+5).toFixed(1)+','+((y-y0)*sc+5).toFixed(1);
+  const vo=(k,i)=>{const a=Math.PI/180*(30+60*(i%6));return pt(c[k][0]+Math.cos(a),c[k][1]+Math.sin(a))};
+  // each edge is pulled in from the hex's apothem: a hair between districts of one state, a wider
+  // gap where the neighbor is another state (or nothing), so states read as separate blobs. Vertex i
+  // sits where the pulled-in edges i-1 and i meet (their normals are 60° apart, so det = sin 60°).
+  const N=[0,1,2,3,4,5].map(i=>{const a=Math.PI/180*(60+60*i);return [Math.cos(a),Math.sin(a)]}),ap=s3/2;
   const cell={},edge={},sum={};
   ks.forEach(k=>{const [q,r]=cells[k],s=stOf(k);
-    cell[k]='M'+[0,1,2,3,4,5].map(i=>vx(k,i)).join('L')+'Z';
+    const off=HEX_NB.map(([dq,dr])=>ap-(at[[q+dq,r+dr]]===s?.03:.13));
+    cell[k]='M'+[0,1,2,3,4,5].map(i=>{const j=(i+5)%6,[ax,ay]=N[j],[bx,by]=N[i];
+      return pt(c[k][0]+(off[j]*by-off[i]*ay)/ap,c[k][1]+(ax*off[i]-bx*off[j])/ap)}).join('L')+'Z';
     edge[s]=(edge[s]||'')+HEX_NB.map(([dq,dr],i)=>at[[q+dq,r+dr]]===s?'':`M${vo(k,i)}L${vo(k,i+1)}`).join('');
     const m=sum[s]||(sum[s]=[0,0,0]);m[0]+=c[k][0];m[1]+=c[k][1];m[2]++});
   const lab=Object.entries(sum).map(([s,m])=>[s,(m[0]/m[2]-x0)*sc+5,(m[1]/m[2]-y0)*sc+5]);
@@ -1085,7 +1092,7 @@ function mapSetup(){
       h+=L.sort(byPolled).map(x=>seatPath(...x)).join('')+flips(L);
     }
     // Senate tiles are each their own state, so their edge is only kept for zooming
-    h+=sts.filter(s=>g.st[s]).map(s=>`<path class="st${g.hex?' hx':''}" data-st="${s}" d="${g.st[s]}"${g.hex&&MMODE==='senate'?' style="stroke:none"':''}/>`).join('');
+    h+=sts.filter(s=>g.st[s]).map(s=>`<path class="st${g.hex?' hx':''}" data-st="${s}" d="${g.st[s]}"/>`).join('');
     if(g.lab)h+=g.lab.map(([s,x,y])=>`<text class="lbl" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${g.fs.toFixed(1)}" stroke-width="${(g.fs/5).toFixed(1)}">${s}</text>`).join('');
     svg.innerHTML=h;
     // a new set of shapes needs its own view; keep a picked state in frame
