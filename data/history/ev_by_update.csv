@@ -8,6 +8,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,AK,Alaska,2026-10-26,48346.0,15668.0,30536.0,46204.0,0.0,0.0,0.0,267047,17.3,https://www.elections.alaska.gov/research/statistics/#aeqstats
 2026-10-28,AK,Alaska,2026-10-27,48999.0,18873.0,39060.0,57933.0,0.0,0.0,0.0,267047,21.69,https://www.elections.alaska.gov/research/statistics/#aeqstats
 2026-10-29,AK,Alaska,2026-10-28,49248.0,20619.0,41030.0,61649.0,0.0,0.0,0.0,267047,23.09,https://www.elections.alaska.gov/research/statistics/#aeqstats
+2026-10-30,AK,Alaska,2026-10-29,49592.0,23640.0,48510.0,72150.0,0.0,0.0,0.0,267047,27.02,https://www.elections.alaska.gov/research/statistics/#aeqstats
 2026-10-20,AR,Arkansas,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,914227,0.0,Arkansas Secretary of State
 2026-10-21,AR,Arkansas,2026-10-20,9209.0,3380.0,56950.0,60330.0,5069.0,5377.0,49884.0,914227,6.6,Arkansas Secretary of State
 2026-10-22,AR,Arkansas,2026-10-21,9662.0,3849.0,111654.0,115503.0,8815.0,10055.0,96633.0,914227,12.63,Arkansas Secretary of State
@@ -48,7 +49,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,CA,California,2026-10-26,23444011.0,3209626.0,39748.0,3249374.0,1417378.0,826206.0,591303.0,11146610,29.15,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-27,CA,California,2026-10-27,23444011.0,3381478.0,39748.0,3421226.0,1703845.0,972587.0,706213.0,11146610,30.69,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-29,CA,California,2026-10-28,23447524.0,4230291.0,77520.0,4307811.0,2167243.0,1220499.0,900753.0,11146610,38.65,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
-2026-10-29,CA,California,2026-10-29,23450456.0,4508669.0,97263.0,4605932.0,2167243.0,1220499.0,900753.0,11146610,41.32,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
+2026-10-30,CA,California,2026-10-29,23450456.0,4730629.0,97263.0,4827892.0,2422907.0,1350275.0,1007219.0,11146610,43.31,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-15,CO,Colorado,2026-10-14,4028462.0,253588.0,0.0,253588.0,85834.0,60496.0,107258.0,2540666,9.98,Colorado Secretary of State
 2026-10-16,CO,Colorado,2026-10-15,4035841.0,290678.0,90.0,290768.0,97577.0,70308.0,122883.0,2540666,11.44,Colorado Secretary of State
 2026-10-17,CO,Colorado,2026-10-16,4034063.0,357958.0,0.0,357958.0,120214.0,87357.0,150387.0,2540666,14.09,Colorado Secretary of State
@@ -62,6 +63,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,CO,Colorado,2026-10-26,4050945.0,975374.0,7148.0,982522.0,317344.0,240043.0,425135.0,2540666,38.67,Colorado Secretary of State
 2026-10-27,CO,Colorado,2026-10-27,4050877.0,975382.0,7148.0,982530.0,317345.0,240045.0,425140.0,2540666,38.67,Colorado Secretary of State
 2026-10-29,CO,Colorado,2026-10-28,4064271.0,1209788.0,11054.0,1220842.0,388962.0,300147.0,531733.0,2540666,48.05,Colorado Secretary of State
+2026-10-30,CO,Colorado,2026-10-29,4054527.0,1306569.0,13425.0,1319994.0,418115.0,324963.0,576916.0,2540666,51.95,Colorado Secretary of State
 2026-10-15,CT,Connecticut,2026-10-15,43979.0,14762.0,0.0,14762.0,7713.0,2773.0,4276.0,1297811,1.14,Connecticut Secretary of the State
 2026-10-19,CT,Connecticut,2026-10-16,46726.0,17138.0,0.0,17138.0,8895.0,3272.0,4971.0,1297811,1.32,Connecticut Secretary of the State
 2026-10-20,CT,Connecticut,2026-10-19,49452.0,19217.0,0.0,19217.0,9964.0,3666.0,5587.0,1297811,1.48,Connecticut Secretary of the State
@@ -110,7 +112,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,FL,Florida,2026-10-26,2478778.0,1492246.0,1660564.0,3152810.0,1244521.0,1257291.0,650998.0,7796916,40.44,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-28,FL,Florida,2026-10-27,2479719.0,1583248.0,1934427.0,3517675.0,1377057.0,1411541.0,729077.0,7796916,45.12,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-29,FL,Florida,2026-10-28,2479891.0,1685682.0,2210864.0,3896546.0,1515636.0,1567137.0,813773.0,7796916,49.98,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
-2026-10-29,FL,Florida,2026-10-29,2480240.0,1756360.0,2403540.0,4159900.0,1605031.0,1680898.0,873971.0,7796916,53.35,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
+2026-10-30,FL,Florida,2026-10-29,2479926.0,1767532.0,2498468.0,4266000.0,1645471.0,1721370.0,899159.0,7796916,54.71,https://countyfilesvbm-ev.floridados.gov/VoteByMailEarlyVotingReports/PublicStats
 2026-10-15,GA,Georgia,2026-10-15,136052.0,19120.0,438306.0,457426.0,0.0,0.0,0.0,3964926,11.54,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-16,GA,Georgia,2026-10-16,136367.0,23268.0,528828.0,552096.0,0.0,0.0,0.0,3964926,13.92,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-17,GA,Georgia,2026-10-17,140952.0,31668.0,709696.0,741364.0,0.0,0.0,0.0,3964926,18.7,https://mvp.sos.ga.gov/s/voter-absentee-files
@@ -125,7 +127,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,GA,Georgia,2026-10-26,157598.0,90357.0,1849662.0,1940019.0,0.0,0.0,0.0,3964926,48.93,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-28,GA,Georgia,2026-10-27,157510.0,98355.0,2029999.0,2128354.0,0.0,0.0,0.0,3964926,53.68,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-29,GA,Georgia,2026-10-28,157374.0,104492.0,2186694.0,2291186.0,0.0,0.0,0.0,3964926,57.79,https://mvp.sos.ga.gov/s/voter-absentee-files
-2026-10-29,GA,Georgia,2026-10-29,157132.0,108251.0,2294275.0,2402526.0,0.0,0.0,0.0,3964926,60.59,https://mvp.sos.ga.gov/s/voter-absentee-files
+2026-10-30,GA,Georgia,2026-10-29,157132.0,110970.0,2379900.0,2490870.0,0.0,0.0,0.0,3964926,62.82,https://mvp.sos.ga.gov/s/voter-absentee-files
 2026-10-15,HI,Hawaii,2026-10-14,720287.0,487.0,0.0,487.0,0.0,0.0,0.0,423443,0.12,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-16,HI,Hawaii,2026-10-15,722688.0,510.0,0.0,510.0,0.0,0.0,0.0,423443,0.12,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-19,HI,Hawaii,2026-10-16,722974.0,829.0,0.0,829.0,0.0,0.0,0.0,423443,0.2,https://elections.hawaii.gov/resources/absentee-voting-report/
@@ -193,6 +195,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,KS,Kansas,2026-10-26,103679.0,42317.0,161838.0,204155.0,95698.0,80382.0,28075.0,1008998,20.23,Kansas Secretary of State
 2026-10-27,KS,Kansas,2026-10-27,105750.0,52353.0,192726.0,245079.0,111886.0,98915.0,34278.0,1008998,24.29,Kansas Secretary of State
 2026-10-28,KS,Kansas,2026-10-28,106788.0,59857.0,222375.0,282232.0,125765.0,116368.0,40099.0,1008998,27.97,Kansas Secretary of State
+2026-10-30,KS,Kansas,2026-10-29,107813.0,66007.0,262515.0,328522.0,142173.0,138829.0,47520.0,1008998,32.56,Kansas Secretary of State
 2026-10-15,KY,Kentucky,2026-10-15,55706.0,14098.0,0.0,14098.0,8102.0,4802.0,1194.0,1502550,0.94,https://elect.ky.gov/Pages/default.aspx
 2026-10-19,KY,Kentucky,2026-10-16,57544.0,15647.0,0.0,15647.0,8950.0,5382.0,1315.0,1502550,1.04,https://elect.ky.gov/Pages/default.aspx
 2026-10-19,KY,Kentucky,2026-10-19,61093.0,17798.0,0.0,17798.0,10065.0,6238.0,1495.0,1502550,1.18,https://elect.ky.gov/Pages/default.aspx
@@ -225,6 +228,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,MA,Massachusetts,2026-10-26,1054719.0,555235.0,183823.0,739058.0,0.0,0.0,0.0,2511461,29.43,Massachusetts Secretary of the Commonwealth
 2026-10-28,MA,Massachusetts,2026-10-27,1061167.0,602744.0,212165.0,814909.0,0.0,0.0,0.0,2511461,32.45,Massachusetts Secretary of the Commonwealth
 2026-10-29,MA,Massachusetts,2026-10-28,1063259.0,653548.0,249731.0,903279.0,0.0,0.0,0.0,2511461,35.97,Massachusetts Secretary of the Commonwealth
+2026-10-30,MA,Massachusetts,2026-10-29,1063852.0,697157.0,286804.0,983961.0,0.0,0.0,0.0,2511461,39.18,Massachusetts Secretary of the Commonwealth
 2026-10-15,MD,Maryland,2026-10-15,620490.0,171045.0,0.0,171045.0,116699.0,28801.0,25545.0,2031635,8.42,https://elections.maryland.gov/press_room/index.html
 2026-10-17,MD,Maryland,2026-10-16,620991.0,183666.0,0.0,183666.0,125461.0,30707.0,27498.0,2031635,9.04,https://elections.maryland.gov/press_room/index.html
 2026-10-18,MD,Maryland,2026-10-17,621092.0,196082.0,0.0,196082.0,134351.0,32605.0,29126.0,2031635,9.65,https://elections.maryland.gov/press_room/index.html
@@ -248,6 +252,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,ME,Maine,2026-10-26,248095.0,196122.0,0.0,196122.0,97428.0,41974.0,56720.0,680909,28.8,https://www.maine.gov/sos/cec/elec/data/index.html
 2026-10-28,ME,Maine,2026-10-27,266597.0,220814.0,0.0,220814.0,108130.0,47975.0,64709.0,680909,32.43,https://www.maine.gov/sos/cec/elec/data/index.html
 2026-10-29,ME,Maine,2026-10-28,284603.0,243608.0,0.0,243608.0,117630.0,53829.0,72149.0,680909,35.78,https://www.maine.gov/sos/cec/elec/data/index.html
+2026-10-30,ME,Maine,2026-10-29,309557.0,273984.0,0.0,273984.0,129966.0,61975.0,82043.0,680909,40.24,https://www.maine.gov/sos/cec/elec/data/index.html
 2026-10-15,MI,Michigan,2026-10-15,2101427.0,573385.0,0.0,573385.0,0.0,0.0,0.0,4500400,12.74,Data provided by Michigan Secretary of State
 2026-10-19,MI,Michigan,2026-10-16,2107121.0,630001.0,0.0,630001.0,0.0,0.0,0.0,4500400,14.0,Data provided by Michigan Secretary of State
 2026-10-19,MI,Michigan,2026-10-19,2116813.0,683402.0,0.0,683402.0,0.0,0.0,0.0,4500400,15.19,Data provided by Michigan Secretary of State
@@ -264,6 +269,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-24,MN,Minnesota,2026-10-23,447340.0,177841.0,241348.0,419189.0,0.0,0.0,0.0,2526646,16.59,https://www.sos.mn.gov/election-administration-campaigns/data-maps/absentee-data/
 2026-10-23,MO,Missouri,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,2304250,0.0,TBD
 2026-10-25,MO,Missouri,2026-10-23,12165.0,4522.0,50086.0,54608.0,0.0,0.0,0.0,2304250,2.37,County election dashboards
+2026-10-30,MO,Missouri,2026-10-29,49163.0,33774.0,226882.0,260656.0,0.0,0.0,0.0,2304250,11.31,"Associated Press (AP) county-level advance-turnout feed, supplemented by direct county clerk contact"
 2026-10-19,MS,Mississippi,2026-10-12,24004.0,17591.0,0.0,17591.0,0.0,0.0,0.0,709100,2.48,https://mcusercontent.com/c9f52743f930fd93605c3a79c/files/dbc4d142-9851-9c0b-1af5-4c45cc666dce/Absentee_Report_10_12.pdf
 2026-10-24,MS,Mississippi,2026-10-19,37101.0,29647.0,0.0,29647.0,0.0,0.0,0.0,709100,4.18,Mississippi Secretary of State - Statewide Election Management System
 2026-10-26,MS,Mississippi,2026-10-26,64537.0,56049.0,0.0,56049.0,0.0,0.0,0.0,709100,7.9,Mississippi Secretary of State - Statewide Election Management System
@@ -309,6 +315,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,ND,North Dakota,2026-10-26,54942.0,35111.0,4289.0,39400.0,0.0,0.0,0.0,242566,16.24,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-28,ND,North Dakota,2026-10-27,55485.0,37454.0,14140.0,51594.0,0.0,0.0,0.0,242566,21.27,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-29,ND,North Dakota,2026-10-28,56122.0,40398.0,23409.0,63807.0,0.0,0.0,0.0,242566,26.31,https://vip.sos.nd.gov/abev.aspx?eid=348
+2026-10-30,ND,North Dakota,2026-10-29,56664.0,43095.0,31674.0,74769.0,0.0,0.0,0.0,242566,30.82,https://vip.sos.nd.gov/abev.aspx?eid=348
 2026-10-15,NE,Nebraska,2026-10-15,217321.0,61648.0,8003.0,69651.0,31636.0,26158.0,11857.0,682716,10.2,Data file provided by Nebraska Secretary of State
 2026-10-19,NE,Nebraska,2026-10-16,220086.0,68013.0,9278.0,77291.0,34620.0,29580.0,13091.0,682716,11.32,Data file provided by Nebraska Secretary of State
 2026-10-21,NE,Nebraska,2026-10-20,227351.0,91658.0,13179.0,104837.0,45201.0,42040.0,17596.0,682716,15.36,Data file provided by Nebraska Secretary of State
@@ -356,7 +363,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,NV,Nevada,2026-10-26,2088247.0,252842.0,157207.0,410049.0,164249.0,142688.0,103112.0,1023617,40.06,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-28,NV,Nevada,2026-10-27,2088533.0,290304.0,205143.0,495447.0,198812.0,171068.0,125567.0,1023617,48.4,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-29,NV,Nevada,2026-10-28,2090618.0,314785.0,218964.0,533749.0,213544.0,183751.0,136454.0,1023617,52.14,https://www.nvsos.gov/elections/election-information/vivid-project
-2026-10-29,NV,Nevada,2026-10-29,2090738.0,331054.0,232827.0,563881.0,226365.0,192586.0,144930.0,1023617,55.09,https://www.nvsos.gov/elections/election-information/vivid-project
+2026-10-30,NV,Nevada,2026-10-29,2090945.0,348483.0,255130.0,603613.0,240269.0,206970.0,156374.0,1023617,58.97,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-24,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
 2026-10-26,NY,New York,2026-10-26,0.0,0.0,485205.0,485205.0,0.0,0.0,0.0,5962278,8.14,Data provided by the New York State Board of Elections
 2026-10-27,NY,New York,2026-10-27,0.0,0.0,703055.0,703055.0,0.0,0.0,0.0,5962278,11.79,Data provided by the New York State Board of Elections
@@ -421,6 +428,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,RI,Rhode Island,2026-10-26,32755.0,15339.0,54741.0,70080.0,31721.0,6266.0,32093.0,361449,19.39,Rhode Island Secretary of State
 2026-10-28,RI,Rhode Island,2026-10-27,32885.0,19559.0,62985.0,82544.0,36934.0,7533.0,38077.0,361449,22.84,Rhode Island Secretary of State
 2026-10-29,RI,Rhode Island,2026-10-28,33040.0,20864.0,71489.0,92353.0,40769.0,8646.0,42938.0,361449,25.55,Rhode Island Secretary of State
+2026-10-30,RI,Rhode Island,2026-10-29,33192.0,21759.0,80320.0,102079.0,44579.0,9776.0,47724.0,361449,28.24,Rhode Island Secretary of State
 2026-10-21,SC,South Carolina,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1718626,0.0,https://scvotes.gov/elections-statistics/voter-participation/
 2026-10-22,SC,South Carolina,2026-10-21,55663.0,21501.0,192006.0,213507.0,0.0,0.0,0.0,1718626,12.42,https://scvotes.gov/elections-statistics/voter-participation/
 2026-10-23,SC,South Carolina,2026-10-22,0.0,0.0,280114.0,280114.0,0.0,0.0,0.0,1718626,16.3,https://scvotes.gov/elections-statistics/voter-participation/
@@ -443,6 +451,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,SD,South Dakota,2026-10-26,60230.0,50299.0,0.0,50299.0,15289.0,26644.0,8366.0,354670,14.18,South Dakota Secretary of State
 2026-10-28,SD,South Dakota,2026-10-27,65674.0,55763.0,0.0,55763.0,16803.0,29649.0,9311.0,354670,15.72,South Dakota Secretary of State
 2026-10-29,SD,South Dakota,2026-10-28,70869.0,61052.0,0.0,61052.0,18358.0,32525.0,10169.0,354670,17.21,South Dakota Secretary of State
+2026-10-30,SD,South Dakota,2026-10-29,76162.0,66534.0,0.0,66534.0,19847.0,35557.0,11130.0,354670,18.76,South Dakota Secretary of State
 2026-10-15,TN,Tennessee,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1756397,0.0,TBD
 2026-10-16,TN,Tennessee,2026-10-15,0.0,0.0,91144.0,91144.0,0.0,0.0,0.0,1756397,5.19,https://sos.tn.gov/govotetn
 2026-10-17,TN,Tennessee,2026-10-16,0.0,0.0,176471.0,176471.0,0.0,0.0,0.0,1756397,10.05,https://sos.tn.gov/govotetn
@@ -467,7 +476,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,TX,Texas,2026-10-26,205914.0,205914.0,4332753.0,4538667.0,0.0,0.0,0.0,8151590,55.68,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-28,TX,Texas,2026-10-27,223217.0,223217.0,4882068.0,5105285.0,0.0,0.0,0.0,8151590,62.63,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-29,TX,Texas,2026-10-28,234992.0,234992.0,5438518.0,5673510.0,0.0,0.0,0.0,8151590,69.6,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
-2026-10-29,TX,Texas,2026-10-29,247638.0,247638.0,6011271.0,6258909.0,0.0,0.0,0.0,8151590,76.78,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
+2026-10-30,TX,Texas,2026-10-29,249144.0,249144.0,6021592.0,6270736.0,0.0,0.0,0.0,8151590,76.93,https://goelect.txelections.civixapps.com/ivis-evr-ui/evr
 2026-10-16,UT,Utah,2026-10-15,1782448.0,91.0,0.0,91.0,32.0,22.0,37.0,1084634,0.01,Utah Lt. Governor
 2026-10-19,UT,Utah,2026-10-17,1787786.0,2857.0,0.0,2857.0,440.0,1753.0,664.0,1084634,0.26,Utah Lt. Governor
 2026-10-21,UT,Utah,2026-10-20,1787786.0,26278.0,0.0,26278.0,5669.0,14244.0,6365.0,1084634,2.42,Utah Lt. Governor
@@ -514,6 +523,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-26,WA,Washington,2026-10-26,5131622.0,955270.0,0.0,955270.0,0.0,0.0,0.0,3067686,31.14,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-28,WA,Washington,2026-10-27,5131622.0,1140105.0,0.0,1140105.0,0.0,0.0,0.0,3067686,37.16,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-29,WA,Washington,2026-10-28,5131622.0,1356057.0,0.0,1356057.0,0.0,0.0,0.0,3067686,44.2,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
+2026-10-30,WA,Washington,2026-10-29,5131622.0,1513547.0,0.0,1513547.0,0.0,0.0,0.0,3067686,49.34,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-15,WI,Wisconsin,2026-10-15,363330.0,151231.0,0.0,151231.0,0.0,0.0,0.0,2673154,5.66,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-18,WI,Wisconsin,2026-10-16,366361.0,161023.0,0.0,161023.0,0.0,0.0,0.0,2673154,6.02,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-19,WI,Wisconsin,2026-10-19,371014.0,173164.0,0.0,173164.0,0.0,0.0,0.0,2673154,6.48,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
@@ -528,6 +538,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-10-22,WV,West Virginia,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,494753,0.0,West Virginia Secretary of State
 2026-10-24,WV,West Virginia,2026-10-22,16922.0,0.0,16922.0,16922.0,7258.0,6380.0,3284.0,494753,3.42,West Virginia Secretary of State
 2026-10-26,WV,West Virginia,2026-10-26,8290.0,4489.0,62366.0,66855.0,27864.0,25632.0,13359.0,494753,13.51,West Virginia Secretary of State
+2026-10-30,WV,West Virginia,2026-10-29,9584.0,4489.0,219804.0,114391.0,44638.0,46632.0,23121.0,494753,23.12,https://sos.wv.gov/article/secretary-warner-announces-more-115000-ballots-have-been-cast-absentee-voting-and-during
 2026-10-15,WY,Wyoming,2026-10-15,30296.0,12081.0,0.0,12081.0,2382.0,8807.0,892.0,198198,6.1,Wyoming Secretary of State
 2026-10-19,WY,Wyoming,2026-10-16,32063.0,14959.0,0.0,14959.0,2896.0,10977.0,1086.0,198198,7.55,Wyoming Secretary of State
 2026-10-21,WY,Wyoming,2026-10-20,37246.0,22403.0,0.0,22403.0,4289.0,16465.0,1649.0,198198,11.3,Wyoming Secretary of State
