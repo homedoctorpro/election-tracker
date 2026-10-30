@@ -155,6 +155,10 @@ def build(con):
     (SITE / "data.json").write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
     shutil.copy(TEMPLATE, SITE / "index.html")
     race_map.write_paths(SITE)
+    # 3D district density page; its data is built once (tracker/density.py) and committed
+    shutil.copy(Path(__file__).parent / "density.html", SITE / "density.html")
+    if (ROOT / "data" / "reference" / "density").exists():
+        shutil.copytree(ROOT / "data" / "reference" / "density", SITE / "density", dirs_exist_ok=True)
     try:
         card = share.build(SITE, data["battlegrounds"], data["generated"], data["nv_firewall"])
     except Exception as e:  # the share image must never block the site build

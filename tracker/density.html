@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>District Density 3D</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
+<style>
+:root{
+  --bg:#f7f7f5;--panel:#fff;--ink:#1a1a1a;--muted:#6b6b6b;--line:#e4e2dd;--accent:#1f4e8c;
+  --dem:#2563eb;--rep:#dc2626;--chip:#efede8;
+  /* density ramp, one hue (orange), near-zero lightest so it recedes into the light basemap */
+  --d0:#fde4cf;--d1:#fbc89f;--d2:#f6a26a;--d3:#eb6834;--d4:#c94a1c;--d5:#9a3412;--d6:#5f1f0a;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121212;--panel:#1c1c1c;--ink:#ececec;--muted:#9a9a9a;--line:#2e2e2e;--accent:#7aa7e6;
+  --dem:#5b8def;--rep:#ef5b5b;--chip:#262626;
+  /* on the dark basemap near-zero is darkest and density brightens toward peach */
+  --d0:#4a1d0c;--d1:#7a2e12;--d2:#b0441c;--d3:#eb6834;--d4:#f6924f;--d5:#fbbf8f;--d6:#fde4cf;}}
+:root[data-theme="dark"]{
+  --bg:#121212;--panel:#1c1c1c;--ink:#ececec;--muted:#9a9a9a;--line:#2e2e2e;--accent:#7aa7e6;
+  --dem:#5b8def;--rep:#ef5b5b;--chip:#262626;
+  --d0:#4a1d0c;--d1:#7a2e12;--d2:#b0441c;--d3:#eb6834;--d4:#f6924f;--d5:#fbbf8f;--d6:#fde4cf;}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex}
+#map{flex:1;position:relative;min-width:0}
+aside{width:340px;flex:none;background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:14px 16px 20px}
+a{color:var(--accent)}
+h1{font-size:20px;margin:0 0 2px;letter-spacing:-.01em}
+h2{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:16px 0 6px;font-weight:600}
+.muted{color:var(--muted)}.small{font-size:12px}
+select,input[type=range]{font:inherit;font-size:14px}
+select{width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.row button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.kpi .l{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.kpi .v{font-size:20px;font-weight:650;font-variant-numeric:tabular-nums}
+.kpi .s{color:var(--muted);font-size:12px}
+.bands{display:flex;height:12px;border-radius:4px;overflow:hidden;gap:2px;background:var(--panel)}
+.bands span{display:block;height:100%}
+.bl{display:flex;justify-content:space-between;font-size:12px;margin-top:4px;font-variant-numeric:tabular-nums}
+.legend{display:flex;gap:2px;margin-top:4px}
+.legend span{flex:1;height:10px}
+.legend span:first-child{border-radius:3px 0 0 3px}.legend span:last-child{border-radius:0 3px 3px 0}
+.lt{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.ptag{display:inline-block;border-radius:4px;padding:0 5px;font-size:12px;font-weight:700;color:#fff}
+ul{margin:4px 0 0;padding-left:18px}
+#tip{position:absolute;z-index:3;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:13px;display:none;font-variant-numeric:tabular-nums}
+#msg{position:absolute;top:12px;left:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;z-index:2;display:none}
+.maplibregl-ctrl-attrib{font-size:11px}
+@media (max-width:760px){
+  body{flex-direction:column}
+  #map{flex:none;height:58vh}
+  aside{width:auto;border-left:0;border-top:1px solid var(--line);flex:1;padding:12px 16px 20px}
+}
+</style>
+</head>
+<body>
+<div id="map"><div id="msg"></div><div id="tip"></div></div>
+<aside>
+  <div class="small"><a href="index.html#map">&larr; Election tracker</a></div>
+  <h1 id="title">District density</h1>
+  <div id="sub" class="small muted"></div>
+  <div class="row"><select id="pick" aria-label="District"></select></div>
+  <div class="row">
+    <button id="prev" title="Previous district">&larr;</button><button id="next" title="Next district">&rarr;</button>
+    <label class="small muted" style="margin-left:auto">Height <input id="hs" type="range" min="0.2" max="3" step="0.1" value="1" style="width:90px;vertical-align:middle"></label>
+  </div>
+  <div class="row small"><label><input type="checkbox" id="fixed"> Same height scale for every district</label></div>
+
+  <h2>Density</h2>
+  <div class="stats" id="stats"></div>
+  <h2>Where people live</h2>
+  <div class="bands" id="bands"></div>
+  <div class="bl" id="bandl"></div>
+
+  <h2>Hex color: people per sq mi</h2>
+  <div class="legend" id="legend"></div>
+  <div class="lt" id="legendt"></div>
+
+  <div id="race"></div>
+
+  <h2>About</h2>
+  <p class="small muted" style="margin:0">Each hexagon is about 0.3 sq mi. In big rural districts, farmland and open country are merged into 2 sq mi hexes (14 in the emptiest parts of the West) to keep the file small; towns keep the small ones. Height and color show people per square mile in that hex. Drag to pan, right-drag or Ctrl-drag to tilt and rotate. Hover a hex for its numbers.</p>
+  <p class="small muted">Population: <a href="https://www.kontur.io/portfolio/population-dataset/">Kontur Population</a> (Nov 2023, CC BY 4.0), census counts spread over building footprints, so district totals run a few percent off official counts. Lines: Census 119th Congress, and the SimpleMaps 120th Congress file (CC BY 4.0) for the nine states that redrew for 2026 (AL, CA, FL, LA, NC, OH, TN, TX, UT); those outlines are coarser, so hexes along their edges can fall in the neighboring district.</p>
+</aside>
+
+<script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+<!-- deck.gl's bundle leaves h3-js out and reads the global h3 -->
+<script src="https://unpkg.com/h3-js@4.2.1/dist/h3-js.umd.js"></script>
+<script src="https://unpkg.com/deck.gl@9.1.14/dist.min.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const STATES_N={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+// average hex area (km²) by H3 resolution
+const AREA={6:36.129,7:5.161,8:0.737};
+const KM2_MI2=0.386102;
+// density bins (people per sq mi) for the 7 ramp steps
+const BINS=[100,500,1500,3000,6000,15000];
+const dark=()=>document.documentElement.dataset.theme==='dark'||(document.documentElement.dataset.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+let RAMP=[];
+function readRamp(){RAMP=[0,1,2,3,4,5,6].map(i=>rgb(css('--d'+i)))}
+const bin=d=>{let i=0;while(i<BINS.length&&d>=BINS[i])i++;return i};
+const pcol=p=>p==='D'?css('--dem'):p==='R'?css('--rep'):'#6b7280';
+const ptag=p=>p?`<span class="ptag" style="background:${pcol(p)}">${esc(p)}</span>`:'';
+
+let INDEX=null,KEYS=[],RACE={},CUR=null,DOC=null,map,overlay;
+
+function title(k){const st=k.slice(0,2);return k.endsWith('-AL')?`${STATES_N[st]} at-large`:`${STATES_N[st]} ${+k.slice(3)}`}
+
+function setupMap(){
+  map=new maplibregl.Map({container:'map',style:`https://tiles.openfreemap.org/styles/${dark()?'dark':'positron'}`,
+    center:[-96,38],zoom:3.5,pitch:50,bearing:-12,maxPitch:75,attributionControl:{compact:true}});
+  map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'top-right');
+  overlay=new deck.MapboxOverlay({interleaved:false,layers:[]});
+  map.addControl(overlay);
+}
+
+function msg(t){const m=$('#msg');m.textContent=t||'';m.style.display=t?'block':'none'}
+
+async function load(k){
+  if(!INDEX.districts[k])k=KEYS[0];
+  CUR=k;$('#pick').value=k;
+  if(location.hash.slice(1)!==k)history.replaceState(null,'','#'+k);
+  document.title=`${k} density`;
+  msg('Loading '+k+'…');
+  try{DOC=await fetch(`density/${k}.json`).then(r=>{if(!r.ok)throw r.status;return r.json()})}
+  catch(e){msg('Could not load '+k+': '+e);return}
+  msg('');
+  // cells are H3 indexes without their trailing f's; sparse areas may use coarser hexes than towns
+  DOC.rows=DOC.cells.map(([s,p])=>({c:s.padEnd(15,'f'),p,d:p/(AREA[+s[1]]*KM2_MI2)}));
+  panel();draw();fit();
+}
+
+function fit(){
+  let [x0,y0,x1,y1]=DOC.bbox;
+  if(x1-x0>180){x0=-179.5;x1=-129}  // Alaska crosses the antimeridian
+  map.fitBounds([[x0,y0],[x1,y1]],{padding:40,pitch:50,bearing:-12,duration:900});
+}
+
+function draw(){
+  if(!DOC)return;
+  readRamp();
+  const rows=DOC.rows,scale=+$('#hs').value;
+  const [x0,y0,x1,y1]=DOC.bbox;
+  // district size in meters, so a city district and a rural one both get readable towers
+  const w=Math.min(x1-x0,60)*111e3*Math.cos((y0+y1)/2*Math.PI/180),h=(y1-y0)*111e3,diag=Math.hypot(w,h);
+  const ds=rows.map(r=>r.d).sort((a,b)=>a-b),cap=Math.max(ds[Math.floor(ds.length*.99)]||1,1);
+  const fixed=$('#fixed').checked;
+  // fixed: 1,000 people per sq mi = 60 m; otherwise the district's 99th percentile reaches 18% of its size
+  const elev=fixed?(d=>d*0.06*scale):(d=>Math.min(d,cap*1.6)/cap*diag*0.18*scale);
+  const outline={type:'Feature',geometry:{type:'MultiPolygon',coordinates:DOC.outline}};
+  const ink=rgb(dark()?'#ececec':'#1a1a1a');
+  overlay.setProps({layers:[
+    new deck.GeoJsonLayer({id:'outline',data:outline,stroked:true,filled:true,getFillColor:[...ink,dark()?14:10],
+      getLineColor:[...ink,220],lineWidthUnits:'pixels',getLineWidth:2}),
+    new deck.H3HexagonLayer({id:'hex',data:rows,getHexagon:r=>r.c,extruded:true,coverage:.92,
+      getElevation:r=>elev(r.d),getFillColor:r=>RAMP[bin(r.d)],elevationScale:1,pickable:true,
+      highPrecision:DOC.res<8,  // mixed hex sizes need per-hex geometry
+      onHover:tip,onClick:tip,
+      material:{ambient:.55,diffuse:.55,shininess:16},
+      updateTriggers:{getElevation:[scale,fixed,CUR],getFillColor:[dark()]}})
+  ]});
+}
+
+// hex readout, on hover and on tap
+function tip({object,x,y}){
+  const t=$('#tip');
+  if(!object){t.style.display='none';return}
+  t.innerHTML=`<b>${fmt(object.p)}</b> people<br>${fmt(object.d)} per sq mi`;
+  t.style.display='block';
+  const w=$('#map').clientWidth;
+  t.style.left=Math.min(x+12,w-t.offsetWidth-6)+'px';t.style.top=Math.max(y-t.offsetHeight-10,6)+'px';
+}
+
+function panel(){
+  const k=CUR,s=INDEX.districts[k],r=RACE[k];
+  $('#title').textContent=title(k);
+  $('#sub').innerHTML=r?(r.incumbent?`${esc(r.incumbent)} ${ptag(r.inc_party)}`:'<i>Open seat</i>')+(r.trump!=null?` · 2024: Trump ${r.trump.toFixed(1)}%, Harris ${r.harris.toFixed(1)}%`:''):'';
+  const all=Object.values(INDEX.districts).map(d=>d.pwd);
+  const rank=all.filter(v=>v>s.pwd).length+1;
+  $('#stats').innerHTML=`
+    <div class="kpi"><div class="l">Typical resident's density</div><div class="v">${fmt(s.pwd)}</div><div class="s">people per sq mi; #${rank} densest of ${all.length}</div></div>
+    <div class="kpi"><div class="l">Population</div><div class="v">${(s.pop/1e3).toFixed(0)}k</div><div class="s">Kontur estimate</div></div>
+    <div class="kpi"><div class="l">Populated land</div><div class="v">${fmt(s.populated_mi2)}</div><div class="s">sq mi with anyone living there</div></div>
+    <div class="kpi"><div class="l">Hexes shown</div><div class="v">${fmt(s.cells)}</div><div class="s">${s.res===8?'0.3 sq mi each':`0.3 sq mi in towns, ${s.res===7?'2':'up to 14'} where sparse`}</div></div>`;
+  readRamp();
+  const [lo,hi]=INDEX.bands,b=s.bands,cs=[RAMP[1],RAMP[3],RAMP[5]].map(c=>`rgb(${c})`);
+  $('#bands').innerHTML=b.map((v,i)=>v>0?`<span style="width:${v*100}%;background:${cs[i]}" title="${Math.round(v*100)}%"></span>`:'').join('');
+  $('#bandl').innerHTML=`<span><b>${Math.round(b[0]*100)}%</b> under ${fmt(lo)}/sq mi</span><span><b>${Math.round(b[1]*100)}%</b> ${fmt(lo)}–${fmt(hi)}</span><span><b>${Math.round(b[2]*100)}%</b> ${fmt(hi)}+</span>`;
+  $('#legend').innerHTML=RAMP.map(c=>`<span style="background:rgb(${c})"></span>`).join('');
+  $('#legendt').innerHTML=['0',...BINS.map(v=>v>=1000?v/1000+'k':v)].map(t=>`<span>${t}</span>`).join('');
+  let h='';
+  if(r){
+    const ord={D:0,R:1},cands=[...(r.candidates||[])].sort((a,b)=>(ord[a.party]??2)-(ord[b.party]??2));
+    if(cands.length)h+='<h2>Candidates</h2><ul>'+cands.map(c=>`<li>${esc(c.name)} ${ptag(c.party)}</li>`).join('')+'</ul>';
+    const a=r.avg;
+    if(a&&a.margin_d_minus_r!=='')h+=`<h2>Poll average</h2><div>${esc(a.candidate_a)} ${a.a_avg} · ${esc(a.candidate_b)} ${a.b_avg} <span class="small muted">(${a.polls_averaged} poll${a.polls_averaged==1?'':'s'}, latest ${esc(a.latest_poll_end)})</span></div>`;
+  }
+  $('#race').innerHTML=h;
+}
+
+async function init(){
+  setupMap();
+  const race=fetch('data.json').then(r=>r.json()).then(d=>{RACE=d.race_map?.house||{}}).catch(()=>{});
+  INDEX=await fetch('density/index.json').then(r=>r.json());
+  KEYS=Object.keys(INDEX.districts).sort();
+  const byState={};KEYS.forEach(k=>(byState[k.slice(0,2)]??=[]).push(k));
+  $('#pick').innerHTML=Object.keys(byState).sort((a,b)=>STATES_N[a].localeCompare(STATES_N[b])).map(st=>
+    `<optgroup label="${STATES_N[st]}">`+byState[st].map(k=>`<option value="${k}">${k}</option>`).join('')+'</optgroup>').join('');
+  KEYS=[...$('#pick').options].map(o=>o.value);  // state-name order, for prev/next
+  race.then(()=>{if(DOC)panel()});
+  $('#pick').onchange=e=>load(e.target.value);
+  $('#prev').onclick=()=>load(KEYS[(KEYS.indexOf(CUR)-1+KEYS.length)%KEYS.length]);
+  $('#next').onclick=()=>load(KEYS[(KEYS.indexOf(CUR)+1)%KEYS.length]);
+  $('#hs').oninput=draw;$('#fixed').onchange=draw;
+  addEventListener('hashchange',()=>{const k=location.hash.slice(1).toUpperCase();if(k&&k!==CUR)load(k)});
+  load((location.hash.slice(1)||'FL-18').toUpperCase());
+}
+init();
+</script>
+</body>
+</html>

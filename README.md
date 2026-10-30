@@ -44,6 +44,18 @@ python -m tracker.race_map --build-pres
 python -m tracker.race_map --build-shapes --simplemaps "$HOME\Downloads\simplemaps_congress_basicv2.3.zip"
 ```
 
+### 3D district density
+
+`density.html` (linked from each district's card on the Map tab as "3D population density") shows one House district at a time as extruded hexagons, where height and color are people per square mile. The side panel shows the typical resident's density (each hex's density weighted by its population), the share of people living under 500, 500–3,000 and over 3,000 per sq mi, and the race. Open a district directly with `density.html#FL-18`.
+
+- **Population:** [Kontur Population](https://data.humdata.org/organization/kontur) (Nov 2023, CC BY 4.0). It spreads census counts over building footprints on H3 hexagons of about 0.3 sq mi. District totals run a few percent off official counts. In big rural districts, sparse hexes are merged into 2 sq mi ones, or 14 sq mi in the emptiest areas, to keep files small; towns keep the small hexes.
+- **Lines:** the Census 119th Congress 1:500k file, plus the SimpleMaps 120th Congress file for the nine redrawn states. Those outlines are coarse, so hexes along their edges can land in the neighboring district. Each hex goes to the district containing its center, or the nearest one within about 2 km. DC, Puerto Rico and the territories are left out.
+- **Data:** built once into `data/reference/density/` (435 district files plus `index.json`, committed) and copied into the site on every build. The build needs `pip install h3 shapely pyshp`; CI doesn't. To rebuild:
+```powershell
+python -m tracker.density --kontur "<unzipped kontur_population_US_20231101.gpkg>" --simplemaps "$HOME\Downloads\simplemaps_congress_basicv2.3.zip"
+```
+- **Rendering:** MapLibre with an OpenFreeMap basemap, plus deck.gl's H3 hexagon layer, loaded from unpkg.
+
 ## Battlegrounds tab
 
 The first tab covers the battleground states (`STATES` in `tracker/battleground.py`): AZ, GA, MI, NC, NV, PA, WI, IA, OH, ME, KS, FL, TX, SC, LA and MS. At the top, an at-a-glance chart gives each state one row: a line from its 2024 D−R margin to its 2026 margin, the shift, turnout pace and the poll margins, grouped by how solid the comparison is. Below it, one card per state adds the vote counts, party mix and a mini chart. Hover over a row or card, or tap it, for cumulative and party-mix charts by days out for every cycle on file, the same-day comparison table, the mail shift projection and the county lean.

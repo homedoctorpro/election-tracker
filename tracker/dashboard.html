@@ -1219,6 +1219,7 @@ function mapTip(mode,k){
   const title=mode==='house'?(k.endsWith('-AL')?`${STATES_N[st]} at-large`:`${k}`):`${STATES_N[st]} Senate${r.special?' (special)':''}`;
   const inc=r.incumbent?`${esc(r.incumbent)} ${ptag(r.inc_party)}`:'<i>Open seat</i>';
   let h=`<h3>${title}</h3><div class="small muted">${inc}${r.status?' · '+esc(r.status):''}</div>`;
+  if(mode==='house')h+=`<div class="small" style="margin-top:3px"><a href="density.html#${k}" target="_blank" rel="noopener">3D population density &rarr;</a></div>`;
   const sr=seatRating(r),fp=seatFlip(r);
   if(fp)h+=`<div style="margin-top:5px"><b>Flip:</b> ${ptag(fp.from)} &rarr; ${ptag(fp.to)} <span class="small muted">the party that doesn't hold the seat is ahead</span></div>`;
   if(sr.cat!=null)h+=`<div style="margin-top:5px"><span class="rating" style="background:${rfill(sr.cat)};color:${[2,3,4,5,6].includes(sr.cat)?'#1a1a1a':'#fff'}">${RCAT[sr.cat]}</span>
