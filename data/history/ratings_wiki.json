@@ -1723,7 +1723,7 @@
    "cook": "Tossup",
    "ddhq": "Tossup",
    "econ": "Tossup",
-   "fpo": "Lean D Flip",
+   "fpo": "Tossup",
    "fox": "Tossup",
    "ie": "Tossup",
    "nbc": "Tossup",
@@ -1735,7 +1735,7 @@
   "AR": {
    "cook": "Solid R",
    "ddhq": "Safe R",
-   "econ": "Likely R",
+   "econ": "Safe R",
    "fpo": "Safe R",
    "fox": "Solid R",
    "ie": "Solid R",
@@ -1912,12 +1912,12 @@
    "rcp": "Tossup",
    "sabato": "Lean D",
    "silver": "Likely D",
-   "splitticket": "Lean D"
+   "splitticket": "Likely D"
   },
   "MN": {
    "cook": "Lean D",
    "ddhq": "Likely D",
-   "econ": "Likely D",
+   "econ": "Lean D",
    "fpo": "Likely D",
    "fox": "Lean D",
    "ie": "Lean D",
@@ -1961,7 +1961,7 @@
    "fox": "Likely R",
    "ie": "Tilt R",
    "nbc": "Likely R",
-   "rcp": "Tossup",
+   "rcp": "Lean R",
    "sabato": "Lean R",
    "silver": "Lean R",
    "splitticket": "Lean R"
