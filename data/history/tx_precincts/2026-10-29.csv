@@ -2073,8 +2073,11 @@ CAMERON,45,mail,3
 CAMERON,46,in_person,100
 CAMERON,46,mail,25
 CAMERON,47,in_person,51
+CAMERON,47,mail,4
 CAMERON,48,in_person,98
+CAMERON,48,mail,2
 CAMERON,49,in_person,70
+CAMERON,49,mail,1
 CAMERON,50,in_person,68
 CAMERON,51,in_person,41
 CAMERON,52,in_person,61
@@ -2351,7 +2354,7 @@ COLLIN,022,in_person,202
 COLLIN,022,mail,3
 COLLIN,023,in_person,117
 COLLIN,023,mail,2
-COLLIN,024,in_person,67
+COLLIN,024,in_person,66
 COLLIN,024,mail,1
 COLLIN,025,in_person,163
 COLLIN,026,in_person,55
@@ -2493,7 +2496,7 @@ COLLIN,100,mail,1
 COLLIN,101,in_person,146
 COLLIN,101,mail,3
 COLLIN,1015,in_person,1
-COLLIN,102,in_person,122
+COLLIN,102,in_person,121
 COLLIN,102,mail,4
 COLLIN,103,in_person,30
 COLLIN,104,in_person,60
@@ -3023,7 +3026,7 @@ DALLAM,7,in_person,16
 DALLAM,8,in_person,16
 DALLAM,9,in_person,10
 DALLAS,023,in_person,1
-DALLAS,024,in_person,1
+DALLAS,024,in_person,2
 DALLAS,034,in_person,1
 DALLAS,067,in_person,2
 DALLAS,094,in_person,1
@@ -3034,6 +3037,7 @@ DALLAS,1006,mail,3
 DALLAS,1007,in_person,30
 DALLAS,1013,in_person,1
 DALLAS,1018,in_person,1
+DALLAS,102,in_person,1
 DALLAS,1040,in_person,88
 DALLAS,1040,mail,1
 DALLAS,1041,in_person,14
@@ -3055,7 +3059,7 @@ DALLAS,1052,mail,1
 DALLAS,1053,in_person,4
 DALLAS,1054,in_person,102
 DALLAS,1056,in_person,52
-DALLAS,1057,in_person,80
+DALLAS,1057,in_person,81
 DALLAS,1057,mail,1
 DALLAS,1058,in_person,87
 DALLAS,1058,mail,1
@@ -3434,6 +3438,7 @@ DALLAS,2152,mail,1
 DALLAS,2153,in_person,46
 DALLAS,2153,mail,2
 DALLAS,2155,in_person,93
+DALLAS,215C,in_person,1
 DALLAS,217,in_person,1
 DALLAS,2200,in_person,75
 DALLAS,2201,in_person,86
@@ -4105,6 +4110,7 @@ DALLAS,4677,in_person,42
 DALLAS,4678,in_person,5
 DALLAS,551,in_person,1
 DALLAS,7,in_person,1
+DALLAS,85,in_person,1
 DAWSON,1,in_person,36
 DAWSON,11,in_person,5
 DAWSON,13,in_person,4
@@ -5076,7 +5082,7 @@ ELLIS,1055,in_person,253
 ELLIS,1055,mail,9
 ELLIS,1056,in_person,167
 ELLIS,1056,mail,8
-ELLIS,1057,in_person,224
+ELLIS,1057,in_person,223
 ELLIS,1057,mail,9
 ELLIS,1058,in_person,96
 ELLIS,1058,mail,2
@@ -5145,23 +5151,18 @@ FANNIN,6,in_person,14
 FANNIN,7,in_person,14
 FANNIN,9,in_person,37
 FAYETTE,101,in_person,67
-FAYETTE,101,mail,1
 FAYETTE,110,in_person,39
 FAYETTE,112,in_person,35
 FAYETTE,201,in_person,39
 FAYETTE,204,in_person,56
-FAYETTE,204,mail,2
 FAYETTE,207,in_person,53
 FAYETTE,207,mail,1
 FAYETTE,301,in_person,42
-FAYETTE,301,mail,1
 FAYETTE,315,in_person,17
 FAYETTE,316,in_person,47
-FAYETTE,316,mail,3
 FAYETTE,422,in_person,20
 FAYETTE,423,in_person,28
 FAYETTE,425,in_person,70
-FAYETTE,425,mail,2
 FISHER,1,in_person,13
 FISHER,1,mail,1
 FISHER,10,in_person,12
@@ -8621,7 +8622,7 @@ HUNT,215A,in_person,56
 HUNT,215A,mail,2
 HUNT,215B,in_person,73
 HUNT,215B,mail,3
-HUNT,215C,in_person,70
+HUNT,215C,in_person,69
 HUNT,215C,mail,1
 HUNT,215D,in_person,85
 HUNT,215E,in_person,63
@@ -9729,7 +9730,7 @@ MCLENNAN,81,in_person,112
 MCLENNAN,82,in_person,102
 MCLENNAN,83,in_person,19
 MCLENNAN,84,in_person,49
-MCLENNAN,85,in_person,14
+MCLENNAN,85,in_person,13
 MCLENNAN,86,in_person,47
 MCLENNAN,87,in_person,47
 MCLENNAN,87,mail,2
@@ -10736,7 +10737,7 @@ PRESIDIO,5,in_person,14
 PRESIDIO,6,in_person,1
 PRESIDIO,7,in_person,34
 RAINS,101,in_person,43
-RAINS,101,mail,2
+RAINS,101,mail,3
 RAINS,102,in_person,18
 RAINS,102,mail,1
 RAINS,203,in_person,43
@@ -11423,7 +11424,7 @@ TARRANT,1543,in_person,38
 TARRANT,1544,in_person,1
 TARRANT,1546,in_person,1
 TARRANT,1557,in_person,61
-TARRANT,1557,mail,2
+TARRANT,1557,mail,1
 TARRANT,1559,in_person,10
 TARRANT,1576,in_person,1
 TARRANT,1577,in_person,23
@@ -11467,7 +11468,7 @@ TARRANT,1734,in_person,127
 TARRANT,1738,in_person,4
 TARRANT,1739,in_person,3
 TARRANT,1831,in_person,128
-TARRANT,1831,mail,5
+TARRANT,1831,mail,3
 TARRANT,1838,in_person,93
 TARRANT,1838,mail,4
 TARRANT,1840,in_person,53
@@ -11547,7 +11548,7 @@ TARRANT,2167,mail,1
 TARRANT,2168,in_person,38
 TARRANT,2169,in_person,28
 TARRANT,2171,in_person,108
-TARRANT,2171,mail,5
+TARRANT,2171,mail,4
 TARRANT,2173,in_person,35
 TARRANT,2174,in_person,97
 TARRANT,2179,in_person,27
@@ -11594,7 +11595,6 @@ TARRANT,2264,mail,2
 TARRANT,2266,in_person,87
 TARRANT,2266,mail,3
 TARRANT,2267,in_person,66
-TARRANT,2267,mail,1
 TARRANT,2268,in_person,52
 TARRANT,2268,mail,1
 TARRANT,2269,in_person,12
@@ -11661,7 +11661,6 @@ TARRANT,2377,in_person,130
 TARRANT,2377,mail,4
 TARRANT,2393,in_person,14
 TARRANT,2401,in_person,8
-TARRANT,2401,mail,1
 TARRANT,2403,in_person,1
 TARRANT,2423,in_person,107
 TARRANT,2423,mail,4
@@ -11748,13 +11747,12 @@ TARRANT,2745,mail,1
 TARRANT,2746,in_person,37
 TARRANT,2834,in_person,87
 TARRANT,2835,in_person,57
-TARRANT,2835,mail,3
+TARRANT,2835,mail,2
 TARRANT,2837,in_person,83
 TARRANT,2837,mail,1
 TARRANT,2843,in_person,112
 TARRANT,2843,mail,3
 TARRANT,2861,in_person,5
-TARRANT,2861,mail,1
 TARRANT,2863,in_person,9
 TARRANT,2864,in_person,38
 TARRANT,2864,mail,1
@@ -11824,7 +11822,7 @@ TARRANT,3215,mail,2
 TARRANT,3216,in_person,135
 TARRANT,3216,mail,2
 TARRANT,3240,in_person,192
-TARRANT,3240,mail,2
+TARRANT,3240,mail,3
 TARRANT,3247,in_person,62
 TARRANT,3248,in_person,164
 TARRANT,3248,mail,1
@@ -11955,7 +11953,7 @@ TARRANT,3582,in_person,4
 TARRANT,3588,in_person,195
 TARRANT,3624,in_person,14
 TARRANT,3626,in_person,17
-TARRANT,3626,mail,5
+TARRANT,3626,mail,4
 TARRANT,3637,in_person,104
 TARRANT,3637,mail,1
 TARRANT,3646,in_person,130
@@ -12156,7 +12154,7 @@ TARRANT,4416,in_person,6
 TARRANT,4429,in_person,143
 TARRANT,4429,mail,1
 TARRANT,4452,in_person,171
-TARRANT,4452,mail,3
+TARRANT,4452,mail,2
 TARRANT,4454,in_person,140
 TARRANT,4454,mail,1
 TARRANT,4472,in_person,28
