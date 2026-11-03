@@ -8833,7 +8833,7 @@
   "AS-AL": {
    "incumbent": "2014",
    "inc_party": "D",
-   "status": "Incumbent running",
+   "status": "Incumbent renominated",
    "candidates": [
     {
      "name": "Amata Coleman Radewagen",
@@ -8886,40 +8886,6 @@
      "name": "Robert White",
      "party": "D",
      "label": "Democratic"
-    }
-   ]
-  },
-  "GU-AL": {
-   "incumbent": "2022",
-   "inc_party": "D",
-   "status": "Incumbent renominated",
-   "candidates": [
-    {
-     "name": "Alicia Limtiaco",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "James Moylan",
-     "party": "R",
-     "label": "Republican"
-    }
-   ]
-  },
-  "MP-AL": {
-   "incumbent": "2024",
-   "inc_party": "R",
-   "status": "Incumbent running",
-   "candidates": [
-    {
-     "name": "Galvin Deleon Guerrero",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Kimberlyn King-Hinds",
-     "party": "R",
-     "label": "Republican"
     }
    ]
   },
