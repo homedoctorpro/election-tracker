@@ -127,7 +127,7 @@
   "UT-01": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected. Democratic gain.",
+   "status": "New member elected.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Ben McAdams",
@@ -300,12 +300,12 @@
   "AZ-01": {
    "incumbent": "David Schweikert",
    "inc_party": "R",
-   "status": "run for governor]]",
+   "status": "run for governor]]. Democratic gain.",
    "candidates": [
     {
-     "name": "Monica Alponte",
-     "party": "L",
-     "label": "Libertarian"
+     "name": "Amish Shah",
+     "party": "D",
+     "label": "Democratic"
     },
     {
      "name": "Jay Feely",
@@ -313,9 +313,9 @@
      "label": "Republican"
     },
     {
-     "name": "Amish Shah",
-     "party": "D",
-     "label": "Democratic"
+     "name": "Monica Alponte",
+     "party": "L",
+     "label": "Libertarian"
     }
    ]
   },
@@ -408,14 +408,14 @@
    "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
     {
-     "name": "Juan Ciscomani",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "JoAnna Mendoza",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Juan Ciscomani",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Jereme Peters",
@@ -5801,9 +5801,9 @@
    "status": "Incumbent re-elected",
    "candidates": [
     {
-     "name": "Tom Bailey",
-     "party": "L",
-     "label": "Libertarian"
+     "name": "Don Davis",
+     "party": "D",
+     "label": "Democratic"
     },
     {
      "name": "Laurie Buckhout",
@@ -5811,9 +5811,9 @@
      "label": "Republican"
     },
     {
-     "name": "Don Davis",
-     "party": "D",
-     "label": "Democratic"
+     "name": "Tom Bailey",
+     "party": "L",
+     "label": "Libertarian"
     }
    ]
   },
@@ -5908,17 +5908,17 @@
   "NC-06": {
    "incumbent": "Addison McDowell",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
-    {
-     "name": "Addison McDowell",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Cyril Jefferson",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Addison McDowell",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -5972,14 +5972,14 @@
    "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
-     "name": "Richard Hudson",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "Richard Ojeda",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Richard Hudson",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -6047,7 +6047,7 @@
   "NC-13": {
    "incumbent": "Brad Knott",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
      "name": "Paul Barringer",
@@ -6069,17 +6069,17 @@
   "NC-14": {
    "incumbent": "Tim Moore",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
-    {
-     "name": "Tim Moore",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Lakesha Womack",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Tim Moore",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -6286,7 +6286,7 @@
   "OH-10": {
    "incumbent": "Mike Turner",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
      "name": "Kristina Knickerbocker",
@@ -6926,7 +6926,7 @@
   "SC-01": {
    "incumbent": "Nancy Mace",
    "inc_party": "R",
-   "status": "run for governor]].",
+   "status": "run for governor]]. Democratic gain.",
    "candidates": [
     {
      "name": "Nancy Lacore",
@@ -7193,7 +7193,7 @@
   "TN-04": {
    "incumbent": "Scott DesJarlais",
    "inc_party": "R",
-   "status": "Incumbent renominated.",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
      "name": "Jacob Anders",
@@ -7511,7 +7511,7 @@
   "TX-09": {
    "incumbent": null,
    "inc_party": null,
-   "status": "Incumbent redistricted. New member elected.<br>",
+   "status": "New member elected.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Leticia Gutierrez",
@@ -8056,8 +8056,13 @@
   "UT-02": {
    "incumbent": "Blake Moore",
    "inc_party": "R",
-   "status": "Incumbent renominated.",
+   "status": "Incumbent re-elected.",
    "candidates": [
+    {
+     "name": "Blake Moore",
+     "party": "R",
+     "label": "Republican"
+    },
     {
      "name": "Carlton Bowen",
      "party": "I",
@@ -8077,11 +8082,6 @@
      "name": "Robert Moesinger",
      "party": "I",
      "label": "Independent"
-    },
-    {
-     "name": "Blake Moore",
-     "party": "R",
-     "label": "Republican"
     }
    ]
   },
@@ -8128,14 +8128,14 @@
    "status": "Incumbent retired.<br />Republican loss.",
    "candidates": [
     {
-     "name": "Steven Burt",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
      "name": "Mike Kennedy",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Steven Burt",
+     "party": "I",
+     "label": "Independent"
     },
     {
      "name": "Jonny Larsen",
@@ -8189,7 +8189,7 @@
   "VA-01": {
    "incumbent": "Rob Wittman",
    "inc_party": "R",
-   "status": "Incumbent renominated.",
+   "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Shannon Taylor",
