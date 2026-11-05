@@ -110,17 +110,17 @@
   "CA-48": {
    "incumbent": "Darrell Issa",
    "inc_party": "R",
-   "status": "Incumbent retired.",
+   "status": "Incumbent retired.<br>Democratic gain.",
    "candidates": [
-    {
-     "name": "Jim Desmond",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Marni von Wilpert",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Jim Desmond",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -405,7 +405,7 @@
   "AZ-06": {
    "incumbent": "Juan Ciscomani",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Juan Ciscomani",
@@ -697,7 +697,7 @@
   "CA-11": {
    "incumbent": "Nancy Pelosi",
    "inc_party": "D",
-   "status": "Incumbent retiring.<br />Democratic hold.",
+   "status": "Incumbent retired.<br />Democratic hold.",
    "candidates": [
     {
      "name": "Scott Wiener",
@@ -884,17 +884,17 @@
   "CA-22": {
    "incumbent": "David Valadao",
    "inc_party": "R",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
-    {
-     "name": "David Valadao",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Randy Villegas",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "David Valadao",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -1003,7 +1003,7 @@
   "CA-29": {
    "incumbent": "Luz Rivas",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.<br />Democratic hold.",
+   "status": "Incumbent advanced to general.",
    "candidates": [
     {
      "name": "Angelica Due\u00f1as",
@@ -1088,15 +1088,15 @@
   "CA-34": {
    "incumbent": "Jimmy Gomez",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent lost re-election.<br>Democratic hold.",
    "candidates": [
     {
-     "name": "Jimmy Gomez",
+     "name": "Angela Gonzales-Torres",
      "party": "D",
      "label": "Democratic"
     },
     {
-     "name": "Angela Gonzales-Torres",
+     "name": "Jimmy Gomez",
      "party": "D",
      "label": "Democratic"
     }
@@ -1292,17 +1292,17 @@
   "CA-47": {
    "incumbent": "Dave Min",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Jenny Le Roux",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Dave Min",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Jenny Le Roux",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -4159,8 +4159,13 @@
   "MI-07": {
    "incumbent": "Tom Barrett",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
+    {
+     "name": "William Lawrence",
+     "party": "D",
+     "label": "Democratic"
+    },
     {
      "name": "Tom Barrett",
      "party": "R",
@@ -4170,11 +4175,6 @@
      "name": "Shane Dedrick",
      "party": "G",
      "label": "Green"
-    },
-    {
-     "name": "William Lawrence",
-     "party": "D",
-     "label": "Democratic"
     }
    ]
   },
@@ -4250,17 +4250,17 @@
   "MI-10": {
    "incumbent": "John James",
    "inc_party": "R",
-   "status": "run for governor]]",
+   "status": "run for governor]].<br>Democratic gain.",
    "candidates": [
-    {
-     "name": "Mike Bouchard Jr.",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Christina Hines",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Mike Bouchard Jr.",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Andrea L. Kirby",
@@ -4786,14 +4786,14 @@
    "status": "2022]]",
    "candidates": [
     {
-     "name": "Aaron Flint",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "Sam Forstag",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Aaron Flint",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Nick Sheedy",
@@ -4832,27 +4832,27 @@
   "NE-01": {
    "incumbent": "Mike Flood",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Chris Backemeyer",
-     "party": "D",
-     "label": "Democratic"
-    },
     {
      "name": "Mike Flood",
      "party": "R",
      "label": "Republican"
     },
     {
-     "name": "Daniel Hartong",
-     "party": "O",
-     "label": "America First"
+     "name": "Chris Backemeyer",
+     "party": "D",
+     "label": "Democratic"
     },
     {
      "name": "Nik Sandman",
      "party": "L",
      "label": "Libertarian"
+    },
+    {
+     "name": "Daniel Hartong",
+     "party": "O",
+     "label": "America First"
     }
    ]
   },
@@ -4918,7 +4918,7 @@
   "NV-02": {
    "incumbent": "Mark Amodei",
    "inc_party": "R",
-   "status": "Incumbent retiring",
+   "status": "Incumbent retired.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Teresa Benitez-Thompson",
@@ -4926,14 +4926,14 @@
      "label": "Democratic"
     },
     {
-     "name": "Lynn Chapman",
-     "party": "I",
-     "label": "Independent American"
-    },
-    {
      "name": "David Flippo",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Lynn Chapman",
+     "party": "I",
+     "label": "Independent American"
     }
    ]
   },
@@ -5372,34 +5372,34 @@
   "NY-03": {
    "incumbent": "Tom Suozzi",
    "inc_party": "D",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Mike LiPetri",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Tom Suozzi",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Mike LiPetri",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
   "NY-04": {
    "incumbent": "Laura Gillen",
    "inc_party": "D",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Jeanine Driscoll",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Laura Gillen",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Jeanine Driscoll",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Blay Tarnoff",
@@ -6476,7 +6476,7 @@
   "OK-05": {
    "incumbent": "Stephanie Bice",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Stephanie Bice",
@@ -6484,14 +6484,14 @@
      "label": "Republican"
     },
     {
-     "name": "Robert Henri",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
      "name": "Jena Nelson",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Robert Henri",
+     "party": "I",
+     "label": "Independent"
     },
     {
      "name": "Austin Nieves",
@@ -6929,14 +6929,14 @@
    "status": "run for governor]].",
    "candidates": [
     {
-     "name": "Jenny Costa Honeycutt",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "Nancy Lacore",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Jenny Costa Honeycutt",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Bill Reeside",
@@ -6951,6 +6951,11 @@
    "status": "Incumbent renominated.",
    "candidates": [
     {
+     "name": "Joe Wilson",
+     "party": "R",
+     "label": "Republican"
+    },
+    {
      "name": "Zyon Khalifa",
      "party": "D",
      "label": "Democratic"
@@ -6959,11 +6964,6 @@
      "name": "Dayna Alane Smith",
      "party": "O",
      "label": "Workers"
-    },
-    {
-     "name": "Joe Wilson",
-     "party": "R",
-     "label": "Republican"
     }
    ]
   },
@@ -7014,7 +7014,7 @@
   "SC-05": {
    "incumbent": "Ralph Norman",
    "inc_party": "R",
-   "status": "run for governor]]. Republican hold.",
+   "status": "run for governor]].<br>Republican hold.",
    "candidates": [
     {
      "name": "Wes Climer",
@@ -7387,17 +7387,17 @@
   "TX-02": {
    "incumbent": "Dan Crenshaw",
    "inc_party": "R",
-   "status": "Incumbent lost renomination.",
+   "status": "Incumbent lost renomination.<br>Republican hold.",
    "candidates": [
-    {
-     "name": "Shaun Finnie",
-     "party": "D",
-     "label": "Democratic"
-    },
     {
      "name": "Steve Toth",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Shaun Finnie",
+     "party": "D",
+     "label": "Democratic"
     }
    ]
   },
@@ -7438,7 +7438,7 @@
   "TX-05": {
    "incumbent": "Lance Gooden",
    "inc_party": "R",
-   "status": "Incumbent renominated.",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Lance Gooden",
@@ -7511,7 +7511,7 @@
   "TX-09": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Democratic gain.",
+   "status": "Incumbent redistricted. New member elected.<br>",
    "candidates": [
     {
      "name": "Leticia Gutierrez",
@@ -7732,17 +7732,17 @@
   "TX-22": {
    "incumbent": "Troy Nehls",
    "inc_party": "R",
-   "status": "Incumbent retired.",
+   "status": "Incumbent retired.<br>Republican hold.",
    "candidates": [
-    {
-     "name": "Marquette Greene-Scott",
-     "party": "D",
-     "label": "Democratic"
-    },
     {
      "name": "Trever Nehls",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Marquette Greene-Scott",
+     "party": "D",
+     "label": "Democratic"
     }
    ]
   },
@@ -7827,7 +7827,7 @@
   "TX-27": {
    "incumbent": "Michael Cloud",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Michael Cloud",
@@ -7922,17 +7922,17 @@
   "TX-32": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New representative to be elected",
+   "status": "New member elected.<br>Republican gain.",
    "candidates": [
-    {
-     "name": "Dan Barrios",
-     "party": "D",
-     "label": "Democratic"
-    },
     {
      "name": "Jace Yarbrough",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Dan Barrios",
+     "party": "D",
+     "label": "Democratic"
     }
    ]
   },
@@ -8034,7 +8034,7 @@
   "TX-38": {
    "incumbent": "Wesley Hunt",
    "inc_party": "R",
-   "status": "run for U.S. Senate]]",
+   "status": "run for U.S. Senate]]<br/>Republican hold.",
    "candidates": [
     {
      "name": "Jon Bonck",
@@ -8480,17 +8480,17 @@
   "WA-03": {
    "incumbent": "Marie Gluesenkamp Perez",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "John Braun",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Marie Gluesenkamp Perez",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "John Braun",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
