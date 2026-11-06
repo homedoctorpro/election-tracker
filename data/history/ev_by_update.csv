@@ -68,6 +68,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-03,CA,California,2026-11-02,23451219.0,6364403.0,298511.0,6662914.0,3297382.0,1786444.0,1398136.0,11146610,59.78,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-11-04,CA,California,2026-11-03,23451620.0,6836017.0,479207.0,7315224.0,3664939.0,1971449.0,1563782.0,11146610,65.63,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-11-05,CA,California,2026-11-04,23452579.0,8496101.0,1443508.0,9939609.0,4735832.0,2523760.0,2134794.0,11146610,89.17,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
+2026-11-06,CA,California,2026-11-05,23452579.0,9233816.0,1443508.0,10677324.0,5254508.0,2690305.0,2366784.0,11146610,95.79,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-15,CO,Colorado,2026-10-14,4028462.0,253588.0,0.0,253588.0,85834.0,60496.0,107258.0,2540666,9.98,Colorado Secretary of State
 2026-10-16,CO,Colorado,2026-10-15,4035841.0,290678.0,90.0,290768.0,97577.0,70308.0,122883.0,2540666,11.44,Colorado Secretary of State
 2026-10-17,CO,Colorado,2026-10-16,4034063.0,357958.0,0.0,357958.0,120214.0,87357.0,150387.0,2540666,14.09,Colorado Secretary of State
@@ -87,7 +88,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-02,CO,Colorado,2026-11-01,4128119.0,1567668.0,23655.0,1591323.0,495736.0,388672.0,706915.0,2540666,62.63,Colorado Secretary of State
 2026-11-03,CO,Colorado,2026-11-02,4054503.0,1820924.0,38976.0,1859900.0,563387.0,456327.0,840186.0,2540666,73.21,Colorado Secretary of State
 2026-11-05,CO,Colorado,2026-11-04,4112838.0,2577890.0,138128.0,2716018.0,775845.0,646066.0,1294107.0,2540666,106.9,Colorado Secretary of State
-2026-11-05,CO,Colorado,2026-11-05,4124450.0,2589502.0,138128.0,2727630.0,779415.0,647621.0,1300594.0,2540666,107.36,Colorado Secretary of State
+2026-11-06,CO,Colorado,2026-11-05,4075072.0,2606233.0,138122.0,2744355.0,783927.0,650466.0,1309962.0,2540666,108.02,Colorado Secretary of State
 2026-10-15,CT,Connecticut,2026-10-15,43979.0,14762.0,0.0,14762.0,7713.0,2773.0,4276.0,1297811,1.14,Connecticut Secretary of the State
 2026-10-19,CT,Connecticut,2026-10-16,46726.0,17138.0,0.0,17138.0,8895.0,3272.0,4971.0,1297811,1.32,Connecticut Secretary of the State
 2026-10-20,CT,Connecticut,2026-10-19,49452.0,19217.0,0.0,19217.0,9964.0,3666.0,5587.0,1297811,1.48,Connecticut Secretary of the State
@@ -193,6 +194,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-02,HI,Hawaii,2026-11-02,727819.0,243668.0,5472.0,249140.0,0.0,0.0,0.0,423443,58.84,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-11-04,HI,Hawaii,2026-11-03,727615.0,282666.0,7940.0,290606.0,0.0,0.0,0.0,423443,68.63,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-11-05,HI,Hawaii,2026-11-04,726849.0,351938.0,17447.0,369385.0,0.0,0.0,0.0,423443,87.23,https://elections.hawaii.gov/resources/absentee-voting-report/
+2026-11-06,HI,Hawaii,2026-11-05,726368.0,374234.0,17447.0,391681.0,0.0,0.0,0.0,423443,92.5,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-15,IA,Iowa,2026-10-15,133430.0,1273.0,16111.0,17384.0,9810.0,4990.0,2584.0,1230417,1.41,Iowa Secretary of State
 2026-10-19,IA,Iowa,2026-10-16,143167.0,1418.0,31999.0,33417.0,18025.0,10037.0,5355.0,1230417,2.72,Iowa Secretary of State
 2026-10-19,IA,Iowa,2026-10-19,151417.0,3471.0,57550.0,61021.0,32813.0,17641.0,10567.0,1230417,4.96,Iowa Secretary of State
@@ -208,6 +210,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-01,IA,Iowa,2026-10-31,161862.0,147027.0,293362.0,440389.0,203573.0,150296.0,86520.0,1230417,35.79,Iowa Secretary of State
 2026-11-02,IA,Iowa,2026-11-02,161779.0,149325.0,314683.0,464008.0,213835.0,156900.0,93273.0,1230417,37.71,Iowa Secretary of State
 2026-11-03,IA,Iowa,2026-11-03,161763.0,153727.0,344986.0,498713.0,224625.0,171130.0,102958.0,1230417,40.53,Iowa Secretary of State
+2026-11-06,IA,Iowa,2026-11-05,161456.0,156194.0,348549.0,504743.0,226708.0,173649.0,104386.0,1230417,41.02,Iowa Secretary of State
 2026-10-15,ID,Idaho,2026-10-15,141208.0,45971.0,2229.0,48200.0,10415.0,26641.0,8915.0,595350,8.1,Idaho Secretary of State
 2026-10-17,ID,Idaho,2026-10-16,143533.0,50763.0,3979.0,54742.0,11257.0,29681.0,9825.0,595350,9.19,Idaho Secretary of State
 2026-10-18,ID,Idaho,2026-10-17,143533.0,50763.0,5760.0,56523.0,11257.0,29681.0,9825.0,595350,9.49,Idaho Secretary of State
@@ -700,6 +703,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-03,WA,Washington,2026-11-02,5131622.0,1992533.0,0.0,1992533.0,0.0,0.0,0.0,3067686,64.95,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-11-04,WA,Washington,2026-11-03,5131622.0,2349137.0,0.0,2349137.0,0.0,0.0,0.0,3067686,76.58,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-11-05,WA,Washington,2026-11-04,5131622.0,2885474.0,0.0,2885474.0,0.0,0.0,0.0,3067686,94.06,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
+2026-11-06,WA,Washington,2026-11-05,5131622.0,3095092.0,0.0,3095092.0,0.0,0.0,0.0,3067686,100.89,https://www.sos.wa.gov/elections/data-research/election-data-and-maps/ballot-return-statistics
 2026-10-15,WI,Wisconsin,2026-10-15,363330.0,151231.0,0.0,151231.0,0.0,0.0,0.0,2673154,5.66,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-18,WI,Wisconsin,2026-10-16,366361.0,161023.0,0.0,161023.0,0.0,0.0,0.0,2673154,6.02,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
 2026-10-19,WI,Wisconsin,2026-10-19,371014.0,173164.0,0.0,173164.0,0.0,0.0,0.0,2673154,6.48,https://elections.wi.gov/resources/statistics/absentee-ballot-report-november-3-2026-general-election-0
