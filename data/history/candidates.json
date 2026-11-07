@@ -388,7 +388,7 @@
   "AZ-05": {
    "incumbent": "Andy Biggs",
    "inc_party": "R",
-   "status": "run for governor]]",
+   "status": "run for governor]].<br>Republican hold.",
    "candidates": [
     {
      "name": "Mark Lamb",
@@ -449,17 +449,17 @@
   "AZ-08": {
    "incumbent": "Abraham Hamadeh",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Bernadette Greene-Placentia",
-     "party": "D",
-     "label": "Democratic"
-    },
     {
      "name": "Abraham Hamadeh",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Bernadette Greene-Placentia",
+     "party": "D",
+     "label": "Democratic"
     }
    ]
   },
@@ -748,7 +748,7 @@
   "CA-14": {
    "incumbent": "Aisha Wahab",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Aisha Wahab",
@@ -1431,17 +1431,17 @@
   "CO-03": {
    "incumbent": "Jeff Hurd",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Clifton Brown",
-     "party": "I",
-     "label": "Independent"
-    },
     {
      "name": "Jeff Hurd",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Dwayne Romero",
+     "party": "D",
+     "label": "Democratic"
     },
     {
      "name": "Cory Robertson",
@@ -1449,9 +1449,9 @@
      "label": "Libertarian"
     },
     {
-     "name": "Dwayne Romero",
-     "party": "D",
-     "label": "Democratic"
+     "name": "Clifton Brown",
+     "party": "I",
+     "label": "Independent"
     }
    ]
   },
@@ -5365,7 +5365,7 @@
   "NY-02": {
    "incumbent": "Andrew Garbarino",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Andrew Garbarino",
@@ -5706,7 +5706,7 @@
   "NY-21": {
    "incumbent": "Elise Stefanik",
    "inc_party": "R",
-   "status": "Incumbent retiring.",
+   "status": "Incumbent retired.<br>Republican hold.",
    "candidates": [
     {
      "name": "Anthony Constantino",
@@ -5957,7 +5957,7 @@
   "NC-08": {
    "incumbent": "Mark Harris",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Mark Harris",
@@ -6082,7 +6082,7 @@
    "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
-     "name": "Lakesha Womack",
+     "name": "LaKesha Womack",
      "party": "D",
      "label": "Democratic"
     },
