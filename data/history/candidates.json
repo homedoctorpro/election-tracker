@@ -1886,7 +1886,7 @@
   "FL-09": {
    "incumbent": "Darren Soto",
    "inc_party": "D",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Dan Green",
@@ -5455,7 +5455,7 @@
   "NY-07": {
    "incumbent": "Nydia Vel\u00e1zquez",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired. Democratic hold.",
    "candidates": [
     {
      "name": "Claire Valdez",
@@ -5545,7 +5545,7 @@
   "NY-12": {
    "incumbent": "Jerry Nadler",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired. Democratic hold.",
    "candidates": [
     {
      "name": "Micah Lasher",
@@ -5620,8 +5620,8 @@
     },
     {
      "name": "Andre Easton",
-     "party": "I",
-     "label": "Independent"
+     "party": "O",
+     "label": "Party for Socialism and Liberation"
     },
     {
      "name": "Jose Vega",
@@ -5706,7 +5706,7 @@
   "NY-21": {
    "incumbent": "Elise Stefanik",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired. Republican hold.",
    "candidates": [
     {
      "name": "Anthony Constantino",
@@ -7203,7 +7203,7 @@
   "TN-04": {
    "incumbent": "Scott DesJarlais",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Jacob Anders",

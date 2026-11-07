@@ -69,6 +69,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-04,CA,California,2026-11-03,23451620.0,6836017.0,479207.0,7315224.0,3664939.0,1971449.0,1563782.0,11146610,65.63,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-11-05,CA,California,2026-11-04,23452579.0,8496101.0,1443508.0,9939609.0,4735832.0,2523760.0,2134794.0,11146610,89.17,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-11-06,CA,California,2026-11-05,23452579.0,9233816.0,1443508.0,10677324.0,5254508.0,2690305.0,2366784.0,11146610,95.79,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
+2026-11-07,CA,California,2026-11-06,23452579.0,9865466.0,1443508.0,11308974.0,5601289.0,2832959.0,2552741.0,11146610,101.46,https://www.sos.ca.gov/elections/upcoming-elections/general-election-november-3-2026
 2026-10-15,CO,Colorado,2026-10-14,4028462.0,253588.0,0.0,253588.0,85834.0,60496.0,107258.0,2540666,9.98,Colorado Secretary of State
 2026-10-16,CO,Colorado,2026-10-15,4035841.0,290678.0,90.0,290768.0,97577.0,70308.0,122883.0,2540666,11.44,Colorado Secretary of State
 2026-10-17,CO,Colorado,2026-10-16,4034063.0,357958.0,0.0,357958.0,120214.0,87357.0,150387.0,2540666,14.09,Colorado Secretary of State
@@ -90,6 +91,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-05,CO,Colorado,2026-11-04,4112838.0,2577890.0,138128.0,2716018.0,775845.0,646066.0,1294107.0,2540666,106.9,Colorado Secretary of State
 2026-11-06,CO,Colorado,2026-11-05,4075072.0,2606233.0,138122.0,2744355.0,783927.0,650466.0,1309962.0,2540666,108.02,Colorado Secretary of State
 2026-11-07,CO,Colorado,2026-11-06,4076175.0,2607336.0,138128.0,2745464.0,784201.0,650645.0,1310618.0,2540666,108.06,Colorado Secretary of State
+2026-11-07,CO,Colorado,2026-11-07,4076809.0,2607970.0,138127.0,2746097.0,784366.0,650741.0,1310990.0,2540666,108.09,Colorado Secretary of State
 2026-10-15,CT,Connecticut,2026-10-15,43979.0,14762.0,0.0,14762.0,7713.0,2773.0,4276.0,1297811,1.14,Connecticut Secretary of the State
 2026-10-19,CT,Connecticut,2026-10-16,46726.0,17138.0,0.0,17138.0,8895.0,3272.0,4971.0,1297811,1.32,Connecticut Secretary of the State
 2026-10-20,CT,Connecticut,2026-10-19,49452.0,19217.0,0.0,19217.0,9964.0,3666.0,5587.0,1297811,1.48,Connecticut Secretary of the State
@@ -491,6 +493,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-01,NV,Nevada,2026-10-31,2091353.0,410884.0,308019.0,718903.0,286158.0,240733.0,192012.0,1023617,70.23,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-11-03,NV,Nevada,2026-11-02,2091835.0,445031.0,308025.0,753056.0,296103.0,253694.0,203259.0,1023617,73.57,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-11-03,NV,Nevada,2026-11-03,2091906.0,445205.0,322681.0,767886.0,300466.0,259548.0,207872.0,1023617,75.02,https://www.nvsos.gov/elections/election-information/vivid-project
+2026-11-07,NV,Nevada,2026-11-07,2092833.0,577549.0,517285.0,1094834.0,400485.0,363213.0,331136.0,1023617,106.96,https://www.nvsos.gov/elections/election-information/vivid-project
 2026-10-24,NY,New York,2026-08-12,0.0,0.0,0.0,0.0,0.0,0.0,0.0,5962278,0.0,New York State Board of Elections
 2026-10-26,NY,New York,2026-10-26,0.0,0.0,485205.0,485205.0,0.0,0.0,0.0,5962278,8.14,Data provided by the New York State Board of Elections
 2026-10-27,NY,New York,2026-10-27,0.0,0.0,703055.0,703055.0,0.0,0.0,0.0,5962278,11.79,Data provided by the New York State Board of Elections
@@ -551,7 +554,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-01,OR,Oregon,2026-10-31,3117439.0,1181637.0,0.0,1181637.0,492019.0,368003.0,321615.0,1997689,59.15,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
 2026-11-03,OR,Oregon,2026-11-02,3117439.0,1481943.0,0.0,1481943.0,604825.0,454391.0,422727.0,1997689,74.18,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
 2026-11-04,OR,Oregon,2026-11-03,3117439.0,1808770.0,0.0,1808770.0,720033.0,539073.0,549664.0,1997689,90.54,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
-2026-11-07,OR,Oregon,2026-11-06,3117439.0,2024318.0,0.0,2024318.0,795165.0,584593.0,644560.0,1997689,101.33,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
+2026-11-07,OR,Oregon,2026-11-06,3117439.0,2028213.0,0.0,2028213.0,796431.0,585475.0,646307.0,1997689,101.53,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
 2026-10-15,PA,Pennsylvania,2026-10-15,1134386.0,391195.0,0.0,391195.0,272822.0,85681.0,32692.0,5410022,7.23,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
 2026-10-19,PA,Pennsylvania,2026-10-16,1149853.0,456065.0,0.0,456065.0,313470.0,103941.0,38654.0,5410022,8.43,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
 2026-10-19,PA,Pennsylvania,2026-10-19,1172391.0,532067.0,0.0,532067.0,363549.0,122943.0,45575.0,5410022,9.83,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
