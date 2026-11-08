@@ -2579,7 +2579,9 @@ COLLIN,3486,in_person,1
 COLLIN,353,in_person,1
 COLLIN,3612,in_person,1
 COLLIN,3851,in_person,1
+COLLIN,3A,in_person,1
 COLLIN,3B,in_person,1
+COLLIN,4161,in_person,1
 COLLIN,4519,in_person,1
 COLLIN,4702,in_person,1
 COLLINGSWORTH,101,in_person,22
@@ -4157,7 +4159,7 @@ DENTON,3647,in_person,2
 DENTON,3N,in_person,2
 DENTON,4,in_person,1
 DENTON,4043,in_person,109
-DENTON,4161,in_person,147
+DENTON,4161,in_person,146
 DENTON,4162,in_person,48
 DENTON,4163,in_person,186
 DENTON,4164,in_person,182
@@ -10598,7 +10600,7 @@ ROCKWALL,3,in_person,220
 ROCKWALL,36,in_person,1
 ROCKWALL,3921,in_person,1
 ROCKWALL,3967,in_person,1
-ROCKWALL,3A,in_person,260
+ROCKWALL,3A,in_person,259
 ROCKWALL,3A,mail,1
 ROCKWALL,3B,in_person,217
 ROCKWALL,3B,mail,2
