@@ -4235,7 +4235,7 @@
   "MN-01": {
    "incumbent": "Brad Finstad",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br>DFL gain.",
    "candidates": [
     {
      "name": "Brad Finstad",
@@ -5782,7 +5782,7 @@
   "NC-07": {
    "incumbent": "David Rouzer",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Maad Abu-Ghazalah",
@@ -7053,11 +7053,6 @@
    "status": "Incumbent lost re-election.<br>Democratic gain.",
    "candidates": [
     {
-     "name": "Jacob Anders",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
      "name": "Victoria Broderick",
      "party": "D",
      "label": "Democratic"
@@ -7066,6 +7061,16 @@
      "name": "Scott DesJarlais",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Jacob Anders",
+     "party": "I",
+     "label": "Independent"
+    },
+    {
+     "name": "Clay Faircloth",
+     "party": "I",
+     "label": "Independent"
     }
    ]
   },
