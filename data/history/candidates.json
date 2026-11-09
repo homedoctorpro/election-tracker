@@ -301,7 +301,7 @@
   "AZ-02": {
    "incumbent": "Eli Crane",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Eli Crane",
@@ -309,14 +309,14 @@
      "label": "Republican"
     },
     {
-     "name": "Curtis Goodwin",
-     "party": "L",
-     "label": "Libertarian"
-    },
-    {
      "name": "Jonathan Nez",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Curtis Goodwin",
+     "party": "L",
+     "label": "Libertarian"
     }
    ]
   },
@@ -1437,17 +1437,17 @@
   "CO-04": {
    "incumbent": "Lauren Boebert",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
-    {
-     "name": "Lauren Boebert",
-     "party": "R",
-     "label": "Republican"
-    },
     {
      "name": "Eileen Laubacher",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Lauren Boebert",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Douglas Mangeris",
@@ -4238,14 +4238,14 @@
    "status": "Incumbent lost re-election.<br>DFL gain.",
    "candidates": [
     {
-     "name": "Brad Finstad",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "Jake Johnson",
      "party": "D",
      "label": "DFL"
+    },
+    {
+     "name": "Brad Finstad",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -5743,7 +5743,7 @@
   "NC-05": {
    "incumbent": "Virginia Foxx",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
      "name": "Virginia Foxx",
