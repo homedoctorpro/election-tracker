@@ -1169,7 +1169,7 @@
   "CA-40": {
    "incumbent": "Young Kim",
    "inc_party": "R",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent lost re-election.<br>Republican loss.",
    "candidates": [
     {
      "name": "Ken Calvert",
@@ -1868,14 +1868,14 @@
    "status": "Incumbent re-elected.",
    "candidates": [
     {
-     "name": "Dan Green",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "Darren Soto",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Dan Green",
+     "party": "R",
+     "label": "Republican"
     }
    ]
   },
@@ -2131,7 +2131,7 @@
   "FL-22": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New representative elected.<br>Democratic gain.",
+   "status": "New member elected.<br>Democratic gain.",
    "candidates": [
     {
      "name": "Pia Dandiya",
@@ -2204,7 +2204,7 @@
   "FL-26": {
    "incumbent": "Mario D\u00edaz-Balart",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Mario D\u00edaz-Balart",
@@ -6783,7 +6783,7 @@
   "SC-01": {
    "incumbent": "Nancy Mace",
    "inc_party": "R",
-   "status": "run for governor]]. Democratic gain.",
+   "status": "run for governor]].<br>Democratic gain.",
    "candidates": [
     {
      "name": "Nancy Lacore",
@@ -8280,7 +8280,7 @@
   "WA-05": {
    "incumbent": "Michael Baumgartner",
    "inc_party": "R",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Michael Baumgartner",
