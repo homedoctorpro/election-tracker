@@ -5746,14 +5746,14 @@
    "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
-     "name": "Virginia Foxx",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
      "name": "Chuck Hubbard",
      "party": "D",
      "label": "Democratic"
+    },
+    {
+     "name": "Virginia Foxx",
+     "party": "R",
+     "label": "Republican"
     },
     {
      "name": "Robert Luffman",
@@ -8704,7 +8704,7 @@
   "AR": {
    "incumbent": "Tom Cotton",
    "inc_party": "R",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Tom Cotton",
@@ -8726,7 +8726,7 @@
   "CO": {
    "incumbent": "John Hickenlooper",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "John Hickenlooper",
@@ -8758,7 +8758,7 @@
   "DE": {
    "incumbent": "Chris Coons",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Chris Coons",
@@ -8775,7 +8775,7 @@
   "GA": {
    "incumbent": "Jon Ossoff",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Jon Ossoff",
@@ -8792,7 +8792,7 @@
   "ID": {
    "incumbent": "Jim Risch",
    "inc_party": "R",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Jim Risch",
@@ -8863,7 +8863,7 @@
   "KS": {
    "incumbent": "Roger Marshall",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br/>Democratic gain.",
+   "status": "Incumbent lost reelection.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Adam Hamilton",
@@ -8924,7 +8924,7 @@
   "ME": {
    "incumbent": "Susan Collins",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br/>Democratic gain.",
+   "status": "Incumbent lost reelection.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Troy Jackson",
@@ -8941,7 +8941,7 @@
   "MA": {
    "incumbent": "Ed Markey",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Ed Markey",
@@ -9081,7 +9081,7 @@
   "NE": {
    "incumbent": "Pete Ricketts",
    "inc_party": "R",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Pete Ricketts",
@@ -9135,7 +9135,7 @@
   "NJ": {
    "incumbent": "Cory Booker",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Cory Booker",
@@ -9162,7 +9162,7 @@
   "NM": {
    "incumbent": "Ben Ray Luj\u00e1n",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Ben Ray Luj\u00e1n",
@@ -9238,7 +9238,7 @@
   "OR": {
    "incumbent": "Jeff Merkley",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Jeff Merkley",
@@ -9265,7 +9265,7 @@
   "RI": {
    "incumbent": "Jack Reed",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Jack Reed",
@@ -9314,7 +9314,7 @@
   "SD": {
    "incumbent": "Mike Rounds",
    "inc_party": "R",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Mike Rounds",
@@ -9331,7 +9331,7 @@
   "TN": {
    "incumbent": "Bill Hagerty",
    "inc_party": "R",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Bill Hagerty",
@@ -9410,7 +9410,7 @@
   "VA": {
    "incumbent": "Mark Warner",
    "inc_party": "D",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Mark Warner",
@@ -9427,7 +9427,7 @@
   "WV": {
    "incumbent": "Shelley Moore Capito",
    "inc_party": "R",
-   "status": "Incumbent re-elected",
+   "status": "Incumbent reelected",
    "candidates": [
     {
      "name": "Shelley Moore Capito",
