@@ -5699,12 +5699,12 @@
   "NC-03": {
    "incumbent": "Greg Murphy",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost re-election.<br />Democratic gain.",
    "candidates": [
     {
-     "name": "Daniel Cavender",
-     "party": "L",
-     "label": "Libertarian"
+     "name": "Raymond Smith Jr.",
+     "party": "D",
+     "label": "Democratic"
     },
     {
      "name": "Greg Murphy",
@@ -5712,9 +5712,9 @@
      "label": "Republican"
     },
     {
-     "name": "Raymond Smith Jr.",
-     "party": "D",
-     "label": "Democratic"
+     "name": "Daniel Cavender",
+     "party": "L",
+     "label": "Libertarian"
     }
    ]
   },
@@ -6805,7 +6805,7 @@
   "SC-02": {
    "incumbent": "Joe Wilson",
    "inc_party": "R",
-   "status": "Incumbent renominated.",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Joe Wilson",

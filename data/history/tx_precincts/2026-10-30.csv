@@ -2315,7 +2315,7 @@ COLLIN,122,in_person,253
 COLLIN,122,mail,6
 COLLIN,123,in_person,109
 COLLIN,123,mail,5
-COLLIN,124,in_person,150
+COLLIN,124,in_person,149
 COLLIN,124,mail,5
 COLLIN,125,in_person,122
 COLLIN,126,in_person,243
@@ -2803,6 +2803,7 @@ DALLAS,1007,in_person,40
 DALLAS,1007,mail,1
 DALLAS,1012,in_person,1
 DALLAS,1013,in_person,1
+DALLAS,1034,in_person,1
 DALLAS,1040,in_person,142
 DALLAS,1040,mail,1
 DALLAS,1041,in_person,21
@@ -2881,6 +2882,7 @@ DALLAS,1121,in_person,103
 DALLAS,1121,mail,1
 DALLAS,1125,in_person,85
 DALLAS,1125,mail,1
+DALLAS,1126,in_person,2
 DALLAS,1128,in_person,56
 DALLAS,1133,in_person,84
 DALLAS,1133,mail,1
@@ -2918,6 +2920,7 @@ DALLAS,1173,in_person,67
 DALLAS,1174,in_person,164
 DALLAS,1174,mail,1
 DALLAS,1175,in_person,3
+DALLAS,124,in_person,1
 DALLAS,13,in_person,1
 DALLAS,1300,in_person,142
 DALLAS,1301,in_person,127
@@ -3351,6 +3354,7 @@ DALLAS,2903,in_person,194
 DALLAS,2905,in_person,25
 DALLAS,2905,mail,1
 DALLAS,2911,in_person,17
+DALLAS,2A,in_person,1
 DALLAS,2A-S,in_person,1
 DALLAS,2B,in_person,1
 DALLAS,3000,in_person,257
@@ -3771,6 +3775,7 @@ DALLAS,4182,in_person,1
 DALLAS,424,in_person,1
 DALLAS,4300,in_person,52
 DALLAS,436,in_person,1
+DALLAS,4369,in_person,1
 DALLAS,4500,in_person,136
 DALLAS,4501,in_person,139
 DALLAS,4501,mail,1
@@ -3950,7 +3955,7 @@ DENTON,1032,in_person,280
 DENTON,1032,mail,2
 DENTON,1033,in_person,209
 DENTON,1033,mail,1
-DENTON,1034,in_person,72
+DENTON,1034,in_person,71
 DENTON,1035,in_person,193
 DENTON,1036,in_person,220
 DENTON,1037,in_person,145
@@ -5635,16 +5640,16 @@ GUADALUPE,1140,mail,1
 GUADALUPE,115,in_person,33
 GUADALUPE,116,in_person,79
 GUADALUPE,117,in_person,154
-GUADALUPE,1170,mail,1
+GUADALUPE,1170,mail,3
 GUADALUPE,119,in_person,73
 GUADALUPE,1194,mail,1
 GUADALUPE,120,in_person,44
-GUADALUPE,1200,mail,1
+GUADALUPE,1200,mail,3
 GUADALUPE,125,in_person,14
 GUADALUPE,126,in_person,1
 GUADALUPE,127,in_person,1
 GUADALUPE,128,in_person,126
-GUADALUPE,1280,mail,1
+GUADALUPE,1280,mail,2
 GUADALUPE,129,in_person,141
 GUADALUPE,1290,mail,1
 GUADALUPE,201,in_person,17
@@ -5684,7 +5689,7 @@ GUADALUPE,2300,mail,2
 GUADALUPE,231,in_person,6
 GUADALUPE,232,in_person,2
 GUADALUPE,233,in_person,156
-GUADALUPE,2330,mail,1
+GUADALUPE,2330,mail,3
 GUADALUPE,2331,mail,1
 GUADALUPE,303,in_person,54
 GUADALUPE,304,in_person,178
@@ -5720,7 +5725,7 @@ GUADALUPE,412,in_person,183
 GUADALUPE,4120,mail,3
 GUADALUPE,413,in_person,41
 GUADALUPE,414,in_person,244
-GUADALUPE,4140,mail,3
+GUADALUPE,4140,mail,4
 GUADALUPE,4141,mail,7
 GUADALUPE,415,in_person,115
 GUADALUPE,4150,mail,1
@@ -7092,7 +7097,7 @@ HARRIS,687,mail,2
 HARRIS,688,in_person,196
 HARRIS,689,in_person,135
 HARRIS,689,mail,1
-HARRIS,69,in_person,55
+HARRIS,69,in_person,56
 HARRIS,690,in_person,265
 HARRIS,690,mail,1
 HARRIS,691,in_person,320
@@ -7742,7 +7747,7 @@ HENDERSON,4,in_person,95
 HENDERSON,436,in_person,1
 HENDERSON,4A,in_person,24
 HENDERSON,4B,in_person,80
-HENDERSON,4LP,in_person,108
+HENDERSON,4LP,in_person,110
 HENDERSON,4MS,in_person,62
 HENDERSON,4NLP,in_person,116
 HENDERSON,4SE,in_person,153
@@ -9836,7 +9841,7 @@ MONTGOMERY,66,mail,3
 MONTGOMERY,67,in_person,116
 MONTGOMERY,68,in_person,200
 MONTGOMERY,68,mail,3
-MONTGOMERY,69,in_person,226
+MONTGOMERY,69,in_person,225
 MONTGOMERY,7,in_person,130
 MONTGOMERY,70,in_person,144
 MONTGOMERY,70,mail,2
@@ -10593,7 +10598,7 @@ ROCKWALL,1E,mail,3
 ROCKWALL,2,in_person,222
 ROCKWALL,2,mail,5
 ROCKWALL,2508,in_person,1
-ROCKWALL,2A,in_person,179
+ROCKWALL,2A,in_person,178
 ROCKWALL,2A,mail,4
 ROCKWALL,2B,in_person,132
 ROCKWALL,2B,mail,4
@@ -10845,7 +10850,7 @@ SMITH,245,in_person,67
 SMITH,245,mail,2
 SMITH,300,in_person,96
 SMITH,303,in_person,91
-SMITH,306,in_person,133
+SMITH,306,in_person,134
 SMITH,306,mail,5
 SMITH,309,in_person,20
 SMITH,312,in_person,1
@@ -10992,7 +10997,7 @@ TARRANT,1109,in_person,75
 TARRANT,1112,in_person,1
 TARRANT,1119,in_person,150
 TARRANT,1119,mail,2
-TARRANT,1126,in_person,91
+TARRANT,1126,in_person,89
 TARRANT,1127,in_person,50
 TARRANT,1132,in_person,69
 TARRANT,1132,mail,1
@@ -11092,7 +11097,7 @@ TARRANT,1432,in_person,2
 TARRANT,1436,in_person,55
 TARRANT,1436,mail,2
 TARRANT,1437,in_person,29
-TARRANT,1438,in_person,141
+TARRANT,1438,in_person,140
 TARRANT,1438,mail,1
 TARRANT,1439,in_person,32
 TARRANT,1440,in_person,86
@@ -11820,7 +11825,7 @@ TARRANT,4344,in_person,76
 TARRANT,4344,mail,1
 TARRANT,4350,in_person,61
 TARRANT,4363,in_person,102
-TARRANT,4369,in_person,195
+TARRANT,4369,in_person,194
 TARRANT,4369,mail,4
 TARRANT,4371,in_person,147
 TARRANT,4371,mail,4
