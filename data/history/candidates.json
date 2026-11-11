@@ -30,12 +30,12 @@
     {
      "name": "Cait Conley",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Mike Lawler",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -608,7 +608,7 @@
   "CA-07": {
    "incumbent": "Doris Matsui",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent re-elected.",
    "candidates": [
     {
      "name": "Doris Matsui",
@@ -1609,7 +1609,7 @@
     {
      "name": "George Austin",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/IPC"
     }
    ]
   },
@@ -1665,7 +1665,7 @@
     {
      "name": "Jahana Hayes",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Chris Shea",
@@ -1826,8 +1826,13 @@
   "FL-07": {
    "incumbent": "Cory Mills",
    "inc_party": "R",
-   "status": "Incumbent lost renomination.",
+   "status": "Incumbent lost renomination.<br>Republican hold.",
    "candidates": [
+    {
+     "name": "Ryan Elijah",
+     "party": "R",
+     "label": "Republican"
+    },
     {
      "name": "Bale Dalton",
      "party": "D",
@@ -1837,11 +1842,6 @@
      "name": "Christopher Dennison",
      "party": "L",
      "label": "Libertarian"
-    },
-    {
-     "name": "Ryan Elijah",
-     "party": "R",
-     "label": "Republican"
     }
    ]
   },
@@ -2226,17 +2226,17 @@
   "FL-27": {
    "incumbent": "Mar\u00eda Elvira Salazar",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
-    {
-     "name": "Eliott Rodriguez",
-     "party": "D",
-     "label": "Democratic"
-    },
     {
      "name": "Mar\u00eda Elvira Salazar",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Eliott Rodriguez",
+     "party": "D",
+     "label": "Democratic"
     }
    ]
   },
@@ -4235,17 +4235,17 @@
   "MN-01": {
    "incumbent": "Brad Finstad",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>DFL gain.",
+   "status": "Incumbent renominated.",
    "candidates": [
-    {
-     "name": "Jake Johnson",
-     "party": "D",
-     "label": "DFL"
-    },
     {
      "name": "Brad Finstad",
      "party": "R",
      "label": "Republican"
+    },
+    {
+     "name": "Jake Johnson",
+     "party": "D",
+     "label": "DFL"
     }
    ]
   },
@@ -5200,12 +5200,12 @@
     {
      "name": "Nick LaLota",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Chris Gallant",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     }
    ]
   },
@@ -5217,12 +5217,12 @@
     {
      "name": "Andrew Garbarino",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Patrick Halpin",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     }
    ]
   },
@@ -5239,7 +5239,7 @@
     {
      "name": "Mike LiPetri",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5256,7 +5256,7 @@
     {
      "name": "Jeanine Driscoll",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Blay Tarnoff",
@@ -5295,7 +5295,7 @@
     {
      "name": "Joseph Chou",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5307,12 +5307,12 @@
     {
      "name": "Claire Valdez",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Melvin Rivera",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Priscilla Ghaznavi",
@@ -5334,7 +5334,7 @@
     {
      "name": "Lewis Mizrahi",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5351,7 +5351,7 @@
     {
      "name": "Joel Azumah",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5363,12 +5363,12 @@
     {
      "name": "Brad Lander",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Jennifer Moore",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5380,7 +5380,7 @@
     {
      "name": "Nicole Malliotakis",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Michael DeCillis",
@@ -5402,7 +5402,7 @@
     {
      "name": "Caroline Shinkle",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Karen Ortiz",
@@ -5424,12 +5424,12 @@
     {
      "name": "Darializa Avila Chevalier",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Jomo Williams",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5441,12 +5441,12 @@
     {
      "name": "Alexandria Ocasio-Cortez",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Diamant Hysenaj",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5468,7 +5468,7 @@
     {
      "name": "Andre Easton",
      "party": "O",
-     "label": "Party for Socialism and Liberation"
+     "label": "PSL"
     },
     {
      "name": "Jose Vega",
@@ -5507,12 +5507,12 @@
     {
      "name": "Pat Ryan",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Jacqueline Auringer",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5524,12 +5524,12 @@
     {
      "name": "Josh Riley",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Peter Oberacker",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5541,12 +5541,12 @@
     {
      "name": "Paul Tonko",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Ralph Ambrosio",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5575,12 +5575,12 @@
     {
      "name": "John Mannion",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Kailee Buller",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5592,12 +5592,12 @@
     {
      "name": "Nick Langworthy",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Aaron Gies",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     }
    ]
   },
@@ -5609,12 +5609,12 @@
     {
      "name": "Claudia Tenney",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     },
     {
      "name": "Alissa Ellman",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     }
    ]
   },
@@ -5626,12 +5626,12 @@
     {
      "name": "Joseph Morelle",
      "party": "D",
-     "label": "Democratic"
+     "label": "Democratic/WFP"
     },
     {
      "name": "Virginia McIntyre",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5648,7 +5648,7 @@
     {
      "name": "Dennis Hannon",
      "party": "R",
-     "label": "Republican"
+     "label": "Republican/Cons."
     }
    ]
   },
@@ -5743,7 +5743,7 @@
   "NC-05": {
    "incumbent": "Virginia Foxx",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent renominated",
    "candidates": [
     {
      "name": "Chuck Hubbard",
@@ -5782,7 +5782,7 @@
   "NC-07": {
    "incumbent": "David Rouzer",
    "inc_party": "R",
-   "status": "Incumbent re-elected.",
+   "status": "Incumbent renominated.",
    "candidates": [
     {
      "name": "Maad Abu-Ghazalah",
@@ -7050,7 +7050,7 @@
   "TN-04": {
    "incumbent": "Scott DesJarlais",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent renominated.",
    "candidates": [
     {
      "name": "Victoria Broderick",

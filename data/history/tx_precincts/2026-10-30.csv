@@ -162,6 +162,7 @@ BASTROP,2013,in_person,146
 BASTROP,2014,in_person,129
 BASTROP,2015,in_person,170
 BASTROP,2016,in_person,132
+BASTROP,301,in_person,1
 BASTROP,3017,in_person,151
 BASTROP,3018,in_person,74
 BASTROP,3019,in_person,131
@@ -1560,7 +1561,7 @@ BRAZORIA,54,in_person,151
 BRAZORIA,55,in_person,148
 BRAZORIA,56,in_person,176
 BRAZORIA,57,in_person,71
-BRAZORIA,58,in_person,187
+BRAZORIA,58,in_person,186
 BRAZORIA,59,in_person,139
 BRAZORIA,6,in_person,81
 BRAZORIA,60,in_person,269
@@ -1626,6 +1627,7 @@ BRAZOS,231,in_person,1
 BRAZOS,237,in_person,1
 BRAZOS,24,in_person,86
 BRAZOS,246,in_person,1
+BRAZOS,248,in_person,1
 BRAZOS,2556,in_person,1
 BRAZOS,26,in_person,238
 BRAZOS,27,in_person,161
@@ -1681,12 +1683,13 @@ BRAZOS,75,in_person,157
 BRAZOS,76,in_person,144
 BRAZOS,77,in_person,19
 BRAZOS,78,in_person,9
-BRAZOS,8,in_person,75
+BRAZOS,8,in_person,76
 BRAZOS,80,in_person,214
 BRAZOS,803,in_person,1
 BRAZOS,82,in_person,23
 BRAZOS,88,in_person,145
 BRAZOS,9,in_person,107
+BRAZOS,927,in_person,1
 BRAZOS,98,in_person,1
 BREWSTER,1,in_person,78
 BREWSTER,2,in_person,50
@@ -1810,7 +1813,7 @@ CALDWELL,205,in_person,17
 CALDWELL,206,in_person,32
 CALDWELL,300,in_person,16
 CALDWELL,300,mail,1
-CALDWELL,301,in_person,49
+CALDWELL,301,in_person,48
 CALDWELL,301,mail,1
 CALDWELL,302,in_person,65
 CALDWELL,302,mail,2
@@ -1849,18 +1852,17 @@ CALLAHAN,6,in_person,43
 CALLAHAN,7,in_person,32
 CALLAHAN,8,in_person,72
 CAMERON,01,in_person,49
-CAMERON,02,mail,1
 CAMERON,040,in_person,1
 CAMERON,05,in_person,94
 CAMERON,06,in_person,31
 CAMERON,096,in_person,1
 CAMERON,10,in_person,55
 CAMERON,100,in_person,215
-CAMERON,100,mail,1
 CAMERON,101,in_person,37
 CAMERON,102,in_person,70
 CAMERON,103,in_person,1
 CAMERON,11,in_person,63
+CAMERON,112,in_person,1
 CAMERON,12,in_person,87
 CAMERON,13,in_person,20
 CAMERON,14,in_person,140
@@ -1886,7 +1888,6 @@ CAMERON,3,in_person,230
 CAMERON,30,in_person,40
 CAMERON,31,in_person,8
 CAMERON,32,in_person,107
-CAMERON,32,mail,1
 CAMERON,33,in_person,19
 CAMERON,34,in_person,62
 CAMERON,35,in_person,42
@@ -1904,7 +1905,6 @@ CAMERON,44,in_person,146
 CAMERON,45,in_person,71
 CAMERON,454,in_person,1
 CAMERON,46,in_person,150
-CAMERON,46,mail,2
 CAMERON,4638,in_person,1
 CAMERON,47,in_person,58
 CAMERON,48,in_person,134
@@ -1928,7 +1928,6 @@ CAMERON,63,in_person,61
 CAMERON,64,in_person,16
 CAMERON,65,in_person,94
 CAMERON,66,in_person,134
-CAMERON,66,mail,1
 CAMERON,67,in_person,105
 CAMERON,68,in_person,112
 CAMERON,69,in_person,153
@@ -2238,7 +2237,7 @@ COLLIN,078,mail,1
 COLLIN,079,in_person,120
 COLLIN,080,in_person,195
 COLLIN,080,mail,1
-COLLIN,081,in_person,167
+COLLIN,081,in_person,166
 COLLIN,081,mail,1
 COLLIN,082,in_person,141
 COLLIN,082,mail,5
@@ -2529,7 +2528,7 @@ COLLIN,246,in_person,161
 COLLIN,246,mail,3
 COLLIN,247,in_person,171
 COLLIN,247,mail,1
-COLLIN,248,in_person,151
+COLLIN,248,in_person,150
 COLLIN,248,mail,2
 COLLIN,249,in_person,268
 COLLIN,249,mail,2
@@ -2738,7 +2737,8 @@ COOKE,8,in_person,49
 CORYELL,101,in_person,227
 CORYELL,102,in_person,68
 CORYELL,103,in_person,8
-CORYELL,104,in_person,195
+CORYELL,104,in_person,194
+CORYELL,11,in_person,1
 CORYELL,205,in_person,119
 CORYELL,206,in_person,67
 CORYELL,207,in_person,155
@@ -2831,7 +2831,7 @@ DALLAS,1060,in_person,201
 DALLAS,1060,mail,2
 DALLAS,1061,in_person,92
 DALLAS,1061,mail,3
-DALLAS,1063,in_person,85
+DALLAS,1063,in_person,84
 DALLAS,1063,mail,1
 DALLAS,1065,in_person,122
 DALLAS,1065,mail,1
@@ -3117,7 +3117,7 @@ DALLAS,2050,in_person,94
 DALLAS,2050,mail,1
 DALLAS,2051,in_person,135
 DALLAS,2052,in_person,81
-DALLAS,2053,in_person,162
+DALLAS,2053,in_person,161
 DALLAS,2053,mail,1
 DALLAS,2054,in_person,120
 DALLAS,2054,mail,3
@@ -3245,7 +3245,7 @@ DALLAS,2301,in_person,138
 DALLAS,2301,mail,1
 DALLAS,2302,in_person,92
 DALLAS,2303,in_person,163
-DALLAS,2305,in_person,169
+DALLAS,2305,in_person,168
 DALLAS,2305,mail,2
 DALLAS,2306,in_person,71
 DALLAS,2307,in_person,49
@@ -3671,7 +3671,7 @@ DALLAS,4028,in_person,59
 DALLAS,4031,in_person,132
 DALLAS,4031,mail,1
 DALLAS,4032,in_person,12
-DALLAS,4033,in_person,170
+DALLAS,4033,in_person,169
 DALLAS,4035,in_person,60
 DALLAS,4035,mail,2
 DALLAS,4036,in_person,56
@@ -3911,6 +3911,7 @@ DELTA,99999,in_person,1
 DENTON,008,in_person,1
 DENTON,022,in_person,1
 DENTON,059,in_person,1
+DENTON,081,in_person,1
 DENTON,1000,in_person,218
 DENTON,1001,in_person,93
 DENTON,1002,in_person,10
@@ -4010,6 +4011,7 @@ DENTON,1741,in_person,1
 DENTON,180,in_person,1
 DENTON,20,in_person,1
 DENTON,203,in_person,1
+DENTON,2053,in_person,1
 DENTON,2055,in_person,1
 DENTON,2067,in_person,82
 DENTON,2068,in_person,255
@@ -4079,6 +4081,7 @@ DENTON,2114,mail,1
 DENTON,214,in_person,1
 DENTON,2267,in_person,1
 DENTON,228,in_person,1
+DENTON,2305,in_person,1
 DENTON,2500,in_person,1
 DENTON,255,in_person,1
 DENTON,261,in_person,1
@@ -4149,10 +4152,13 @@ DENTON,3160,in_person,200
 DENTON,3160,mail,1
 DENTON,3230,in_person,110
 DENTON,3240,in_person,1
+DENTON,3321,in_person,1
+DENTON,3333,in_person,1
 DENTON,336,in_person,2
 DENTON,3390,in_person,1
 DENTON,3442,in_person,2
 DENTON,3469,in_person,1
+DENTON,3509,in_person,2
 DENTON,3526,in_person,1
 DENTON,3647,in_person,2
 DENTON,3N,in_person,2
@@ -4241,7 +4247,9 @@ DENTON,4232,mail,1
 DENTON,4233,in_person,227
 DENTON,4233,mail,1
 DENTON,4664,in_person,1
+DENTON,4694,in_person,2
 DENTON,4730,in_person,1
+DENTON,9,in_person,2
 DEWITT,101,in_person,56
 DEWITT,101,mail,2
 DEWITT,102,in_person,20
@@ -4276,10 +4284,8 @@ DONLEY,301,in_person,10
 DONLEY,303,in_person,13
 DONLEY,401,in_person,14
 DUVAL,1,in_person,75
-DUVAL,1,mail,2
 DUVAL,2,in_person,53
 DUVAL,3,in_person,14
-DUVAL,3,mail,1
 DUVAL,4,in_person,2
 DUVAL,5,in_person,10
 DUVAL,6,in_person,6
@@ -4298,10 +4304,10 @@ EASTLAND,9,in_person,42
 ECTOR,101,in_person,85
 ECTOR,102,in_person,68
 ECTOR,103,in_person,46
-ECTOR,104,in_person,60
+ECTOR,104,in_person,61
 ECTOR,108,in_person,77
 ECTOR,109,in_person,1
-ECTOR,110,in_person,132
+ECTOR,110,in_person,133
 ECTOR,111,in_person,75
 ECTOR,201,in_person,165
 ECTOR,202,in_person,106
@@ -4309,7 +4315,7 @@ ECTOR,203,in_person,139
 ECTOR,204,in_person,143
 ECTOR,205,in_person,70
 ECTOR,206,in_person,52
-ECTOR,207,in_person,59
+ECTOR,207,in_person,61
 ECTOR,208,in_person,149
 ECTOR,209,in_person,43
 ECTOR,301,in_person,89
@@ -4764,7 +4770,7 @@ ELLIS,1056,in_person,209
 ELLIS,1056,mail,2
 ELLIS,1057,in_person,302
 ELLIS,1057,mail,3
-ELLIS,1058,in_person,171
+ELLIS,1058,in_person,170
 ELLIS,1059,in_person,58
 ELLIS,1059,mail,3
 ELLIS,1060,in_person,10
@@ -4880,6 +4886,7 @@ FOARD,201,mail,1
 FOARD,301,in_person,12
 FOARD,301,mail,1
 FOARD,401,in_person,6
+FORT BEND,065,in_person,1
 FORT BEND,1002,in_person,78
 FORT BEND,1003,in_person,315
 FORT BEND,1004,in_person,204
@@ -5135,6 +5142,7 @@ FORT BEND,4176,in_person,164
 FORT BEND,428,in_person,1
 FORT BEND,462,in_person,1
 FORT BEND,510,in_person,1
+FORT BEND,58,in_person,1
 FORT BEND,814,in_person,1
 FRANKLIN,101,in_person,84
 FRANKLIN,102,in_person,20
@@ -5592,6 +5600,7 @@ GREGG,2102,in_person,34
 GREGG,2103,in_person,54
 GREGG,2103,mail,2
 GREGG,2105,in_person,14
+GREGG,3M,in_person,1
 GRIMES,1,in_person,144
 GRIMES,10,in_person,115
 GRIMES,12,in_person,67
@@ -5604,8 +5613,7 @@ GRIMES,4,in_person,67
 GRIMES,5,in_person,81
 GRIMES,6,in_person,76
 GRIMES,7,in_person,47
-GRIMES,7,mail,1
-GRIMES,8,in_person,68
+GRIMES,8,in_person,67
 GRIMES,9,in_person,17
 GUADALUPE,102,in_person,117
 GUADALUPE,1020,mail,1
@@ -5790,7 +5798,7 @@ HARDIN,100,in_person,1
 HARDIN,11,in_person,68
 HARDIN,12,in_person,80
 HARDIN,13,in_person,161
-HARDIN,13,mail,3
+HARDIN,13,mail,2
 HARDIN,14,in_person,68
 HARDIN,15,in_person,100
 HARDIN,15,mail,1
@@ -7438,7 +7446,7 @@ HARRIS,923,in_person,229
 HARRIS,923,mail,4
 HARRIS,926,in_person,157
 HARRIS,926,mail,4
-HARRIS,927,in_person,327
+HARRIS,927,in_person,326
 HARRIS,927,mail,2
 HARRIS,928,in_person,25
 HARRIS,93,in_person,165
@@ -7550,7 +7558,6 @@ HARRISON,16,in_person,39
 HARRISON,1602,in_person,1
 HARRISON,17,in_person,80
 HARRISON,18,in_person,76
-HARRISON,18,mail,1
 HARRISON,19,in_person,160
 HARRISON,2,in_person,73
 HARRISON,2,mail,1
@@ -7564,7 +7571,6 @@ HARRISON,24,in_person,52
 HARRISON,25,in_person,171
 HARRISON,25,mail,1
 HARRISON,26,in_person,144
-HARRISON,26,mail,1
 HARRISON,27,in_person,1
 HARRISON,3,in_person,71
 HARRISON,3,mail,1
@@ -7573,11 +7579,11 @@ HARRISON,4,in_person,48
 HARRISON,5,in_person,47
 HARRISON,5,mail,2
 HARRISON,6,in_person,81
+HARRISON,6,mail,1
 HARRISON,7,in_person,29
 HARRISON,8,in_person,90
-HARRISON,8,mail,2
+HARRISON,8,mail,1
 HARRISON,9,in_person,101
-HARRISON,9,mail,1
 HARTLEY,101,in_person,10
 HARTLEY,102,in_person,20
 HARTLEY,201,in_person,3
@@ -7597,6 +7603,7 @@ HASKELL,7,in_person,2
 HASKELL,8,in_person,4
 HASKELL,9,in_person,2
 HAYS,059,in_person,1
+HAYS,104,in_person,1
 HAYS,109,in_person,122
 HAYS,110,in_person,198
 HAYS,112,in_person,109
@@ -7627,7 +7634,7 @@ HAYS,206,in_person,185
 HAYS,2065,in_person,1
 HAYS,207,in_person,1
 HAYS,216,in_person,57
-HAYS,218,in_person,171
+HAYS,218,in_person,172
 HAYS,219,in_person,52
 HAYS,220,in_person,206
 HAYS,221,in_person,51
@@ -7727,19 +7734,19 @@ HENDERSON,3333,in_person,1
 HENDERSON,3B,in_person,120
 HENDERSON,3C,in_person,121
 HENDERSON,3CS,in_person,106
-HENDERSON,3M,in_person,62
-HENDERSON,3N,in_person,46
+HENDERSON,3M,in_person,61
+HENDERSON,3N,in_person,47
 HENDERSON,3NW,in_person,48
 HENDERSON,3WS,in_person,73
-HENDERSON,4,in_person,94
+HENDERSON,4,in_person,95
 HENDERSON,436,in_person,1
 HENDERSON,4A,in_person,24
 HENDERSON,4B,in_person,80
 HENDERSON,4LP,in_person,108
 HENDERSON,4MS,in_person,62
-HENDERSON,4NLP,in_person,115
-HENDERSON,4SE,in_person,152
-HENDERSON,4W,in_person,60
+HENDERSON,4NLP,in_person,116
+HENDERSON,4SE,in_person,153
+HENDERSON,4W,in_person,61
 HIDALGO,001,in_person,31
 HIDALGO,001,mail,1
 HIDALGO,002,in_person,89
@@ -7844,7 +7851,7 @@ HIDALGO,062,mail,1
 HIDALGO,063,in_person,30
 HIDALGO,064,in_person,119
 HIDALGO,064,mail,4
-HIDALGO,065,in_person,84
+HIDALGO,065,in_person,83
 HIDALGO,066,in_person,30
 HIDALGO,067,in_person,128
 HIDALGO,068,in_person,176
@@ -7911,7 +7918,7 @@ HIDALGO,109,in_person,124
 HIDALGO,110,in_person,59
 HIDALGO,111,in_person,77
 HIDALGO,111,mail,1
-HIDALGO,112,in_person,56
+HIDALGO,112,in_person,55
 HIDALGO,113,in_person,147
 HIDALGO,113,mail,2
 HIDALGO,114,in_person,193
@@ -8029,7 +8036,6 @@ HIDALGO,198,in_person,26
 HIDALGO,198,mail,2
 HIDALGO,199,in_person,138
 HIDALGO,199,mail,1
-HIDALGO,20,mail,2
 HIDALGO,200,in_person,89
 HIDALGO,201,in_person,69
 HIDALGO,202,in_person,29
@@ -8195,7 +8201,7 @@ HOPKINS,36-Y,in_person,5
 HOPKINS,3A,in_person,1
 HOPKINS,3A-N,in_person,5
 HOPKINS,3A-S,in_person,74
-HOPKINS,4,in_person,1
+HOPKINS,4,in_person,2
 HOPKINS,4-CI,in_person,2
 HOPKINS,4-NA,in_person,1
 HOPKINS,4-NH,in_person,22
@@ -8289,6 +8295,8 @@ HUNT,111,in_person,1
 HUNT,111-,in_person,98
 HUNT,149,in_person,1
 HUNT,1741,in_person,1
+HUNT,1B,in_person,1
+HUNT,1E,in_person,1
 HUNT,2087,in_person,1
 HUNT,212,in_person,3
 HUNT,212-,in_person,37
@@ -8328,6 +8336,7 @@ HUNT,324-,in_person,177
 HUNT,325,in_person,2
 HUNT,325,mail,7
 HUNT,325-,in_person,155
+HUNT,4033,in_person,1
 HUNT,426,mail,1
 HUNT,426-,in_person,22
 HUNT,427,in_person,8
@@ -8505,7 +8514,7 @@ JEFFERSON,58,mail,1
 JEFFERSON,59,in_person,33
 JEFFERSON,59,mail,2
 JEFFERSON,6,in_person,52
-JEFFERSON,6,mail,2
+JEFFERSON,6,mail,1
 JEFFERSON,60,in_person,143
 JEFFERSON,60,mail,3
 JEFFERSON,61,in_person,58
@@ -8521,9 +8530,9 @@ JEFFERSON,65,mail,1
 JEFFERSON,66,in_person,76
 JEFFERSON,66,mail,4
 JEFFERSON,67,in_person,66
-JEFFERSON,67,mail,4
+JEFFERSON,67,mail,3
 JEFFERSON,68,in_person,91
-JEFFERSON,68,mail,4
+JEFFERSON,68,mail,3
 JEFFERSON,69,in_person,146
 JEFFERSON,69,mail,3
 JEFFERSON,7,in_person,63
@@ -8549,7 +8558,7 @@ JEFFERSON,80,in_person,14
 JEFFERSON,81,in_person,23
 JEFFERSON,81,mail,2
 JEFFERSON,82,in_person,78
-JEFFERSON,82,mail,6
+JEFFERSON,82,mail,5
 JEFFERSON,83,in_person,54
 JEFFERSON,83,mail,4
 JEFFERSON,84,in_person,46
@@ -8565,7 +8574,7 @@ JEFFERSON,88,mail,1
 JEFFERSON,89,in_person,22
 JEFFERSON,89,mail,1
 JEFFERSON,9,in_person,196
-JEFFERSON,9,mail,7
+JEFFERSON,9,mail,6
 JEFFERSON,90,in_person,2
 JEFFERSON,91,in_person,70
 JEFFERSON,91,mail,2
@@ -8667,7 +8676,7 @@ JOHNSON,24,mail,10
 JOHNSON,25,in_person,60
 JOHNSON,2501,in_person,1
 JOHNSON,26,in_person,181
-JOHNSON,26,mail,7
+JOHNSON,26,mail,6
 JOHNSON,27,in_person,86
 JOHNSON,27,mail,3
 JOHNSON,2712,in_person,1
@@ -8918,7 +8927,7 @@ KLEBERG,14,in_person,59
 KLEBERG,21,in_person,59
 KLEBERG,22,in_person,19
 KLEBERG,23,in_person,15
-KLEBERG,24,in_person,46
+KLEBERG,24,in_person,45
 KLEBERG,31,in_person,61
 KLEBERG,32,in_person,24
 KLEBERG,33,in_person,28
@@ -9075,6 +9084,7 @@ LIMESTONE,101,in_person,112
 LIMESTONE,102,in_person,22
 LIMESTONE,103,in_person,14
 LIMESTONE,104,in_person,31
+LIMESTONE,1063,in_person,1
 LIMESTONE,201,in_person,13
 LIMESTONE,202,in_person,36
 LIMESTONE,203,in_person,5
@@ -9125,7 +9135,7 @@ LLANO,205,in_person,16
 LLANO,307,in_person,137
 LLANO,410,in_person,218
 LOVING,1,in_person,2
-LUBBOCK,1,in_person,94
+LUBBOCK,1,in_person,95
 LUBBOCK,1,mail,2
 LUBBOCK,10,in_person,23
 LUBBOCK,10,mail,1
@@ -9136,16 +9146,16 @@ LUBBOCK,103,in_person,22
 LUBBOCK,104,in_person,50
 LUBBOCK,104,mail,4
 LUBBOCK,1051,in_person,1
-LUBBOCK,108,in_person,49
+LUBBOCK,108,in_person,50
 LUBBOCK,108,mail,1
 LUBBOCK,109,in_person,191
 LUBBOCK,109,mail,8
 LUBBOCK,11,in_person,7
 LUBBOCK,110,in_person,221
 LUBBOCK,110,mail,8
-LUBBOCK,111,in_person,191
+LUBBOCK,111,in_person,192
 LUBBOCK,111,mail,7
-LUBBOCK,112,in_person,105
+LUBBOCK,112,in_person,106
 LUBBOCK,112,mail,3
 LUBBOCK,113,in_person,119
 LUBBOCK,113,mail,5
@@ -9172,11 +9182,11 @@ LUBBOCK,125,in_person,96
 LUBBOCK,125,mail,6
 LUBBOCK,126,in_person,61
 LUBBOCK,126,mail,3
-LUBBOCK,127,in_person,94
+LUBBOCK,127,in_person,96
 LUBBOCK,127,mail,8
-LUBBOCK,128,in_person,81
+LUBBOCK,128,in_person,82
 LUBBOCK,128,mail,6
-LUBBOCK,129,in_person,166
+LUBBOCK,129,in_person,167
 LUBBOCK,129,mail,7
 LUBBOCK,13,in_person,20
 LUBBOCK,13,mail,3
@@ -9204,7 +9214,7 @@ LUBBOCK,154,in_person,213
 LUBBOCK,154,mail,6
 LUBBOCK,155,in_person,149
 LUBBOCK,155,mail,4
-LUBBOCK,17,in_person,92
+LUBBOCK,17,in_person,93
 LUBBOCK,17,mail,3
 LUBBOCK,178,in_person,13
 LUBBOCK,19,in_person,16
@@ -9228,7 +9238,7 @@ LUBBOCK,27,in_person,92
 LUBBOCK,27,mail,5
 LUBBOCK,28,in_person,78
 LUBBOCK,28,mail,3
-LUBBOCK,29,in_person,106
+LUBBOCK,29,in_person,107
 LUBBOCK,29,mail,2
 LUBBOCK,3,in_person,62
 LUBBOCK,3,mail,3
@@ -9249,7 +9259,7 @@ LUBBOCK,35,in_person,44
 LUBBOCK,3536,in_person,2
 LUBBOCK,36,in_person,111
 LUBBOCK,3695,in_person,1
-LUBBOCK,37,in_person,115
+LUBBOCK,37,in_person,116
 LUBBOCK,37,mail,1
 LUBBOCK,38,in_person,58
 LUBBOCK,38,mail,3
@@ -9269,16 +9279,16 @@ LUBBOCK,45,mail,3
 LUBBOCK,46,in_person,206
 LUBBOCK,46,mail,1
 LUBBOCK,4634,in_person,1
-LUBBOCK,47,in_person,98
+LUBBOCK,47,in_person,99
 LUBBOCK,47,mail,6
 LUBBOCK,49,in_person,57
 LUBBOCK,5,in_person,39
 LUBBOCK,50,in_person,46
 LUBBOCK,51,in_person,6
 LUBBOCK,51,mail,2
-LUBBOCK,52,in_person,125
+LUBBOCK,52,in_person,126
 LUBBOCK,52,mail,2
-LUBBOCK,53,in_person,90
+LUBBOCK,53,in_person,91
 LUBBOCK,53,mail,2
 LUBBOCK,54,in_person,118
 LUBBOCK,54,mail,10
@@ -9287,7 +9297,7 @@ LUBBOCK,57,in_person,234
 LUBBOCK,57,mail,5
 LUBBOCK,58,in_person,62
 LUBBOCK,58,mail,7
-LUBBOCK,59,in_person,89
+LUBBOCK,59,in_person,90
 LUBBOCK,59,mail,7
 LUBBOCK,6,in_person,36
 LUBBOCK,6,mail,2
@@ -9302,13 +9312,13 @@ LUBBOCK,66,in_person,94
 LUBBOCK,66,mail,6
 LUBBOCK,67,in_person,88
 LUBBOCK,67,mail,3
-LUBBOCK,7,in_person,120
+LUBBOCK,7,in_person,121
 LUBBOCK,7,mail,9
-LUBBOCK,72,in_person,108
+LUBBOCK,72,in_person,109
 LUBBOCK,72,mail,3
 LUBBOCK,75,in_person,58
 LUBBOCK,75,mail,4
-LUBBOCK,76,in_person,140
+LUBBOCK,76,in_person,141
 LUBBOCK,76,mail,5
 LUBBOCK,78,in_person,186
 LUBBOCK,78,mail,5
@@ -9544,15 +9554,15 @@ MCMULLEN,3,in_person,1
 MCMULLEN,4,in_person,8
 MEDINA,091,in_person,1
 MEDINA,1141,in_person,1
-MEDINA,1A,in_person,109
+MEDINA,1A,in_person,111
 MEDINA,1B,in_person,139
 MEDINA,1B,mail,1
-MEDINA,1C,in_person,176
+MEDINA,1C,in_person,177
 MEDINA,1C,mail,2
 MEDINA,1D,in_person,73
 MEDINA,1D,mail,2
-MEDINA,2A,in_person,197
-MEDINA,2B,in_person,149
+MEDINA,2A,in_person,200
+MEDINA,2B,in_person,150
 MEDINA,2B,mail,1
 MEDINA,2C,in_person,192
 MEDINA,2C,mail,1
@@ -9637,7 +9647,6 @@ MILAM,203,in_person,20
 MILAM,207,in_person,19
 MILAM,210,in_person,28
 MILAM,212,in_person,88
-MILAM,212,mail,1
 MILAM,316,in_person,41
 MILAM,317,in_person,51
 MILAM,318,in_person,124
@@ -9676,7 +9685,7 @@ MONTAGUE,7,in_person,42
 MONTAGUE,8,in_person,46
 MONTAGUE,9,in_person,58
 MONTGOMERY,1,in_person,242
-MONTGOMERY,1,mail,4
+MONTGOMERY,1,mail,3
 MONTGOMERY,10,in_person,86
 MONTGOMERY,100,in_person,310
 MONTGOMERY,100,mail,4
@@ -9914,7 +9923,6 @@ MOTLEY,6,mail,3
 NACOGDOCHES,12,in_person,63
 NACOGDOCHES,13,in_person,76
 NACOGDOCHES,14,in_person,156
-NACOGDOCHES,14,mail,1
 NACOGDOCHES,144,in_person,1
 NACOGDOCHES,15,in_person,58
 NACOGDOCHES,16,in_person,118
@@ -10246,7 +10254,7 @@ ORANGE,76,in_person,1
 ORANGE,8,in_person,108
 ORANGE,9,in_person,89
 PALO PINTO,1,in_person,39
-PALO PINTO,11,in_person,15
+PALO PINTO,11,in_person,14
 PALO PINTO,12,in_person,36
 PALO PINTO,13,in_person,36
 PALO PINTO,14,in_person,12
@@ -10257,7 +10265,6 @@ PALO PINTO,18,in_person,6
 PALO PINTO,2,in_person,1
 PALO PINTO,20,in_person,4
 PALO PINTO,21,in_person,28
-PALO PINTO,21,mail,1
 PALO PINTO,22,in_person,68
 PALO PINTO,23,in_person,65
 PALO PINTO,25,in_person,7
@@ -10273,7 +10280,7 @@ PALO PINTO,5,in_person,5
 PALO PINTO,6,in_person,39
 PALO PINTO,7,in_person,20
 PALO PINTO,8,in_person,82
-PALO PINTO,9,in_person,29
+PALO PINTO,9,in_person,27
 PANOLA,0201,in_person,1
 PANOLA,1,in_person,85
 PANOLA,10,in_person,17
@@ -10330,7 +10337,7 @@ PARKER,310,in_person,80
 PARKER,315,in_person,225
 PARKER,320,in_person,96
 PARKER,325,in_person,123
-PARKER,330,in_person,100
+PARKER,330,in_person,101
 PARKER,335,in_person,154
 PARKER,340,in_person,95
 PARKER,345,in_person,150
@@ -10339,6 +10346,7 @@ PARKER,355,in_person,256
 PARKER,400,in_person,179
 PARKER,4016,in_person,1
 PARKER,4020,in_person,1
+PARKER,4044,in_person,1
 PARKER,4053,in_person,1
 PARKER,410,in_person,176
 PARKER,4121,in_person,1
@@ -10356,7 +10364,7 @@ PARKER,440,in_person,336
 PARKER,445,in_person,145
 PARKER,450,in_person,134
 PARKER,4508,in_person,3
-PARKER,455,in_person,425
+PARKER,455,in_person,424
 PARKER,4593,in_person,1
 PARMER,101,in_person,28
 PARMER,201,in_person,11
@@ -10384,45 +10392,42 @@ POLK,13 I,in_person,25
 POLK,14,in_person,93
 POLK,14,mail,1
 POLK,15,in_person,74
-POLK,15,mail,9
+POLK,15,mail,3
 POLK,16,in_person,98
 POLK,16,mail,2
 POLK,17,in_person,91
-POLK,17,mail,1
 POLK,18,in_person,38
 POLK,19,in_person,39
-POLK,19,mail,40
+POLK,19,mail,33
 POLK,2 IL,in_person,21
 POLK,20,in_person,38
-POLK,20,mail,33
+POLK,20,mail,24
 POLK,21,in_person,99
-POLK,21,mail,3
 POLK,22,in_person,27
-POLK,22,mail,52
+POLK,22,mail,40
 POLK,3,in_person,62
 POLK,4,in_person,82
 POLK,5,in_person,47
-POLK,5,mail,2
 POLK,6,in_person,153
 POLK,7,in_person,2
 POLK,7 CL,in_person,25
 POLK,8,in_person,41
-POLK,8,mail,3
+POLK,8,mail,1
 POLK,9,in_person,35
-POLK,9,mail,3
+POLK,9,mail,1
 POTTER,103,in_person,2
 POTTER,121,in_person,102
 POTTER,121,mail,1
 POTTER,122,in_person,121
 POTTER,122,mail,2
-POTTER,123,in_person,155
+POTTER,123,in_person,154
 POTTER,124,in_person,151
 POTTER,125,in_person,137
 POTTER,125,mail,3
-POTTER,126,in_person,92
+POTTER,126,in_person,94
 POTTER,126,mail,3
 POTTER,221,in_person,49
-POTTER,222,in_person,43
+POTTER,222,in_person,44
 POTTER,223,in_person,61
 POTTER,224,in_person,120
 POTTER,224,mail,1
@@ -10469,7 +10474,7 @@ RANDALL,103,in_person,32
 RANDALL,110,in_person,180
 RANDALL,111,in_person,188
 RANDALL,112,in_person,141
-RANDALL,114,in_person,180
+RANDALL,114,in_person,181
 RANDALL,123,in_person,89
 RANDALL,125,in_person,1
 RANDALL,131,in_person,101
@@ -10578,12 +10583,12 @@ ROCKWALL,1170,in_person,1
 ROCKWALL,14,in_person,1
 ROCKWALL,1402,in_person,1
 ROCKWALL,1A,in_person,161
-ROCKWALL,1B,in_person,272
+ROCKWALL,1B,in_person,271
 ROCKWALL,1B,mail,5
 ROCKWALL,1C,in_person,251
 ROCKWALL,1C,mail,4
 ROCKWALL,1D,in_person,67
-ROCKWALL,1E,in_person,323
+ROCKWALL,1E,in_person,322
 ROCKWALL,1E,mail,3
 ROCKWALL,2,in_person,222
 ROCKWALL,2,mail,5
@@ -10668,16 +10673,12 @@ RUSK,417,in_person,79
 RUSK,418,in_person,77
 SABINE,1,in_person,60
 SABINE,2,in_person,53
-SABINE,2,mail,1
 SABINE,3,in_person,10
 SABINE,4,in_person,11
 SABINE,5,in_person,54
-SABINE,5,mail,1
 SABINE,6,in_person,68
-SABINE,6,mail,2
 SABINE,7,in_person,5
 SABINE,8,in_person,8
-SABINE,8,mail,3
 SAN AUGUSTINE,1,in_person,46
 SAN AUGUSTINE,10,in_person,19
 SAN AUGUSTINE,11,in_person,10
@@ -11539,7 +11540,7 @@ TARRANT,3287,in_person,126
 TARRANT,3287,mail,2
 TARRANT,3289,in_person,113
 TARRANT,3316,in_person,91
-TARRANT,3321,in_person,193
+TARRANT,3321,in_person,192
 TARRANT,3321,mail,2
 TARRANT,3322,in_person,107
 TARRANT,3322,mail,1
@@ -11555,7 +11556,7 @@ TARRANT,3331,in_person,164
 TARRANT,3331,mail,7
 TARRANT,3332,in_person,158
 TARRANT,3332,mail,1
-TARRANT,3333,in_person,220
+TARRANT,3333,in_person,219
 TARRANT,3333,mail,3
 TARRANT,3334,in_person,109
 TARRANT,3335,in_person,117
@@ -11614,7 +11615,7 @@ TARRANT,3502,in_person,108
 TARRANT,3502,mail,2
 TARRANT,3507,in_person,123
 TARRANT,3507,mail,2
-TARRANT,3509,in_person,85
+TARRANT,3509,in_person,83
 TARRANT,3509,mail,4
 TARRANT,3510,in_person,180
 TARRANT,3510,mail,1
@@ -11703,7 +11704,7 @@ TARRANT,4020,in_person,110
 TARRANT,4042,in_person,34
 TARRANT,4042,mail,1
 TARRANT,4043,in_person,133
-TARRANT,4044,in_person,184
+TARRANT,4044,in_person,183
 TARRANT,4045,in_person,131
 TARRANT,4045,mail,4
 TARRANT,4046,in_person,142
@@ -11896,7 +11897,7 @@ TARRANT,4684,mail,2
 TARRANT,4685,in_person,1
 TARRANT,4687,in_person,8
 TARRANT,4689,in_person,7
-TARRANT,4694,in_person,225
+TARRANT,4694,in_person,223
 TARRANT,4694,mail,1
 TARRANT,4700,in_person,115
 TARRANT,4700,mail,1
@@ -12505,7 +12506,7 @@ TRAVIS,387,in_person,61
 TRAVIS,387,mail,1
 TRAVIS,388,in_person,252
 TRAVIS,388,mail,4
-TRAVIS,390,in_person,250
+TRAVIS,390,in_person,252
 TRAVIS,390,mail,3
 TRAVIS,391,in_person,167
 TRAVIS,391,mail,3
@@ -12533,7 +12534,7 @@ TRAVIS,404,in_person,35
 TRAVIS,405,in_person,354
 TRAVIS,405,mail,3
 TRAVIS,4054,in_person,1
-TRAVIS,410,in_person,270
+TRAVIS,410,in_person,271
 TRAVIS,410,mail,6
 TRAVIS,411,in_person,135
 TRAVIS,411,mail,6
@@ -12693,7 +12694,6 @@ UPSHUR,14,in_person,43
 UPSHUR,15,in_person,69
 UPSHUR,16,in_person,66
 UPSHUR,17,in_person,100
-UPSHUR,17,mail,2
 UPSHUR,18,in_person,22
 UPSHUR,18,mail,5
 UPSHUR,2,in_person,133
@@ -12760,7 +12760,7 @@ VAN ZANDT,192,in_person,1
 VAN ZANDT,1A,in_person,101
 VAN ZANDT,1A,mail,4
 VAN ZANDT,1B,in_person,110
-VAN ZANDT,1C,in_person,75
+VAN ZANDT,1C,in_person,76
 VAN ZANDT,1D,in_person,29
 VAN ZANDT,1E,in_person,30
 VAN ZANDT,212,in_person,1
@@ -12771,16 +12771,16 @@ VAN ZANDT,2B,mail,5
 VAN ZANDT,2C,in_person,99
 VAN ZANDT,2C,mail,2
 VAN ZANDT,2D,in_person,70
-VAN ZANDT,3A,in_person,35
+VAN ZANDT,3A,in_person,36
 VAN ZANDT,3B,in_person,58
 VAN ZANDT,3B,mail,1
 VAN ZANDT,3C,in_person,126
 VAN ZANDT,3C,mail,2
-VAN ZANDT,3D,in_person,152
+VAN ZANDT,3D,in_person,153
 VAN ZANDT,3D,mail,1
 VAN ZANDT,4031,in_person,1
 VAN ZANDT,4A,in_person,73
-VAN ZANDT,4B,in_person,80
+VAN ZANDT,4B,in_person,82
 VAN ZANDT,4B,mail,1
 VAN ZANDT,4C,in_person,52
 VAN ZANDT,4C,mail,1
@@ -12854,7 +12854,6 @@ WALKER,201,in_person,72
 WALKER,203,in_person,145
 WALKER,203,mail,1
 WALKER,204,in_person,80
-WALKER,204,mail,1
 WALKER,205,in_person,141
 WALKER,206,in_person,103
 WALKER,2281,in_person,1
@@ -13037,13 +13036,11 @@ WHEELER,401,in_person,31
 WICHITA,101,in_person,9
 WICHITA,102,in_person,56
 WICHITA,103,in_person,226
-WICHITA,103,mail,1
 WICHITA,104,in_person,145
 WICHITA,105,in_person,44
 WICHITA,106,in_person,2
 WICHITA,107,in_person,176
 WICHITA,108,in_person,180
-WICHITA,108,mail,1
 WICHITA,109,in_person,32
 WICHITA,201,in_person,93
 WICHITA,202,in_person,102
@@ -13070,7 +13067,6 @@ WICHITA,401,in_person,110
 WICHITA,402,in_person,34
 WICHITA,403,in_person,152
 WICHITA,404,in_person,141
-WICHITA,404,mail,2
 WICHITA,405,in_person,139
 WICHITA,406,in_person,153
 WICHITA,406,mail,1
@@ -13090,6 +13086,7 @@ WILLACY,12,in_person,4
 WILLACY,1A,in_person,59
 WILLACY,1A,mail,1
 WILLACY,2,in_person,7
+WILLACY,24,in_person,1
 WILLACY,2A,in_person,41
 WILLACY,2A,mail,3
 WILLACY,3,in_person,35
@@ -13323,7 +13320,7 @@ WILLIAMSON,380,in_person,5
 WILLIAMSON,381,in_person,58
 WILLIAMSON,381,mail,12
 WILLIAMSON,385,in_person,1
-WILLIAMSON,390,in_person,192
+WILLIAMSON,390,in_person,190
 WILLIAMSON,390,mail,2
 WILLIAMSON,391,in_person,91
 WILLIAMSON,391,mail,6
@@ -13352,7 +13349,7 @@ WILLIAMSON,405,in_person,188
 WILLIAMSON,408,in_person,139
 WILLIAMSON,408,mail,2
 WILLIAMSON,409,in_person,221
-WILLIAMSON,410,in_person,189
+WILLIAMSON,410,in_person,188
 WILLIAMSON,410,mail,2
 WILLIAMSON,411,in_person,150
 WILLIAMSON,411,mail,2
@@ -13414,7 +13411,7 @@ WILLIAMSON,490,mail,3
 WILLIAMSON,491,in_person,285
 WILLIAMSON,491,mail,2
 WILSON,101,in_person,141
-WILSON,101,mail,2
+WILSON,101,mail,3
 WILSON,102,in_person,84
 WILSON,103,in_person,76
 WILSON,103,mail,1
