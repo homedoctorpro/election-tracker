@@ -1674,23 +1674,6 @@
     }
    ]
   },
-  "DE-AL": {
-   "incumbent": "Sarah McBride",
-   "inc_party": "D",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Sarah McBride",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Joseph Arminio",
-     "party": "R",
-     "label": "Republican"
-    }
-   ]
-  },
   "FL-01": {
    "incumbent": "Jimmy Patronis",
    "inc_party": "R",
@@ -6257,106 +6240,6 @@
     }
    ]
   },
-  "OK-01": {
-   "incumbent": "Kevin Hern",
-   "inc_party": "R",
-   "status": "run for U.S. Senate]].<br>Republican hold.",
-   "candidates": [
-    {
-     "name": "Mark Tedford",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "John Croisant",
-     "party": "D",
-     "label": "Democratic"
-    }
-   ]
-  },
-  "OK-02": {
-   "incumbent": "Josh Brecheen",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Josh Brecheen",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Brandon Wade",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Ronnie Hopkins",
-     "party": "I",
-     "label": "Independent"
-    }
-   ]
-  },
-  "OK-03": {
-   "incumbent": "Frank Lucas",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Suzie Byrd",
-     "party": "D",
-     "label": "Democratic"
-    }
-   ]
-  },
-  "OK-04": {
-   "incumbent": "Tom Cole",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Tom Cole",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Mitchell Jacob",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Rocco Bonacci",
-     "party": "I",
-     "label": "Independent"
-    }
-   ]
-  },
-  "OK-05": {
-   "incumbent": "Stephanie Bice",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Stephanie Bice",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Jena Nelson",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Robert Henri",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Austin Nieves",
-     "party": "I",
-     "label": "Independent"
-    }
-   ]
-  },
   "OR-01": {
    "incumbent": "Suzanne Bonamici",
    "inc_party": "D",
@@ -6777,145 +6660,6 @@
      "name": "Vic Mellor",
      "party": "R",
      "label": "Republican"
-    }
-   ]
-  },
-  "SC-01": {
-   "incumbent": "Nancy Mace",
-   "inc_party": "R",
-   "status": "run for governor]].<br>Democratic gain.",
-   "candidates": [
-    {
-     "name": "Nancy Lacore",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Jenny Costa Honeycutt",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Bill Reeside",
-     "party": "L",
-     "label": "Libertarian"
-    }
-   ]
-  },
-  "SC-02": {
-   "incumbent": "Joe Wilson",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Joe Wilson",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Zyon Khalifa",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Dayna Alane Smith",
-     "party": "O",
-     "label": "Workers"
-    }
-   ]
-  },
-  "SC-03": {
-   "incumbent": "Sheri Biggs",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Sheri Biggs",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Eunice Lehmacher",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Brian Corriea",
-     "party": "L",
-     "label": "Libertarian"
-    }
-   ]
-  },
-  "SC-04": {
-   "incumbent": "William Timmons",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "William Timmons",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Courtney McClain",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Jessica Ethridge",
-     "party": "L",
-     "label": "Libertarian"
-    }
-   ]
-  },
-  "SC-05": {
-   "incumbent": "Ralph Norman",
-   "inc_party": "R",
-   "status": "run for governor]].<br>Republican hold.",
-   "candidates": [
-    {
-     "name": "Wes Climer",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Mallory Dittmer",
-     "party": "D",
-     "label": "Democratic"
-    }
-   ]
-  },
-  "SC-06": {
-   "incumbent": "Jim Clyburn",
-   "inc_party": "D",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Jim Clyburn",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "John Peterson",
-     "party": "R",
-     "label": "Republican"
-    }
-   ]
-  },
-  "SC-07": {
-   "incumbent": "Russell Fry",
-   "inc_party": "R",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Russell Fry",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "John Vincent",
-     "party": "D",
-     "label": "Democratic"
     }
    ]
   },
@@ -8578,33 +8322,6 @@
      "label": "Democratic"
     }
    ]
-  },
-  "WY-AL": {
-   "incumbent": "Harriet Hageman",
-   "inc_party": "R",
-   "status": "run for U.S. Senate]].<br>Republican hold.",
-   "candidates": [
-    {
-     "name": "Chuck Gray",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Lisa Kinney",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Shawn Johnson",
-     "party": "L",
-     "label": "Libertarian"
-    },
-    {
-     "name": "Jeffrey Haggit",
-     "party": "O",
-     "label": "Constitution"
-    }
-   ]
   }
  },
  "senate": {
@@ -8752,23 +8469,6 @@
      "name": "Adam Withrow",
      "party": "O",
      "label": "Unity"
-    }
-   ]
-  },
-  "DE": {
-   "incumbent": "Chris Coons",
-   "inc_party": "D",
-   "status": "Incumbent reelected",
-   "candidates": [
-    {
-     "name": "Chris Coons",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Michael Katz",
-     "party": "R",
-     "label": "Republican"
     }
    ]
   },
@@ -8961,7 +8661,7 @@
     {
      "name": "Joe Tache",
      "party": "O",
-     "label": "Socialism and Liberation"
+     "label": "PSL"
     }
    ]
   },
@@ -9032,7 +8732,7 @@
   "MS": {
    "incumbent": "Cindy Hyde-Smith",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent lost reelection.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Scott Colom",
@@ -9203,38 +8903,6 @@
     }
    ]
   },
-  "OK": {
-   "incumbent": "Alan Armstrong",
-   "inc_party": "R",
-   "status": "Interim appointee ineligible to run.<br/>Republican hold.",
-   "candidates": [
-    {
-     "name": "Kevin Hern",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "N'Kiyla Jasmine Thomas",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Ron Meinhardt",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Curtis Stinnett",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Sevier White",
-     "party": "L",
-     "label": "Libertarian"
-    }
-   ]
-  },
   "OR": {
    "incumbent": "Jeff Merkley",
    "inc_party": "D",
@@ -9281,33 +8949,6 @@
      "name": "Michael Bahry",
      "party": "I",
      "label": "Independent"
-    }
-   ]
-  },
-  "SC": {
-   "incumbent": "Darline Graham",
-   "inc_party": "R",
-   "status": "Republican incumbent Lindsey Graham was renominated, but died on July 11, 2026.}}",
-   "candidates": [
-    {
-     "name": "Annie Andrews",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Darline Graham",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Mark Hackett",
-     "party": "O",
-     "label": "Constitution"
-    },
-    {
-     "name": "Kasie Whitener",
-     "party": "L",
-     "label": "Libertarian"
     }
    ]
   },
@@ -9443,23 +9084,6 @@
      "name": "S. Marshall Wilson",
      "party": "O",
      "label": "Constitution"
-    }
-   ]
-  },
-  "WY": {
-   "incumbent": "Cynthia Lummis",
-   "inc_party": "R",
-   "status": "Incumbent retiring.<br/>Republican hold.",
-   "candidates": [
-    {
-     "name": "Harriet Hageman",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "James W. Byrd",
-     "party": "D",
-     "label": "Democratic"
     }
    ]
   }

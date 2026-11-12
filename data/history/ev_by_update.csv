@@ -92,6 +92,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-06,CO,Colorado,2026-11-05,4075072.0,2606233.0,138122.0,2744355.0,783927.0,650466.0,1309962.0,2540666,108.02,Colorado Secretary of State
 2026-11-07,CO,Colorado,2026-11-06,4076175.0,2607336.0,138128.0,2745464.0,784201.0,650645.0,1310618.0,2540666,108.06,Colorado Secretary of State
 2026-11-07,CO,Colorado,2026-11-07,4076809.0,2607970.0,138127.0,2746097.0,784366.0,650741.0,1310990.0,2540666,108.09,Colorado Secretary of State
+2026-11-12,CO,Colorado,2026-11-11,4079234.0,2610395.0,138120.0,2748515.0,785003.0,651169.0,1312343.0,2540666,108.18,Colorado Secretary of State
 2026-10-15,CT,Connecticut,2026-10-15,43979.0,14762.0,0.0,14762.0,7713.0,2773.0,4276.0,1297811,1.14,Connecticut Secretary of the State
 2026-10-19,CT,Connecticut,2026-10-16,46726.0,17138.0,0.0,17138.0,8895.0,3272.0,4971.0,1297811,1.32,Connecticut Secretary of the State
 2026-10-20,CT,Connecticut,2026-10-19,49452.0,19217.0,0.0,19217.0,9964.0,3666.0,5587.0,1297811,1.48,Connecticut Secretary of the State
@@ -199,6 +200,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-05,HI,Hawaii,2026-11-04,726849.0,351938.0,17447.0,369385.0,0.0,0.0,0.0,423443,87.23,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-11-06,HI,Hawaii,2026-11-05,726368.0,374234.0,17447.0,391681.0,0.0,0.0,0.0,423443,92.5,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-11-07,HI,Hawaii,2026-11-06,726524.0,374565.0,17462.0,392027.0,0.0,0.0,0.0,423443,92.58,https://elections.hawaii.gov/resources/absentee-voting-report/
+2026-11-12,HI,Hawaii,2026-11-11,726637.0,374791.0,17524.0,392315.0,0.0,0.0,0.0,423443,92.65,https://elections.hawaii.gov/resources/absentee-voting-report/
 2026-10-15,IA,Iowa,2026-10-15,133430.0,1273.0,16111.0,17384.0,9810.0,4990.0,2584.0,1230417,1.41,Iowa Secretary of State
 2026-10-19,IA,Iowa,2026-10-16,143167.0,1418.0,31999.0,33417.0,18025.0,10037.0,5355.0,1230417,2.72,Iowa Secretary of State
 2026-10-19,IA,Iowa,2026-10-19,151417.0,3471.0,57550.0,61021.0,32813.0,17641.0,10567.0,1230417,4.96,Iowa Secretary of State
@@ -555,6 +557,7 @@ snapshot_date,state,state_name,last_update,requested,mail_returned,in_person,tot
 2026-11-03,OR,Oregon,2026-11-02,3117439.0,1481943.0,0.0,1481943.0,604825.0,454391.0,422727.0,1997689,74.18,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
 2026-11-04,OR,Oregon,2026-11-03,3117439.0,1808770.0,0.0,1808770.0,720033.0,539073.0,549664.0,1997689,90.54,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
 2026-11-07,OR,Oregon,2026-11-06,3117439.0,2028213.0,0.0,2028213.0,796431.0,585475.0,646307.0,1997689,101.53,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
+2026-11-12,OR,Oregon,2026-11-11,3117439.0,2033781.0,0.0,2033781.0,798614.0,586509.0,648658.0,1997689,101.81,https://sos.oregon.gov/elections/Documents/2026-general-election-unofficial-ballot-returns.pdf
 2026-10-15,PA,Pennsylvania,2026-10-15,1134386.0,391195.0,0.0,391195.0,272822.0,85681.0,32692.0,5410022,7.23,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
 2026-10-19,PA,Pennsylvania,2026-10-16,1149853.0,456065.0,0.0,456065.0,313470.0,103941.0,38654.0,5410022,8.43,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
 2026-10-19,PA,Pennsylvania,2026-10-19,1172391.0,532067.0,0.0,532067.0,363549.0,122943.0,45575.0,5410022,9.83,https://data.pa.gov/Government-Efficiency-Citizen-Engagement/2026-General-Election-Mail-Ballot-Requests-Departm/nbwd-pfn4/about_data
