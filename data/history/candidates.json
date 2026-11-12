@@ -3,7 +3,7 @@
   "NE-02": {
    "incumbent": "Don Bacon",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Democratic gain.",
+   "status": "Incumbent retired.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Denise Powell",
@@ -59,7 +59,7 @@
   "CA-01": {
    "incumbent": "James Gallagher",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Mike McGuire",
@@ -110,7 +110,7 @@
   "CA-48": {
    "incumbent": "Darrell Issa",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Democratic gain.",
+   "status": "Incumbent retired.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Marni von Wilpert",
@@ -125,15 +125,15 @@
    ]
   },
   "UT-01": {
-   "incumbent": "2020",
-   "inc_party": null,
+   "incumbent": "Blake Moore",
+   "inc_party": "R",
    "status": "",
    "candidates": []
   },
   "AL-01": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Republican gain.",
+   "status": "New member elected.<br/>Republican gain.",
    "candidates": [
     {
      "name": "Jerry Carl",
@@ -279,7 +279,7 @@
   "AZ-01": {
    "incumbent": "David Schweikert",
    "inc_party": "R",
-   "status": "run for governor]].<br>Democratic gain.",
+   "status": "run for governor]].<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Amish Shah",
@@ -367,7 +367,7 @@
   "AZ-05": {
    "incumbent": "Andy Biggs",
    "inc_party": "R",
-   "status": "run for governor]].<br>Republican hold.",
+   "status": "run for governor]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Mark Lamb",
@@ -384,7 +384,7 @@
   "AZ-06": {
    "incumbent": "Juan Ciscomani",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "JoAnna Mendoza",
@@ -591,7 +591,7 @@
   "CA-06": {
    "incumbent": "Kevin Kiley",
    "inc_party": null,
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Richard Pan",
@@ -863,7 +863,7 @@
   "CA-22": {
    "incumbent": "David Valadao",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Randy Villegas",
@@ -931,7 +931,7 @@
   "CA-26": {
    "incumbent": "Julia Brownley",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Jacqui Irwin",
@@ -1067,7 +1067,7 @@
   "CA-34": {
    "incumbent": "Jimmy Gomez",
    "inc_party": "D",
-   "status": "Incumbent lost re-election.<br>Democratic hold.",
+   "status": "Incumbent lost re-election.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Angela Gonzales-Torres",
@@ -1135,7 +1135,7 @@
   "CA-38": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Democratic gain.",
+   "status": "New member elected.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Hilda Solis",
@@ -1169,7 +1169,7 @@
   "CA-40": {
    "incumbent": "Young Kim",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Republican loss.",
+   "status": "Incumbent lost re-election.<br/>Republican loss.",
    "candidates": [
     {
      "name": "Ken Calvert",
@@ -1356,7 +1356,7 @@
   "CO-01": {
    "incumbent": "Diana DeGette",
    "inc_party": "D",
-   "status": "Incumbent lost renomination.<br>Democratic hold.",
+   "status": "Incumbent lost renomination.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Melat Kiros",
@@ -1459,7 +1459,7 @@
   "CO-05": {
    "incumbent": "Jeff Crank",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Jessica Killin",
@@ -1555,7 +1555,7 @@
   "CO-08": {
    "incumbent": "Gabe Evans",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Manny Rutinel",
@@ -1577,7 +1577,7 @@
   "CT-01": {
    "incumbent": "John B. Larson",
    "inc_party": "D",
-   "status": "Incumbent lost renomination.<br>Democratic hold.",
+   "status": "Incumbent lost renomination.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Luke Bronin",
@@ -1699,7 +1699,7 @@
   "FL-02": {
    "incumbent": "Neal Dunn",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Austin Rogers",
@@ -1809,7 +1809,7 @@
   "FL-07": {
    "incumbent": "Cory Mills",
    "inc_party": "R",
-   "status": "Incumbent lost renomination.<br>Republican hold.",
+   "status": "Incumbent lost renomination.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Ryan Elijah",
@@ -1877,7 +1877,7 @@
   "FL-11": {
    "incumbent": "Daniel Webster",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Joe Strada",
@@ -1982,7 +1982,7 @@
   "FL-16": {
    "incumbent": "Vern Buchanan",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Sydney Gruters",
@@ -2048,7 +2048,7 @@
   "FL-19": {
    "incumbent": "Byron Donalds",
    "inc_party": "R",
-   "status": "run for governor]].<br>Republican hold.",
+   "status": "run for governor]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Jim Schwartzel",
@@ -2070,7 +2070,7 @@
   "FL-20": {
    "incumbent": null,
    "inc_party": null,
-   "status": "Rep. Sheila Cherfilus-McCormick (D) resigned April 21, 2026.<br>Democratic loss.",
+   "status": "Rep. Sheila Cherfilus-McCormick (D) resigned April 21, 2026.<br/>Democratic loss.",
    "candidates": [
     {
      "name": "Debbie Wasserman Schultz",
@@ -2114,7 +2114,7 @@
   "FL-22": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Democratic gain.",
+   "status": "New member elected.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Pia Dandiya",
@@ -2148,7 +2148,7 @@
   "FL-24": {
    "incumbent": "Frederica Wilson",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Oliver Gilbert",
@@ -2248,7 +2248,7 @@
   "GA-01": {
    "incumbent": "Buddy Carter",
    "inc_party": "R",
-   "status": "run for U.S. Senate]].<br>Republican hold.",
+   "status": "run for U.S. Senate]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Jim Kingston",
@@ -2401,7 +2401,7 @@
   "GA-10": {
    "incumbent": "Mike Collins",
    "inc_party": "R",
-   "status": "run for U.S. Senate]].<br>Republican hold.",
+   "status": "run for U.S. Senate]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Houston Gaines",
@@ -2418,7 +2418,7 @@
   "GA-11": {
    "incumbent": "Barry Loudermilk",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "John Cowan",
@@ -2452,7 +2452,7 @@
   "GA-13": {
    "incumbent": "Everton Blair",
    "inc_party": "D",
-   "status": "language=en-US}}</ref><br>Democratic hold.",
+   "status": "language=en-US}}</ref><br/>Democratic hold.",
    "candidates": [
     {
      "name": "Jasmine Clark",
@@ -2606,7 +2606,7 @@
   "IL-02": {
    "incumbent": "Robin Kelly",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br>Democratic hold.",
+   "status": "run for U.S. Senate]].<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Donna Miller",
@@ -2640,7 +2640,7 @@
   "IL-04": {
    "incumbent": "Chuy Garc\u00eda",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Patty Garc\u00eda",
@@ -2701,7 +2701,7 @@
   "IL-07": {
    "incumbent": "Danny Davis",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "La Shawn Ford",
@@ -2718,7 +2718,7 @@
   "IL-08": {
    "incumbent": "Raja Krishnamoorthi",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br>Democratic hold.",
+   "status": "run for U.S. Senate]].<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Melissa Bean",
@@ -2735,7 +2735,7 @@
   "IL-09": {
    "incumbent": "Jan Schakowsky",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Daniel Biss",
@@ -2961,7 +2961,7 @@
   "IN-05": {
    "incumbent": "Victoria Spartz",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "J. D. Ford",
@@ -3056,7 +3056,7 @@
   "IA-01": {
    "incumbent": "Mariannette Miller-Meeks",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Christina Bohannan",
@@ -3078,7 +3078,7 @@
   "IA-02": {
    "incumbent": "Ashley Hinson",
    "inc_party": "R",
-   "status": "run for U.S. Senate]].<br>Democratic gain.",
+   "status": "run for U.S. Senate]].<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Lindsay James",
@@ -3105,7 +3105,7 @@
   "IA-03": {
    "incumbent": "Zach Nunn",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Sarah Trone Garriott",
@@ -3122,7 +3122,7 @@
   "IA-04": {
    "incumbent": "Randy Feenstra",
    "inc_party": "R",
-   "status": "run for governor]].<br>Republican hold.",
+   "status": "run for governor]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Chris McGowan",
@@ -3501,7 +3501,7 @@
   "ME-02": {
    "incumbent": "Jared Golden",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Republican gain.",
+   "status": "Incumbent retired.<br/>Republican gain.",
    "candidates": [
     {
      "name": "Paul LePage",
@@ -3749,7 +3749,7 @@
   "MA-06": {
    "incumbent": "Seth Moulton",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br>Democratic hold.",
+   "status": "run for U.S. Senate]].<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Dan Koh",
@@ -3908,7 +3908,7 @@
   "MI-04": {
    "incumbent": "Bill Huizenga",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Sean McCann",
@@ -3999,7 +3999,7 @@
   "MI-07": {
    "incumbent": "Tom Barrett",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "William Lawrence",
@@ -4090,7 +4090,7 @@
   "MI-10": {
    "incumbent": "John James",
    "inc_party": "R",
-   "status": "run for governor]].<br>Democratic gain.",
+   "status": "run for governor]].<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Christina Hines",
@@ -4122,7 +4122,7 @@
   "MI-11": {
    "incumbent": "Haley Stevens",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br>Democratic hold.",
+   "status": "run for U.S. Senate]].<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Jeremy Moss",
@@ -4186,7 +4186,7 @@
   "MI-13": {
    "incumbent": "Shri Thanedar",
    "inc_party": "D",
-   "status": "Incumbent lost renomination.<br>Democratic hold.",
+   "status": "Incumbent lost renomination.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Donavan McKinney",
@@ -4235,7 +4235,7 @@
   "MN-02": {
    "incumbent": "Angie Craig",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br>DFL hold.",
+   "status": "run for U.S. Senate]].<br/>DFL hold.",
    "candidates": [
     {
      "name": "Matt Little",
@@ -4469,7 +4469,7 @@
   "MO-02": {
    "incumbent": "Ann Wagner",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Fred Wellman",
@@ -4557,7 +4557,7 @@
   "MO-06": {
    "incumbent": "Sam Graves",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Chris Stigall",
@@ -4758,7 +4758,7 @@
   "NV-02": {
    "incumbent": "Mark Amodei",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Democratic gain.",
+   "status": "Incumbent retired.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Teresa Benitez-Thompson",
@@ -4829,7 +4829,7 @@
   "NH-01": {
    "incumbent": "Chris Pappas",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br>Democratic hold.",
+   "status": "run for U.S. Senate]].<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Stefany Shaheen",
@@ -4885,7 +4885,7 @@
   "NJ-02": {
    "incumbent": "Jeff Van Drew",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Zack Mullock",
@@ -4990,7 +4990,7 @@
   "NJ-07": {
    "incumbent": "Thomas Kean Jr.",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Rebecca Bennett",
@@ -5100,7 +5100,7 @@
   "NJ-12": {
    "incumbent": "Bonnie Watson Coleman",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Adam Hamawy",
@@ -5341,7 +5341,7 @@
   "NY-10": {
    "incumbent": "Dan Goldman",
    "inc_party": "D",
-   "status": "Incumbent lost renomination.<br>Democratic hold.",
+   "status": "Incumbent lost renomination.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Brad Lander",
@@ -5402,7 +5402,7 @@
   "NY-13": {
    "incumbent": "Adriano Espaillat",
    "inc_party": "D",
-   "status": "Incumbent lost renomination.<br>Democratic hold.",
+   "status": "Incumbent lost renomination.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Darializa Avila Chevalier",
@@ -5848,7 +5848,7 @@
   "NC-11": {
    "incumbent": "Chuck Edwards",
    "inc_party": "R",
-   "status": "Incumbent renominated but withdrew.<br> Democratic gain.",
+   "status": "Incumbent renominated but withdrew.<br/> Democratic gain.",
    "candidates": [
     {
      "name": "Jamie Ager",
@@ -6666,7 +6666,7 @@
   "SD-AL": {
    "incumbent": "Dusty Johnson",
    "inc_party": "R",
-   "status": "run for governor]].<br>Republican hold.",
+   "status": "run for governor]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Marty Jackley",
@@ -6821,7 +6821,7 @@
   "TN-05": {
    "incumbent": "Andy Ogles",
    "inc_party": "R",
-   "status": "Incumbent lost renomination.<br>Republican hold.",
+   "status": "Incumbent lost renomination.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Charlie Hatcher",
@@ -6848,7 +6848,7 @@
   "TN-06": {
    "incumbent": "John Rose",
    "inc_party": "R",
-   "status": "run for governor]].<br>Republican hold.",
+   "status": "run for governor]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Johnny Garrett",
@@ -6949,7 +6949,7 @@
   "TN-09": {
    "incumbent": "Steve Cohen",
    "inc_party": "D",
-   "status": "Incumbent retired.<br>Republican gain.",
+   "status": "Incumbent retired.<br/>Republican gain.",
    "candidates": [
     {
      "name": "Brent Taylor",
@@ -6993,7 +6993,7 @@
   "TX-02": {
    "incumbent": "Dan Crenshaw",
    "inc_party": "R",
-   "status": "Incumbent lost renomination.<br>Republican hold.",
+   "status": "Incumbent lost renomination.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Steve Toth",
@@ -7100,7 +7100,7 @@
   "TX-08": {
    "incumbent": "Morgan Luttrell",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Jessica Steinmann",
@@ -7117,7 +7117,7 @@
   "TX-09": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Democratic gain.",
+   "status": "New member elected.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Leticia Gutierrez",
@@ -7134,7 +7134,7 @@
   "TX-10": {
    "incumbent": "Michael McCaul",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Chris Gober",
@@ -7219,7 +7219,7 @@
   "TX-15": {
    "incumbent": "Monica De La Cruz",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Bobby Pulido",
@@ -7287,7 +7287,7 @@
   "TX-19": {
    "incumbent": "Jodey Arrington",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Tom Sell",
@@ -7321,7 +7321,7 @@
   "TX-21": {
    "incumbent": "Chip Roy",
    "inc_party": "R",
-   "status": "run for Texas attorney general]].<br>Republican hold.",
+   "status": "run for Texas attorney general]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Mark Teixeira",
@@ -7338,7 +7338,7 @@
   "TX-22": {
    "incumbent": "Troy Nehls",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Trever Nehls",
@@ -7355,7 +7355,7 @@
   "TX-23": {
    "incumbent": null,
    "inc_party": null,
-   "status": "Rep. Tony Gonzales (R) resigned April 14, 2026.<br> Democratic gain.",
+   "status": "Rep. Tony Gonzales (R) resigned April 14, 2026.<br/> Democratic gain.",
    "candidates": [
     {
      "name": "Katy Padilla Stout",
@@ -7489,7 +7489,7 @@
   "TX-30": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Democratic gain.",
+   "status": "New member elected.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Frederick Haynes III",
@@ -7528,7 +7528,7 @@
   "TX-32": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Republican gain.",
+   "status": "New member elected.<br/>Republican gain.",
    "candidates": [
     {
      "name": "Jace Yarbrough",
@@ -7589,7 +7589,7 @@
   "TX-35": {
    "incumbent": null,
    "inc_party": null,
-   "status": "New member elected.<br>Democratic gain.",
+   "status": "New member elected.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Johnny Garcia",
@@ -7659,47 +7659,10 @@
     }
    ]
   },
-  "VT-AL": {
-   "incumbent": "Becca Balint",
-   "inc_party": "D",
-   "status": "Incumbent re-elected.",
-   "candidates": [
-    {
-     "name": "Becca Balint",
-     "party": "D",
-     "label": "Democratic"
-    },
-    {
-     "name": "Gerald Malloy",
-     "party": "R",
-     "label": "Republican"
-    },
-    {
-     "name": "Suz Seymour",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Ryan Walton",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Phoenix Altair",
-     "party": "I",
-     "label": "Independent"
-    },
-    {
-     "name": "Adam Ortiz",
-     "party": "I",
-     "label": "Independent"
-    }
-   ]
-  },
   "VA-01": {
    "incumbent": "Rob Wittman",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Shannon Taylor",
@@ -7716,7 +7679,7 @@
   "VA-02": {
    "incumbent": "Jen Kiggans",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Elaine Luria",
@@ -8007,7 +7970,7 @@
   "WA-04": {
    "incumbent": "Dan Newhouse",
    "inc_party": "R",
-   "status": "Incumbent retired.<br>Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Amanda McKinney",
@@ -8165,7 +8128,7 @@
   "WI-01": {
    "incumbent": "Bryan Steil",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Mitchell Berman",
@@ -8194,7 +8157,7 @@
   "WI-03": {
    "incumbent": "Derrick Van&nbsp;Orden",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br>Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Rebecca Cooke",
@@ -8292,7 +8255,7 @@
   "WI-07": {
    "incumbent": "Tom Tiffany",
    "inc_party": "R",
-   "status": "governor]].<br>Republican hold.",
+   "status": "governor]].<br/>Republican hold.",
    "candidates": [
     {
      "name": "Michael Alfonso",
