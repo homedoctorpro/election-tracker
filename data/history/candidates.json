@@ -5285,7 +5285,7 @@
   "NY-07": {
    "incumbent": "Nydia Vel\u00e1zquez",
    "inc_party": "D",
-   "status": "Incumbent retired. Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Claire Valdez",
@@ -5375,7 +5375,7 @@
   "NY-12": {
    "incumbent": "Jerry Nadler",
    "inc_party": "D",
-   "status": "Incumbent retired. Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Micah Lasher",
@@ -5536,7 +5536,7 @@
   "NY-21": {
    "incumbent": "Elise Stefanik",
    "inc_party": "R",
-   "status": "Incumbent retired. Republican hold.",
+   "status": "Incumbent retired.<br/>Republican hold.",
    "candidates": [
     {
      "name": "Anthony Constantino",
@@ -5726,7 +5726,7 @@
   "NC-05": {
    "incumbent": "Virginia Foxx",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent renominated.",
    "candidates": [
     {
      "name": "Chuck Hubbard",
@@ -5848,7 +5848,7 @@
   "NC-11": {
    "incumbent": "Chuck Edwards",
    "inc_party": "R",
-   "status": "Incumbent renominated but withdrew.<br/> Democratic gain.",
+   "status": "access-date=August 5, 2026}}</ref><br/> Democratic gain.",
    "candidates": [
     {
      "name": "Jamie Ager",
