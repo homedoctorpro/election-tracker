@@ -557,7 +557,7 @@
   "CA-04": {
    "incumbent": "Mike Thompson",
    "inc_party": "D",
-   "status": "Incumbent advanced to general.",
+   "status": "Incumbent lost re-election.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Eric Jones",
@@ -5826,8 +5826,13 @@
   "NC-10": {
    "incumbent": "Pat Harrigan",
    "inc_party": "R",
-   "status": "Incumbent renominated",
+   "status": "Incumbent re-elected.",
    "candidates": [
+    {
+     "name": "Pat Harrigan",
+     "party": "R",
+     "label": "Republican"
+    },
     {
      "name": "Ashley Bell",
      "party": "D",
@@ -5837,11 +5842,6 @@
      "name": "Steve Feldman",
      "party": "L",
      "label": "Libertarian"
-    },
-    {
-     "name": "Pat Harrigan",
-     "party": "R",
-     "label": "Republican"
     }
    ]
   },
