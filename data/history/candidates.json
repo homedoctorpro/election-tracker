@@ -25,7 +25,7 @@
   "NY-17": {
    "incumbent": "Mike Lawler",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Cait Conley",
@@ -42,7 +42,7 @@
   "PA-01": {
    "incumbent": "Brian Fitzpatrick",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Bob Harvie",
@@ -676,7 +676,7 @@
   "CA-11": {
    "incumbent": "Nancy Pelosi",
    "inc_party": "D",
-   "status": "Incumbent retired.<br />Democratic hold.",
+   "status": "Incumbent retired.<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Scott Wiener",
@@ -1437,7 +1437,7 @@
   "CO-04": {
    "incumbent": "Lauren Boebert",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Eileen Laubacher",
@@ -5682,7 +5682,7 @@
   "NC-03": {
    "incumbent": "Greg Murphy",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Raymond Smith Jr.",
@@ -5748,7 +5748,7 @@
   "NC-06": {
    "incumbent": "Addison McDowell",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Cyril Jefferson",
@@ -5809,7 +5809,7 @@
   "NC-09": {
    "incumbent": "Richard Hudson",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Richard Ojeda",
@@ -5848,7 +5848,7 @@
   "NC-11": {
    "incumbent": "Chuck Edwards",
    "inc_party": "R",
-   "status": "access-date=August 5, 2026}}</ref><br/> Democratic gain.",
+   "status": "access-date=August 5, 2026}}</ref><br/>Democratic gain.",
    "candidates": [
     {
      "name": "Jamie Ager",
@@ -5887,7 +5887,7 @@
   "NC-13": {
    "incumbent": "Brad Knott",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Paul Barringer",
@@ -5909,7 +5909,7 @@
   "NC-14": {
    "incumbent": "Tim Moore",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "LaKesha Womack",
@@ -6070,7 +6070,7 @@
   "OH-07": {
    "incumbent": "Max Miller",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Brian Poindexter",
@@ -6126,7 +6126,7 @@
   "OH-10": {
    "incumbent": "Mike Turner",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Kristina Knickerbocker",
@@ -6221,7 +6221,7 @@
   "OH-15": {
    "incumbent": "Mike Carey",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Don Leonard",
@@ -6440,7 +6440,7 @@
   "PA-07": {
    "incumbent": "Ryan Mackenzie",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Bob Brooks",
@@ -6457,7 +6457,7 @@
   "PA-08": {
    "incumbent": "Rob Bresnahan",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Paige Cognetti",
@@ -6491,7 +6491,7 @@
   "PA-10": {
    "incumbent": "Scott Perry",
    "inc_party": "R",
-   "status": "Incumbent lost re-election.<br />Democratic gain.",
+   "status": "Incumbent lost re-election.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Janelle Stelson",
@@ -7355,7 +7355,7 @@
   "TX-23": {
    "incumbent": null,
    "inc_party": null,
-   "status": "Rep. Tony Gonzales (R) resigned April 14, 2026.<br/> Democratic gain.",
+   "status": "Rep. Tony Gonzales (R) resigned April 14, 2026.<br/>Democratic gain.",
    "candidates": [
     {
      "name": "Katy Padilla Stout",
@@ -7545,7 +7545,7 @@
   "TX-33": {
    "incumbent": "Jasmine Crockett",
    "inc_party": "D",
-   "status": "run for U.S. Senate]].<br />Democratic hold.",
+   "status": "run for U.S. Senate]].<br/>Democratic hold.",
    "candidates": [
     {
      "name": "Colin Allred",
@@ -7623,7 +7623,7 @@
   "TX-37": {
    "incumbent": "Lloyd Doggett",
    "inc_party": "D",
-   "status": "Incumbent retired.<br />Democratic loss.",
+   "status": "Incumbent retired.<br/>Democratic loss.",
    "candidates": [
     {
      "name": "Greg Casar",
